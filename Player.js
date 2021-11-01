@@ -67,8 +67,8 @@ Player.prototype.update = function(du){
     var nextY = this.cy + this.velY * du;
     var nextX = this.cx + this.velX * du;
 
-    //Check collisions with map
-    var hitData = this.hitsGround(nextX, nextY+this.halfHeight)
+    //Check collisions with floor
+    var hitData = this.hitsMap(nextX, nextY+this.halfHeight)
     if(!hitData.hits){
         this.cy = nextY;
     }
@@ -76,7 +76,23 @@ Player.prototype.update = function(du){
         this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
     }
 
-    this.cx = nextX;
+
+
+    //Check collisions with walls
+    var dir = Math.sign(this.velX);
+    var hitData = this.hitsMap(nextX + dir*this.halfWidth, nextY);
+    if (!hitData.hits){
+        this.cx = nextX;
+    }
+    else{
+        if (dir === -1){
+            this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
+        }
+        else{
+            this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
+        }
+        
+    }
 
 }
 
@@ -88,10 +104,6 @@ Player.prototype.jump = function(){
     this.velY = -this.jumpSpeed;
 }
 
-Player.prototype.hitsGround = function(x,y){
+Player.prototype.hitsMap = function(x,y){
     return g_map.collidesWith(x,y,0,0);
-}
-
-Player.prototype.hitsWall = function(x,y){
-    return g_map.collidesWith(x,y,0,0)
 }
