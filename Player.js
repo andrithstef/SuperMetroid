@@ -39,7 +39,6 @@ Player.prototype.update = function(du){
     //jump
     if (g_keys[this.JUMP]){
         //Check if on ground
-
         this.jump();
     }
 
@@ -65,8 +64,20 @@ Player.prototype.update = function(du){
     }
 
 
-    this.cy += this.velY * du;
-    this.cx += this.velX * du;
+    var nextY = this.cy + this.velY * du;
+    var nextX = this.cx + this.velX * du;
+
+    //Check collisions with map
+    var hitData = this.hitsGround(nextX, nextY+this.halfHeight)
+    if(!hitData.hits){
+        this.cy = nextY;
+    }
+    else{
+        this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
+    }
+
+    this.cx = nextX;
+
 }
 
 Player.prototype.render = function(ctx){
@@ -75,4 +86,12 @@ Player.prototype.render = function(ctx){
 
 Player.prototype.jump = function(){
     this.velY = -this.jumpSpeed;
+}
+
+Player.prototype.hitsGround = function(x,y){
+    return g_map.collidesWith(x,y,0,0);
+}
+
+Player.prototype.hitsWall = function(x,y){
+    return g_map.collidesWith(x,y,0,0)
 }

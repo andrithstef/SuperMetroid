@@ -26,6 +26,7 @@ var g_ctx = g_canvas.getContext("2d");
 */
 
 var entityManager = new EntityManager();
+var g_map = new Map();
 
 // =============
 // GATHER INPUTS
@@ -70,6 +71,7 @@ function updateSimulation(du) {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
+    g_map.render(ctx);
     entityManager.render(ctx);
 }
 
