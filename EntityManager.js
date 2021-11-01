@@ -12,13 +12,13 @@
 
 function EntityManager(){
     this._player = new Player();
-    this._ground = new Ground();
+    this._map = new Map();
 }
 
 // "PRIVATE" DATA
 
 EntityManager.prototype._player;
-EntityManager.prototype._ground;
+EntityManager.prototype._map;
 
 
 
@@ -50,14 +50,14 @@ EntityManager.prototype.init = function() {
 
 EntityManager.prototype.update = function(du) {
     //Update player
-    
+
 
     this._player.update(du);
 },
 
 EntityManager.prototype.render = function(ctx) {
     //render player 
-    this._ground.render(ctx);
+    this._map.render(ctx);
     this._player.render(ctx);
 }
 
