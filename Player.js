@@ -4,20 +4,30 @@ function Player(){
 
 Player.prototype.GO_LEFT = 'A'.charCodeAt(0); 
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0); 
+Player.prototype.GO_UP = 'W'.charCodeAt(0); 
+Player.prototype.GO_DOWN = 'S'.charCodeAt(0); 
 Player.prototype.JUMP = " ".charCodeAt(0);
+Player.prototype.SHOOT = 13;
 
 Player.prototype.gravity = 0.6;
 Player.prototype.accel = 1.5;
 Player.prototype.friction = 0.4;
-Player.prototype.maxSpeed = 15;
-Player.prototype.jumpSpeed = 15;
+Player.prototype.maxSpeed = 17;
+Player.prototype.jumpSpeed = 17;
 Player.prototype.cx = 100;
 Player.prototype.cy = 600;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
-Player.prototype.halfWidth = 10;
-Player.prototype.halfHeight = 16;
+Player.prototype.halfWidth = 20;
+Player.prototype.halfHeight = 40;
+
+Player.prototype.isGrounded = false;
+
+//looking left or right?
+Player.prototype.Xdirection = 1;
+//looking down or up?
+Player.prototype.Ydirection = 1;
 
 
 Player.prototype.update = function(du){
@@ -37,14 +47,19 @@ Player.prototype.update = function(du){
     }
 
     //jump
-    if (g_keys[this.JUMP]){
+    if (g_keys[this.JUMP] && this.isGrounded){
         //Check if on ground
         this.jump();
+        this.isGrounded = false;
     }
 
     //apply gravity
     this.velY += this.gravity*du;
 
+    //Shoot 
+    if (eatKey(this.SHOOT)){
+        this.shoot();
+    }
 
     //correct velocity
     //X
@@ -63,17 +78,27 @@ Player.prototype.update = function(du){
         this.velY = -this.maxSpeed;
     }
 
+    if (this.velX > 0){
+        this.Xdirection = 1;
+    }
+    else if (this.velX < 0){
+        this.Xdirection = -1;
+    }
 
     var nextY = this.cy + this.velY * du;
     var nextX = this.cx + this.velX * du;
 
     //Check collisions with floor
-    var hitData = this.hitsMap(nextX, nextY+this.halfHeight)
+    var dir = Math.sign(this.velY);
+    var hitData = this.hitsMap(nextX, nextY+dir*this.halfHeight)
     if(!hitData.hits){
         this.cy = nextY;
     }
     else{
-        this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
+        this.isGrounded = true;
+        if (dir === 1){
+            this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
+        }
     }
 
 
@@ -105,5 +130,20 @@ Player.prototype.jump = function(){
 }
 
 Player.prototype.hitsMap = function(x,y){
-    return g_map.collidesWith(x,y,0,0);
+    return g_map.collidesWith(x,y);
+}
+
+Player.prototype.shoot = function(){
+    if ((g_keys[this.GO_UP] && g_keys[this.GO_DOWN]) 
+    || (!g_keys[this.GO_UP] && !g_keys[this.GO_DOWN] )){
+        this.Ydirection = 0;
+    }
+    else if (g_keys[this.GO_UP]){
+        this.Ydirection = -1;
+    }
+    else if (g_keys[this.GO_DOWN]){
+        this.Ydirection = 1;
+    }
+    this.Ydirection = Math.sign(this.Ydirection);
+    entityManager.addBullet(this.cx, this.cy, this.Xdirection, this.Ydirection);
 }

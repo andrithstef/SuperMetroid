@@ -25,3 +25,4 @@ function eatKey(keyCode) {
 
 window.addEventListener("keydown", handleKeydown);
 window.addEventListener("keyup", handleKeyup);
+
