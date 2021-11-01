@@ -25,35 +25,7 @@ var g_ctx = g_canvas.getContext("2d");
 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-// ============
-// PADDLE STUFF
-// ============
-
-// PADDLE 1
-
-var KEY_W = 'W'.charCodeAt(0);
-var KEY_S = 'S'.charCodeAt(0);
-
-var g_paddle1 = new Paddle({
-    cx : 30,
-    cy : 100,
-    
-    GO_UP   : KEY_W,
-    GO_DOWN : KEY_S
-});
-
-// PADDLE 2
-
-var KEY_I = 'I'.charCodeAt(0);
-var KEY_K = 'K'.charCodeAt(0);
-
-var g_paddle2 = new Paddle({
-    cx : 370,
-    cy : 300,
-    
-    GO_UP   : KEY_I,
-    GO_DOWN : KEY_K
-});
+var entityManager = new EntityManager();
 
 // =============
 // GATHER INPUTS
@@ -79,11 +51,7 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-    
-    g_ball.update(du);
-    
-    g_paddle1.update(du);
-    g_paddle2.update(du);
+    entityManager.update(du);
 }
 
 
@@ -102,12 +70,9 @@ function updateSimulation(du) {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
-
-    g_ball.render(ctx);
-    
-    g_paddle1.render(ctx);
-    g_paddle2.render(ctx);
+    entityManager.render(ctx);
 }
 
 // Kick it off
+entityManager.init();
 g_main.init();
