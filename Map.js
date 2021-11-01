@@ -9,9 +9,9 @@ Map.prototype.tileWidth = 100;
 
 Map.prototype.gameMap = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -36,15 +36,13 @@ Map.prototype.render = function(ctx){
     }
 }
 
-Map.prototype.collidesWith = function(cx, cy, halfWidth, halfHeight){
+Map.prototype.collidesWith = function(cx, cy){
     var hits = false;
     var tileX = Math.floor(this.x_tiles * cx/g_canvas.width);
     var tileY = Math.floor(this.y_tiles * cy/g_canvas.height);
     if (tileX < 0 || tileX > this.x_tiles || tileY < 0 || tileY > this.y_tiles){
         return false;
     }
-    /*console.log(tileX);
-    console.log(tileY);*/
     if (this.gameMap[tileY][tileX] === 1){
         hits = true;
     }

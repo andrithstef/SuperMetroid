@@ -12,11 +12,13 @@
 
 function EntityManager(){
     this._player = new Player();
+    this._bullets = [];
 }
 
 // "PRIVATE" DATA
 
 EntityManager.prototype._player;
+EntityManager.prototype._bullets;
 
 
 
@@ -47,12 +49,34 @@ EntityManager.prototype.init = function() {
 },
 
 EntityManager.prototype.update = function(du) {
-    //Update player
+    
+    //update bullets
+    for (var i = 0; i<this._bullets.length; i++){
+        var status = this._bullets[i].update(du);
 
+        if (status === this.KILL_ME_NOW){
+            this._bullets.splice(i,1);
+            i -= 1;
+        }
+    }
+
+    //Update player
     this._player.update(du);
 },
 
 EntityManager.prototype.render = function(ctx) {
+
+    //render bullets
+    for (var i = 0; i<this._bullets.length; i++){
+        this._bullets[i].render(ctx);
+    }
+
     //render player 
     this._player.render(ctx);
+}
+
+EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir){
+    var xVel = xdir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
+    var yVel = ydir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
+    this._bullets.push(new Bullet(cx, cy, xVel, yVel));
 }
