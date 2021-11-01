@@ -48,21 +48,9 @@ EntityManager.prototype.init = function() {
 
 },
 
-EntityManager.prototype.playerCollidesWithFloor = function(){
-    if (this._player.cy + this._player.halfHeight > g_canvas.height - this._ground.height){
-        this._player.cy = g_canvas.height - this._ground.height - this._player.halfHeight;
-        this._player.isFalling = false;
-        return true;
-    }
-    return false;
-}
- 
-
 EntityManager.prototype.update = function(du) {
     //Update player
-    if (!this.playerCollidesWithFloor()){
-        this._player.fall(du);
-    }
+    
 
     this._player.update(du);
 },
@@ -73,5 +61,14 @@ EntityManager.prototype.render = function(ctx) {
     this._player.render(ctx);
 }
 
+EntityManager.prototype.checkCollision = function(o1, o2) {
+    if (o1.cx + o2.halfWidth + o2.halfWidth > o2.cx && 
+        o2.cx + o2.halfWidth + o1.halfWidth > o1.cx && 
+        o1.cy + o2.halfHeight + o2.halfHeight > o2.cy && 
+        o2.cy + o2.halfHeight + o1.halfHeight > o1.cy){
+            return true;
+        }
+        return false;
+}
 
 
