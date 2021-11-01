@@ -26,8 +26,8 @@ Map.prototype.render = function(ctx){
     for (var i = 0; i < this.gameMap.length; i++){
         for (var j = 0; j < this.gameMap[i].length; j++){
             if (this.gameMap[i][j] === 1){
-                ctx.fillRect(ci*(this.tileWidth),
-                ri*this.tileHeight, this.tileWidth, this.tileHeight)
+                util.fillBox(ctx, ci*(this.tileWidth),
+                ri*this.tileHeight, this.tileWidth, this.tileHeight,"blue");
             }
             ci += 1;
         }
@@ -43,8 +43,8 @@ Map.prototype.collidesWith = function(cx, cy, halfWidth, halfHeight){
     if (tileX < 0 || tileX > this.x_tiles || tileY < 0 || tileY > this.y_tiles){
         return false;
     }
-    console.log(tileX);
-    console.log(tileY);
+    /*console.log(tileX);
+    console.log(tileY);*/
     if (this.gameMap[tileY][tileX] === 1){
         hits = true;
     }

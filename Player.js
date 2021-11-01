@@ -1,6 +1,8 @@
-function Player(){
+function Player(descr){
+    this.setup(descr);
 
 }
+Player.prototype = new Entity();
 
 Player.prototype.GO_LEFT = 'A'.charCodeAt(0); 
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0); 
@@ -19,8 +21,13 @@ Player.prototype.velY = 0;
 Player.prototype.halfWidth = 10;
 Player.prototype.halfHeight = 16;
 
+Player.prototype.shape = "Rect";
+
+
+
 
 Player.prototype.update = function(du){
+    spatialManager.unregister(this);
 
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] || 
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
@@ -63,12 +70,11 @@ Player.prototype.update = function(du){
         this.velY = -this.maxSpeed;
     }
 
-
     var nextY = this.cy + this.velY * du;
     var nextX = this.cx + this.velX * du;
 
     //Check collisions with floor
-    var hitData = this.hitsMap(nextX, nextY+this.halfHeight)
+    var hitData = this.hitsMap(nextX, nextY+this.halfHeight);
     if(!hitData.hits){
         this.cy = nextY;
     }
@@ -94,10 +100,12 @@ Player.prototype.update = function(du){
         
     }
 
+    spatialManager.register(this);
+
 }
 
 Player.prototype.render = function(ctx){
-    ctx.fillRect(this.cx-this.halfWidth, this.cy-this.halfHeight, 2*this.halfWidth, 2*this.halfHeight);
+    util.fillBox(ctx, this.cx-this.halfWidth, this.cy-this.halfHeight, 2*this.halfWidth, 2*this.halfHeight,"red");
 }
 
 Player.prototype.jump = function(){
