@@ -29,10 +29,12 @@ function render(ctx) {
     //
     if (g_doClear) {
         util.clearCanvas(ctx);
+        /*
         ctx.save();
         ctx.fillStyle = "white";
         ctx.fillRect(0,0,g_canvas.width,g_canvas.height);
         ctx.restore();
+        */
     }
     
     // The main purpose of the box is to demonstrate that it is

@@ -33,6 +33,7 @@ Player.prototype.halfWidth = 23;
 Player.prototype.halfHeight = 50;
 
 Player.prototype.isGrounded = false;
+Player.prototype.jumpFrame = 0;
 
 //looking left or right?
 Player.prototype.Xdirection = 1;
@@ -71,6 +72,7 @@ Player.prototype.update = function(du){
         //Check if on ground
         this.jump();
         this.isGrounded = false;
+        this.framenr = 0;
     }
 
     //apply gravity
@@ -143,7 +145,6 @@ Player.prototype.update = function(du){
 
         }
     }
-
     this.updateAnimationFrame();
 
     spatialManager.register(this);
@@ -156,7 +157,10 @@ Player.prototype.render = function(ctx){
 }
 
 Player.prototype.jump = function(){
+    this.isGrounded = false;
     this.velY = -this.jumpSpeed;
+    this.framenr = 0;
+    this.animationFrame = 0;
 }
 
 Player.prototype.hitsMap = function(x,y){
@@ -248,8 +252,10 @@ Player.prototype.shoot = function(){
 
 Player.prototype.getStance = function(){
     if (this.velX < 0.01 && this.velX > 0){
-        //Standing still, looking right
-        if (this.isKneeling){
+        if (!this.isGrounded){
+            this.stance = 18;
+        }
+        else if (this.isKneeling){
             if (g_keys[this.AIM_UP]){
                 this.stance = 12;
             }
@@ -279,7 +285,10 @@ Player.prototype.getStance = function(){
 
     else if (this.velX < 0 && this.velX > -0.01){
         //Standing still, looking left
-        if (this.isKneeling){
+        if (!this.isGrounded){
+            this.stance = 19;
+        }
+        else if (this.isKneeling){
             if (g_keys[this.AIM_UP]){
                 this.stance = 13;
             }
@@ -302,7 +311,6 @@ Player.prototype.getStance = function(){
         else if (g_keys[this.GO_UP]){
             this.stance = 9;
         }
-        
         else{
             this.stance = 0;
         }
@@ -564,17 +572,57 @@ Player.prototype.getSprite = function(){
                 w : 18,
                 h : 43
             }
+        case 18: 
+            //jumping right
+            this.halfHeight = 45;
+            this.halfWidth = this.widths[6][this.animationFrame];
+
+            this.bulletX  = this.cx;
+            this.bulletY = this.cy - 45;
+            return{
+                x : this.dists[6][this.animationFrame],
+                y : 138,
+                w : this.widths[6][this.animationFrame],
+                h : 45
+            }
+        case 19: 
+            //jumping left
+            this.halfHeight = 45;
+            this.halfWidth = this.widths[7][this.animationFrame];
+
+            this.bulletX  = this.cx;
+            this.bulletY = this.cy - 45;
+            return{
+                x : this.dists[7][this.animationFrame],
+                y : 192,
+                w : this.widths[7][this.animationFrame],
+                h : 45
+            }
+        
     }
 }
 
 Player.prototype.updateAnimationFrame = function(){
-    this.framenr += 1;;
+    if (!this.isGrounded){
+        this.getAirborneAnimationFrame();
+        return;
+    }
+    this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         this.animationFrame += 1;
         this.framenr = 0;
         this.animationFrame %= 10;
     }
 }
+
+Player.prototype.getAirborneAnimationFrame = function(){
+    this.framenr += 1;
+    if (this.framenr >= this.framestoAnimationFrame){
+        if (this.animationFrame < 2) this.animationFrame += 1;
+        this.framenr = 0;
+    }
+}
+
 
 //Sprite sheet sizes 
 Player.prototype.widths = [
@@ -583,7 +631,10 @@ Player.prototype.widths = [
     [17, 22, 28, 34, 31, 18, 24, 28, 34, 31], //running right
     [17, 22, 28, 34, 31, 18, 24, 28, 34, 31],  //running left
     [21, 21, 21, 21, 21, 21, 21, 21, 21, 21], //kneeling right
-    [21, 21, 21, 21, 21, 21, 21, 21, 21, 21]  //kneeling left
+    [21, 21, 21, 21, 21, 21, 21, 21, 21, 21],  //kneeling left
+    [18, 17, 22, 18, 18], //jumping right
+    [18, 17, 22, 18, 18] //jumping left
+    
 ];
 Player.prototype.dists = [
     [242, 242, 242, 274, 274, 274, 306, 306, 306, 306], //looking left
@@ -591,5 +642,7 @@ Player.prototype.dists = [
     [9,36,67,105,149,191,222,252,290,337],  //running right
     [8,36,68,107,150,187,214,246,284,328],   //running left
     [397, 397, 397, 427, 427, 427, 458, 458, 458, 458], //kneeling right
-    [391, 391, 391, 426, 426, 426, 460, 460, 460, 460]  //kneeling left
+    [391, 391, 391, 426, 426, 426, 460, 460, 460, 460],  //kneeling left
+    [500, 527, 555, 584, 612], //jumping right
+    [498, 529, 559, 587, 615] //Jumping left
 ];
