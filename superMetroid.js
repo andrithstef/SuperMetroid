@@ -25,6 +25,7 @@ var g_ctx = g_canvas.getContext("2d");
 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
 var g_map = new Map();
 var entityManager = new EntityManager();
 
@@ -83,8 +84,9 @@ function updateSimulation(du) {
 function renderSimulation(ctx) {
     g_map.render(ctx);
     entityManager.render(ctx);
-    spatialManager.render(ctx);
+    //spatialManager.render(ctx);
 }
+
 
 // Kick it off
 entityManager.init();

@@ -54,7 +54,7 @@ function render(ctx) {
             boxY = g_isUpdateOdd ? 100 : 200;
         
         // Draw flip-flop box
-        fillBox(ctx, boxX, boxY, 50, 50, "green");
+        util.fillBox(ctx, boxX, boxY, 50, 50, "green");
         
         // Display the current frame-counter in the box...
         ctx.fillText(g_frameCounter % 1000, boxX + 10, boxY + 20);

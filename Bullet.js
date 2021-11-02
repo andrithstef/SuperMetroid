@@ -8,12 +8,17 @@ function Bullet(cx, cy, xVel ,yVel){
 Bullet.prototype.rad = 5;
 Bullet.prototype.speed = 10;
 
+Bullet.prototype.shape = "Circ";
+
 Bullet.prototype.lifeSpan = 2000 / 16.666;
 
 Bullet.prototype.render = function(ctx){
+    ctx.save();
     ctx.beginPath();
+    ctx.fillStyle = "red";
     ctx.arc(this.cx, this.cy, this.rad, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
 }
 
 Bullet.prototype.update = function(du){
@@ -32,6 +37,7 @@ Bullet.prototype.update = function(du){
 
     this.cx = nextX;
     this.cy = nextY;
+
 }
 
 Bullet.prototype.hitsMap = function(x,y){
