@@ -6,7 +6,7 @@ function Bullet(cx, cy, xVel ,yVel){
 }
 
 Bullet.prototype.rad = 5;
-Bullet.prototype.speed = 10;
+Bullet.prototype.speed = 20;
 
 Bullet.prototype.shape = "Circ";
 

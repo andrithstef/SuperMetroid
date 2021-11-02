@@ -22,6 +22,7 @@ EntityManager.prototype._bullets;
 
 
 
+
 // "PRIVATE" METHODS
 
 EntityManager.prototype._forEachOf = function(aCategory, fn) {
@@ -79,4 +80,8 @@ EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir){
     var xVel = xdir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
     var yVel = ydir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
     this._bullets.push(new Bullet(cx, cy, xVel, yVel));
+}
+
+Entity.prototype.getSpatialID = function(){
+    return this.spatialID ++;
 }
