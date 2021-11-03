@@ -5,6 +5,9 @@ function Bullet(cx, cy, xVel ,yVel){
     this.velY = yVel*this.speed;
 }
 
+const bulletSheet = 'resrc/Weapons.png';
+//put in bullet sprites based on current bullet
+
 Bullet.prototype.rad = 5;
 Bullet.prototype.speed = 20;
 

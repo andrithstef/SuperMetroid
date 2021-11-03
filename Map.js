@@ -1,5 +1,5 @@
 function Map(){
-    
+
 }
 
 Map.prototype.x_tiles = 16;
@@ -20,12 +20,14 @@ Map.prototype.gameMap = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 
+
 Map.prototype.render = function(ctx){
     var ri = 0;
     var ci = 0;
     for (var i = 0; i < this.gameMap.length; i++){
         for (var j = 0; j < this.gameMap[i].length; j++){
             if (this.gameMap[i][j] === 1){
+
                 util.fillBox(ctx, ci*(this.tileWidth),
                 ri*this.tileHeight, this.tileWidth, this.tileHeight,"blue");
             }
