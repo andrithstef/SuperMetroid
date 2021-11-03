@@ -1,17 +1,3 @@
-// "Crappy PONG" -- step by step
-//
-// Step 13: Simplify
-/*
-
-Supporting timer-events (via setInterval) *and* frame-events (via requestAnimationFrame)
-adds significant complexity to the the code.
-
-I can simplify things a little by focusing on the latter case only (which is the
-superior mechanism of the two), so let's try doing that...
-
-The "MAINLOOP" code, inside g_main, is much simplified as a result.
-
-*/
 
 "use strict";
 

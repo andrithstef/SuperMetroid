@@ -4,7 +4,7 @@ function Player(descr){
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "https://notendur.hi.is/ats21/samus_sprite_sheet.gif"
+spriteSheet.src = "resrc/samus_sprite_sheet.gif"
 
 Player.prototype = new Entity();
 
@@ -70,7 +70,7 @@ Player.prototype.update = function(du){
 
     //jump
     if (eatKey(this.JUMP) && this.isGrounded){
-        //Check if on ground
+        //TODO : Check if on ground
         this.jump();
         this.isGrounded = false;
         this.framenr = 0;
@@ -274,7 +274,7 @@ Player.prototype.shoot = function(){
 Player.prototype.getStance = function(){
     //Player is standing still looking right
     //Finished
-    if (this.velX < 0.01 && this.velX >= 0){
+    if (this.velX < 0.1 && this.velX >= 0){
         if (!this.isGrounded){
             this.stance = 18;
         }
@@ -306,7 +306,7 @@ Player.prototype.getStance = function(){
         }
     }
 
-    else if (this.velX <= 0 && this.velX > -0.01){
+    else if (this.velX <= 0 && this.velX > -0.1){
         //Standing still, looking left
         //Finished
         if (!this.isGrounded){
@@ -361,8 +361,6 @@ Player.prototype.getStance = function(){
     if (!(this.stance === 3 || this.stance === 2 || this.stance === 20 || this.stance === 21)){
         this.hasShot = false;
     }
-    console.log(this.stance);
-    console.log(this.hasShot);
 }
 
 Player.prototype.getSprite = function(){
@@ -680,7 +678,6 @@ Player.prototype.getAirborneAnimationFrame = function(){
         this.framenr = 0;
     }
 }
-
 
 //Sprite sheet sizes
 Player.prototype.widths = [
