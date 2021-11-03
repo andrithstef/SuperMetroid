@@ -12,8 +12,8 @@ Player.prototype.GO_LEFT = 'A'.charCodeAt(0);
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0); 
 Player.prototype.GO_UP = 'W'.charCodeAt(0); 
 Player.prototype.GO_DOWN = 'S'.charCodeAt(0); 
-Player.prototype.AIM_UP = 16; //SHIFT
-Player.prototype.AIM_DOWN = 17; //CTRL
+Player.prototype.AIM_UP = 'E'.charCodeAt(0); 
+Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0); 
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
@@ -27,7 +27,7 @@ Player.prototype.cy = 600;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
-Player.prototype.isKneeling = false;
+Player.prototype.hasShot = false;
 
 Player.prototype.halfWidth = 23;
 Player.prototype.halfHeight = 50;
@@ -52,6 +52,7 @@ Player.prototype.bulletY = this.cy;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
+
 
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] || 
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
@@ -103,16 +104,12 @@ Player.prototype.update = function(du){
     var nextX = this.cx + this.velX * du;
 
 
-    this.getStance();
-
     //Shoot 
     if (eatKey(this.SHOOT)){
         this.shoot();
     }
 
-    if (eatKey(this.GO_DOWN)){
-        this.isKneeling = !this.isKneeling;
-    }
+    this.getStance();
 
     //Check collisions with floor
     var dir = Math.sign(this.velY);
@@ -128,23 +125,21 @@ Player.prototype.update = function(du){
     }
 
 
-    if (!this.isKneeling){
-        //Check collisions with walls
-        var dir = Math.sign(this.velX);
-        var hitData = this.hitsMap(nextX + dir*this.halfWidth, nextY);
-        if (!hitData.hits){
-            this.cx = nextX;
+    //Check collisions with walls
+    var dir = Math.sign(this.velX);
+    var hitData = this.hitsMap(nextX + dir*this.halfWidth, nextY);
+    if (!hitData.hits){
+        this.cx = nextX;
+    }
+    else{
+        if (dir === -1){
+            this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
         }
         else{
-            if (dir === -1){
-                this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
-            }
-            else{
-                this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
-            }
-
+            this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
         }
     }
+
     this.updateAnimationFrame();
 
     spatialManager.register(this);
@@ -168,11 +163,10 @@ Player.prototype.hitsMap = function(x,y){
 }
 
 Player.prototype.shoot = function(){
-    if (this.velX > 0.01 || this.velX < -0.01){
-        return;
-    }
+    this.hasShot = true;
     var bulletXvel = 0;
     var bulletYvel = 0;
+    console.log(this.stance);
     switch(this.stance){
         case 0: 
             bulletXvel = -1;
@@ -184,11 +178,11 @@ Player.prototype.shoot = function(){
             break;
         case 2: 
             bulletXvel = 1;
-            bulletYvel = -1;
+            bulletYvel = 0;
             break;
         case 3:
             bulletXvel = -1;
-            bulletYvel = -1;
+            bulletYvel = 0;
             break;
         case 4: 
             bulletXvel = 1;
@@ -246,16 +240,34 @@ Player.prototype.shoot = function(){
             bulletXvel = 0;
             bulletYvel = -1;
             break;
+        case 18:
+            bulletXvel = 1;
+            bulletYvel = 0;
+            break;
+        case 19:
+            bulletXvel = -1;
+            bulletYvel = 0;
+            break;
+        case 20:
+            bulletXvel = 1;
+            bulletYvel = 0;
+            break;
+        case 21:
+            bulletXvel = -1;
+            bulletYvel = 0;
+            break;
     }
     entityManager.addBullet(this.bulletX, this.bulletY, bulletXvel, bulletYvel);
 }
 
 Player.prototype.getStance = function(){
-    if (this.velX < 0.01 && this.velX > 0){
+    //Player is standing still looking right
+    //Finished
+    if (this.velX < 0.01 && this.velX >= 0){
         if (!this.isGrounded){
             this.stance = 18;
         }
-        else if (this.isKneeling){
+        else if (g_keys[this.GO_DOWN]){
             if (g_keys[this.AIM_UP]){
                 this.stance = 12;
             }
@@ -283,12 +295,13 @@ Player.prototype.getStance = function(){
         }
     }
 
-    else if (this.velX < 0 && this.velX > -0.01){
+    else if (this.velX <= 0 && this.velX > -0.01){
         //Standing still, looking left
+        //Finished
         if (!this.isGrounded){
             this.stance = 19;
         }
-        else if (this.isKneeling){
+        else if (g_keys[this.GO_DOWN]){
             if (g_keys[this.AIM_UP]){
                 this.stance = 13;
             }
@@ -316,20 +329,29 @@ Player.prototype.getStance = function(){
         }
     }
 
-    else if (this.isKneeling){
-        if(this.Xdirection === 1){
-            this.stance = 10;
+    //Player is running right, unfinished
+    else if (this.velX > 0){
+        if (this.hasShot){
+            this.stance = 20;
         }
         else{
-            this.stance = 11;
+            this.stance = 2;
         }
     }
-    else if (this.velX > 0){
-        this.stance = 2;
-    }
+    //Player is running left, unfinished
     else if (this.velX < 0){
-        this.stance = 3;
+        if (this.hasShot){
+            this.stance = 21;
+        }
+        else{
+            this.stance = 3;
+        }
     }
+    if (!(this.stance === 3 || this.stance === 2 || this.stance === 20 || this.stance === 21)){
+        this.hasShot = false;
+    }
+    console.log(this.stance);
+    console.log(this.hasShot);
 }
 
 Player.prototype.getSprite = function(){
@@ -367,8 +389,8 @@ Player.prototype.getSprite = function(){
             this.halfHeight = 41;
             this.halfWidth = this.widths[2][this.animationFrame];
 
-            this.bulletX  = this.cx + 10;
-            this.bulletY = this.cy - 9;
+            this.bulletX  = this.cx + 30;
+            this.bulletY = this.cy - 16;
             return{
                 x : this.dists[2][this.animationFrame],
                 y : 267,
@@ -381,11 +403,11 @@ Player.prototype.getSprite = function(){
             this.halfHeight = 41;
             this.halfWidth = this.widths[3][this.animationFrame];
 
-            this.bulletX  = this.cx - 10;
-            this.bulletY = this.cy - 9;
+            this.bulletX  = this.cx - 30;
+            this.bulletY = this.cy - 16;
             return{
                 x : this.dists[3][this.animationFrame],
-                y : 325,
+                y : 324,
                 w : this.widths[3][this.animationFrame],
                 h : 41
             } 
@@ -598,7 +620,32 @@ Player.prototype.getSprite = function(){
                 w : this.widths[7][this.animationFrame],
                 h : 45
             }
-        
+        case 20: 
+            //Running right, shooting
+            this.halfHeight = 43;
+            this.halfWidth = this.widths[8][this.animationFrame];
+
+            this.bulletX  = this.cx + 30;
+            this.bulletY = this.cy - 16;
+            return{
+                x : this.dists[8][this.animationFrame],
+                y : 378,
+                w : this.widths[8][this.animationFrame],
+                h : 43
+            }
+        case 21: 
+            //running left, shooting
+            this.halfHeight = 43;
+            this.halfWidth = this.widths[9][this.animationFrame];
+
+            this.bulletX  = this.cx - 30;
+            this.bulletY = this.cy - 16;
+            return{
+                x : this.dists[9][this.animationFrame],
+                y : 433,
+                w : this.widths[9][this.animationFrame],
+                h : 43
+            }
     }
 }
 
@@ -633,7 +680,9 @@ Player.prototype.widths = [
     [21, 21, 21, 21, 21, 21, 21, 21, 21, 21], //kneeling right
     [21, 21, 21, 21, 21, 21, 21, 21, 21, 21],  //kneeling left
     [18, 17, 22, 18, 18], //jumping right
-    [18, 17, 22, 18, 18] //jumping left
+    [18, 17, 22, 18, 18], //jumping left
+    [28, 32, 35, 37, 36, 29, 31, 35, 39, 37], //Running right, shooting
+    [28, 32, 35, 37, 36, 29, 31, 35, 39, 37]  //Running left, shooting
     
 ];
 Player.prototype.dists = [
@@ -644,5 +693,7 @@ Player.prototype.dists = [
     [397, 397, 397, 427, 427, 427, 458, 458, 458, 458], //kneeling right
     [391, 391, 391, 426, 426, 426, 460, 460, 460, 460],  //kneeling left
     [500, 527, 555, 584, 612], //jumping right
-    [498, 529, 559, 587, 615] //Jumping left
+    [498, 529, 559, 587, 615], //Jumping left
+    [8, 46, 89, 135, 180, 225, 263, 300, 344, 395], //Running right, shooting
+    [8, 44, 84, 128, 175, 220, 258, 298, 343, 391]  //Running left, shooting
 ];

@@ -1,0 +1,79 @@
+if (this.velX < 0.01 && this.velX > 0){
+        if (!this.isGrounded){
+            this.stance = 18;
+        }
+        else if (this.isKneeling){
+            if (g_keys[this.AIM_UP]){
+                this.stance = 12;
+            }
+            else if (g_keys[this.AIM_DOWN]){
+                this.stance = 14;
+            }
+            else if (g_keys[this.GO_UP]){
+                this.stance = 16;
+            }
+            else{
+                this.stance = 10;
+            }
+        }
+        else if (g_keys[this.AIM_UP]){
+            this.stance = 4;
+        }
+        else if (g_keys[this.AIM_DOWN]){
+            this.stance = 5;
+        }
+        else if (g_keys[this.GO_UP]){
+            this.stance = 8;
+        }
+        else{
+            this.stance = 1;
+        }
+    }
+
+    else if (this.velX < 0 && this.velX > -0.01){
+        //Standing still, looking left
+        if (!this.isGrounded){
+            this.stance = 19;
+        }
+        else if (this.isKneeling){
+            if (g_keys[this.AIM_UP]){
+                this.stance = 13;
+            }
+            else if (g_keys[this.AIM_DOWN]){
+                this.stance = 15;
+            }
+            else if (g_keys[this.GO_UP]){
+                this.stance = 17;
+            }
+            else{
+                this.stance = 11;
+            }
+        }
+        else if (g_keys[this.AIM_UP]){
+            this.stance = 6;
+        }
+        else if (g_keys[this.AIM_DOWN]){
+            this.stance = 7;
+        }
+        else if (g_keys[this.GO_UP]){
+            this.stance = 9;
+        }
+        else{
+            this.stance = 0;
+        }
+    }
+
+    else if (this.isKneeling){
+        if(this.Xdirection === 1){
+            this.stance = 10;
+        }
+        else{
+            this.stance = 11;
+        }
+    }
+    else if (this.velX > 0){
+        this.stance = 2;
+    }
+    else if (this.velX < 0){
+        this.stance = 3;
+    }
