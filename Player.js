@@ -8,6 +8,7 @@ spriteSheet.src = "https://notendur.hi.is/ats21/samus_sprite_sheet.gif"
 
 Player.prototype = new Entity();
 
+
 Player.prototype.GO_LEFT = 'A'.charCodeAt(0); 
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0); 
 Player.prototype.GO_UP = 'W'.charCodeAt(0); 
@@ -53,8 +54,7 @@ Player.prototype.bulletY = this.cy;
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
 
-
-    if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] || 
+    if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
             //Slow down over time
             this.velX *= (1-this.friction);
@@ -100,11 +100,22 @@ Player.prototype.update = function(du){
         this.Xdirection = -1;
     }
 
+    var oldX = this.cx, oldY = this.cy;
     var nextY = this.cy + this.velY * du;
     var nextX = this.cx + this.velX * du;
 
+    //make sure we dont fall off the level for testing
+    if (nextX > g_canvas.width || nextX< 0){
+        nextX = oldX;
+    }
+    if (nextY < 0){
+        nextY=oldY;
+    }
 
-    //Shoot 
+
+    this.getStance();
+
+    //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
     }
@@ -168,15 +179,15 @@ Player.prototype.shoot = function(){
     var bulletYvel = 0;
     console.log(this.stance);
     switch(this.stance){
-        case 0: 
+        case 0:
             bulletXvel = -1;
             bulletYvel = 0;
             break;
-        case 1: 
+        case 1:
             bulletXvel = 1;
             bulletYvel = 0;
             break;
-        case 2: 
+        case 2:
             bulletXvel = 1;
             bulletYvel = 0;
             break;
@@ -184,7 +195,7 @@ Player.prototype.shoot = function(){
             bulletXvel = -1;
             bulletYvel = 0;
             break;
-        case 4: 
+        case 4:
             bulletXvel = 1;
             bulletYvel = -1;
             break;
@@ -192,19 +203,19 @@ Player.prototype.shoot = function(){
             bulletXvel = 1;
             bulletYvel = 1;
             break;
-        case 6: 
+        case 6:
             bulletXvel = -1;
             bulletYvel = -1;
             break;
-        case 7: 
+        case 7:
             bulletXvel = -1;
             bulletYvel = 1;
             break;
-        case 8: 
+        case 8:
             bulletXvel = 0;
             bulletYvel = -1;
             break;
-        case 9: 
+        case 9:
             bulletXvel = 0;
             bulletYvel = -1;
             break;
@@ -216,11 +227,11 @@ Player.prototype.shoot = function(){
             bulletXvel = -1;
             bulletYvel = 0;
             break;
-        case 12: 
+        case 12:
             bulletXvel = 1;
             bulletYvel = -1;
             break;
-        case 13: 
+        case 13:
             bulletXvel = -1;
             bulletYvel = -1;
             break;
@@ -368,8 +379,8 @@ Player.prototype.getSprite = function(){
                 y : 18,
                 w : this.widths[1][this.animationFrame],
                 h : 43
-            } 
-    
+            }
+
         case 0:
             //looking left
             this.halfHeight = 43;
@@ -383,7 +394,7 @@ Player.prototype.getSprite = function(){
                 w : this.widths[0][this.animationFrame],
                 h : 43
             }
-        
+
         case 2:
             //running right
             this.halfHeight = 41;
@@ -396,7 +407,7 @@ Player.prototype.getSprite = function(){
                 y : 267,
                 w : this.widths[2][this.animationFrame],
                 h : 41
-            } 
+            }
 
         case 3:
             //running left
@@ -410,7 +421,7 @@ Player.prototype.getSprite = function(){
                 y : 324,
                 w : this.widths[3][this.animationFrame],
                 h : 41
-            } 
+            }
         case 4:
             //Aiming right, up
             this.halfHeight = 48;
@@ -423,8 +434,8 @@ Player.prototype.getSprite = function(){
                 y : 13,
                 w : 32,
                 h : 48
-            } 
-        
+            }
+
         case 5:
             //Aiming right, down
             this.halfHeight = 42;
@@ -437,7 +448,7 @@ Player.prototype.getSprite = function(){
                 y : 19,
                 w : 31,
                 h : 42
-            } 
+            }
         case 6:
             //Aiming left, up
             this.halfHeight = 49;
@@ -450,7 +461,7 @@ Player.prototype.getSprite = function(){
                 y : 71,
                 w : 31,
                 h : 49
-            } 
+            }
         case 7:
             //Aiming left, down
             this.halfHeight = 42;
@@ -463,7 +474,7 @@ Player.prototype.getSprite = function(){
                 y : 78,
                 w : 30,
                 h : 42
-            } 
+            }
         case 8:
             //Aiming straight up, looking right
             this.halfHeight = 53;
@@ -476,7 +487,7 @@ Player.prototype.getSprite = function(){
                 y : 7,
                 w : 27,
                 h : 53
-            } 
+            }
         case 9:
             //Aiming straight up, looking left
             this.halfHeight = 53;
@@ -516,7 +527,7 @@ Player.prototype.getSprite = function(){
                 w : this.widths[5][this.animationFrame],
                 h : 31
             }
-        case 12: 
+        case 12:
             //Kneeling, right, up
             this.halfHeight = 36;
             this.halfWidth = 28;
@@ -529,7 +540,7 @@ Player.prototype.getSprite = function(){
                 w : 28,
                 h : 36
             }
-        case 13: 
+        case 13:
             //Kneeling, left, up
             this.halfHeight = 37;
             this.halfWidth = 28;
@@ -542,7 +553,7 @@ Player.prototype.getSprite = function(){
                 w : 28,
                 h : 37
             }
-        case 14: 
+        case 14:
             //Kneeling, right, down
             this.halfHeight = 31;
             this.halfWidth = 27;
@@ -555,7 +566,7 @@ Player.prototype.getSprite = function(){
                 w : 27,
                 h : 31
             }
-        case 15: 
+        case 15:
             //Kneeling, left, down
             this.halfHeight = 31;
             this.halfWidth = 27;
@@ -568,7 +579,7 @@ Player.prototype.getSprite = function(){
                 w : 27,
                 h : 31
             }
-        case 16: 
+        case 16:
             //Kneeling, right, straight up
             this.halfHeight = 43;
             this.halfWidth = 18;
@@ -581,7 +592,7 @@ Player.prototype.getSprite = function(){
                 w : 18,
                 h : 43
             }
-        case 17: 
+        case 17:
             //Kneeling, left, straight up
             this.halfHeight = 43;
             this.halfWidth = 18;
@@ -594,7 +605,7 @@ Player.prototype.getSprite = function(){
                 w : 18,
                 h : 43
             }
-        case 18: 
+        case 18:
             //jumping right
             this.halfHeight = 45;
             this.halfWidth = this.widths[6][this.animationFrame];
@@ -607,7 +618,7 @@ Player.prototype.getSprite = function(){
                 w : this.widths[6][this.animationFrame],
                 h : 45
             }
-        case 19: 
+        case 19:
             //jumping left
             this.halfHeight = 45;
             this.halfWidth = this.widths[7][this.animationFrame];
@@ -671,7 +682,7 @@ Player.prototype.getAirborneAnimationFrame = function(){
 }
 
 
-//Sprite sheet sizes 
+//Sprite sheet sizes
 Player.prototype.widths = [
     [26, 26, 26, 26, 26, 26, 26, 26, 26, 26], //looking left
     [26, 26, 26, 26, 26, 26, 26, 26, 26, 26], //looking right
@@ -683,7 +694,6 @@ Player.prototype.widths = [
     [18, 17, 22, 18, 18], //jumping left
     [28, 32, 35, 37, 36, 29, 31, 35, 39, 37], //Running right, shooting
     [28, 32, 35, 37, 36, 29, 31, 35, 39, 37]  //Running left, shooting
-    
 ];
 Player.prototype.dists = [
     [242, 242, 242, 274, 274, 274, 306, 306, 306, 306], //looking left

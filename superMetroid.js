@@ -26,6 +26,8 @@ var g_ctx = g_canvas.getContext("2d");
 */
 
 
+
+//remove map as a global? make it an entity maybe. later tho.
 var g_map = new Map();
 var entityManager = new EntityManager();
 
