@@ -292,7 +292,13 @@ Player.prototype.getStance = function(){
 
     //Player is running right, unfinished
     else if (this.velX > 0){
-        if (this.hasShot){
+        if (g_keys[this.GO_UP]){
+            this.stance = 32;
+        }
+        else if (g_keys[this.GO_DOWN]){
+            this.stance = 34;
+        }
+        else if (this.hasShot){
             this.stance = 20;
         }
         else{
@@ -301,7 +307,13 @@ Player.prototype.getStance = function(){
     }
     //Player is running left, unfinished
     else if (this.velX < 0){
-        if (this.hasShot){
+        if (g_keys[this.GO_UP]){
+            this.stance = 33;
+        }
+        else if (g_keys[this.GO_DOWN]){
+            this.stance = 35;
+        }
+        else if (this.hasShot){
             this.stance = 21;
         }
         else{
@@ -832,6 +844,70 @@ Player.prototype.getSprite = function(){
                 w : 21,
                 h : 34
             }
+        case 32: 
+            //Running right, shooting vertically up
+            this.halfHeight = 47;
+            this.halfWidth = this.widths[10][this.animationFrame];
+
+            this.bulletXvel = 1;
+            this.bulletYvel = -1;
+
+            this.bulletX = this.cx + 35;
+            this.bulletY = this.cy - 40;
+            return{
+                x : this.dists[10][this.animationFrame],
+                y : 262,
+                w : this.widths[10][this.animationFrame],
+                h : 47
+            }
+        case 33: 
+            //Running left, shooting vertically up
+            this.halfHeight = 47;
+            this.halfWidth = this.widths[11][this.animationFrame];
+
+            this.bulletXvel = -1;
+            this.bulletYvel = -1;
+
+            this.bulletX = this.cx - 35;
+            this.bulletY = this.cy - 40;
+            return{
+                x : this.dists[11][this.animationFrame],
+                y : 319,
+                w : this.widths[11][this.animationFrame],
+                h : 47
+            }
+        case 34: 
+            //Running right, shooting vertically down
+            this.halfHeight = 42;
+            this.halfWidth = this.widths[12][this.animationFrame];
+
+            this.bulletXvel = 1;
+            this.bulletYvel = 1;
+
+            this.bulletX = this.cx + 35;
+            this.bulletY = this.cy;
+            return{
+                x : this.dists[12][this.animationFrame],
+                y : 379,
+                w : this.widths[12][this.animationFrame],
+                h : 42
+            }
+        case 35: 
+            //Running left, shooting vertically down
+            this.halfHeight = 42;
+            this.halfWidth = this.widths[11][this.animationFrame];
+
+            this.bulletXvel = -1;
+            this.bulletYvel = 1;
+
+            this.bulletX = this.cx - 35;
+            this.bulletY = this.cy;
+            return{
+                x : this.dists[13][this.animationFrame],
+                y : 434,
+                w : this.widths[13][this.animationFrame],
+                h : 42
+            }
     }
 }
 
@@ -879,7 +955,11 @@ Player.prototype.widths = [
     [18, 17, 22, 18, 18, 17, 21, 18, 19], //jumping right
     [18, 17, 22, 19, 19, 19, 21, 18, 19], //jumping left
     [28, 32, 35, 37, 36, 29, 31, 35, 39, 37], //Running right, shooting
-    [28, 32, 35, 37, 36, 29, 31, 35, 39, 37]  //Running left, shooting
+    [28, 32, 35, 37, 36, 29, 31, 35, 39, 37],  //Running left, shooting
+    [26, 30, 33, 35, 34, 27, 29, 33, 36, 35], //Running right, shooting up
+    [26, 30, 33, 35, 34, 27, 29, 33, 36, 35], //Running left, shooting up
+    [26, 29, 32, 34, 33, 26, 28, 32, 35, 34], //Running right, shooting down
+    [26, 29, 32, 34, 33, 27, 28, 32, 35, 34]  //Running left, shooting down
 ];
 Player.prototype.dists = [
     [242, 242, 242, 274, 274, 274, 306, 306, 306, 306], //looking left
@@ -891,5 +971,9 @@ Player.prototype.dists = [
     [9, 37, 66, 98, 125, 155, 184, 219, 250], //jumping right
     [9, 40, 70, 160, 131, 102, 188, 217, 245], //Jumping left
     [8, 46, 89, 135, 180, 225, 263, 300, 344, 395], //Running right, shooting
-    [8, 44, 84, 128, 175, 220, 258, 298, 343, 391]  //Running left, shooting
+    [8, 44, 84, 128, 175, 220, 258, 298, 343, 391],  //Running left, shooting
+    [394, 428, 468, 511, 558, 605, 642, 682, 724, 776], //Running right, shooting up
+    [375, 410, 451, 498, 546, 588, 625, 665, 712, 765],  //Running left, shooting up
+    [457, 493, 529, 571, 616, 659, 696, 733, 773, 820], //Running right, shooting down
+    [462, 504, 545, 582, 618, 659, 692, 730, 772, 815]  //Running left, shooting down
 ];
