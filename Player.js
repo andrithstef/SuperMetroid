@@ -30,7 +30,7 @@ Player.prototype.velY = 0;
 
 Player.prototype.movingJump = false;
 Player.prototype.rotation = 1;
-Player.prototype.rotationSpeed = 5;
+Player.prototype.rotationSpeed = 0.25;
 
 Player.prototype.hasShot = false;
 
@@ -63,6 +63,15 @@ Player.prototype.spriteData;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
+
+    if (this.movingJump){
+        if (this.Xdirection > 0){
+            this.rotation += this.rotationSpeed*du;
+        }
+        else{
+            this.rotation -= this.rotationSpeed*du;
+        }
+    }
 
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
@@ -110,6 +119,11 @@ Player.prototype.update = function(du){
         this.Xdirection = -1;
     }
 
+    if (this.velX < 0.1 && this.velX > -0.01){
+        this.velX = 0;
+        this.movingJump = 0;
+    }
+
     var oldX = this.cx, oldY = this.cy;
     var nextY = this.cy + this.velY * du;
     var nextX = this.cx + this.velX * du;
@@ -122,9 +136,6 @@ Player.prototype.update = function(du){
         nextY=oldY;
     }
 
-
-    
-
     //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
@@ -133,7 +144,7 @@ Player.prototype.update = function(du){
     this.getStance();
 
     //Check collisions with floor
-    var dir = Math.sign(this.velY);
+    var dir = Math.sign(this.velY)
     var hitData = this.hitsMap(nextX, nextY+dir*this.halfHeight)
     if(!hitData.hits){
         this.cy = nextY;
@@ -141,20 +152,19 @@ Player.prototype.update = function(du){
     else{
         this.isGrounded = true;
         this.movingJump = false;
-        if (dir === 1){
+        if (dir > 0){
             this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
         }
     }
 
 
     //Check collisions with walls
-    var dir = Math.sign(this.velX);
-    var hitData = this.hitsMap(nextX + dir*this.halfWidth, nextY);
+    var hitData = this.hitsMap(nextX + this.Xdirection*this.halfWidth, nextY);
     if (!hitData.hits){
         this.cx = nextX;
     }
     else{
-        if (dir === -1){
+        if (this.Xdirection < 0){
             this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
         }
         else{
@@ -203,103 +213,104 @@ Player.prototype.shoot = function(){
 Player.prototype.getStance = function(){
     //Player is standing still looking right
     //Finished
-    if (this.velX < 0.1 && this.velX >= 0){
-        if (!this.isGrounded){
-            if (g_keys[this.GO_UP]){
-                this.stance = 26;
-            }
-            else if (g_keys[this.AIM_UP]){
-                this.stance = 24;
-            }
-            else if (g_keys[this.AIM_DOWN]){
-                this.stance = 28;
-            }
-            else if (g_keys[this.GO_DOWN]){
-                this.stance = 30;
-            }
-            else if (this.hasShot){
-                this.stance = 22;
-            }
-            else{
-                this.stance = 18;
-            }
-        }
-        else if (g_keys[this.GO_DOWN]){
-            if (g_keys[this.AIM_UP]){
-                this.stance = 12;
-            }
-            else if (g_keys[this.AIM_DOWN]){
-                this.stance = 14;
-            }
-            else if (g_keys[this.GO_UP]){
-                this.stance = 16;
-            }
-            else{
-                this.stance = 10;
-            }
-        }
-        else if (g_keys[this.AIM_UP]){
-            this.stance = 4;
-        }
-        else if (g_keys[this.AIM_DOWN]){
-            this.stance = 5;
-        }
-        else if (g_keys[this.GO_UP]){
-            this.stance = 8;
-        }
-        else{
-            this.stance = 1;
-        }
-    }
-
-    else if (this.velX <= 0 && this.velX > -0.1){
-        //Standing still, looking left
-        //Finished
-        if (!this.isGrounded){
-            if (g_keys[this.GO_UP]){
-                this.stance = 27;
-            }
-            else if (g_keys[this.AIM_UP]){
-                this.stance = 25;
-            }
-            else if (g_keys[this.AIM_DOWN]){
-                this.stance = 29;
+    if (this.velX === 0){
+        if (this.Xdirection > 0){
+            if (!this.isGrounded){
+                if (g_keys[this.GO_UP]){
+                    this.stance = 26;
+                }
+                else if (g_keys[this.AIM_UP]){
+                    this.stance = 24;
+                }
+                else if (g_keys[this.AIM_DOWN]){
+                    this.stance = 28;
+                }
+                else if (g_keys[this.GO_DOWN]){
+                    this.stance = 30;
+                }
+                else if (this.hasShot){
+                    this.stance = 22;
+                }
+                else{
+                    this.stance = 18;
+                }
             }
             else if (g_keys[this.GO_DOWN]){
-                this.stance = 31;
+                if (g_keys[this.AIM_UP]){
+                    this.stance = 12;
+                }
+                else if (g_keys[this.AIM_DOWN]){
+                    this.stance = 14;
+                }
+                else if (g_keys[this.GO_UP]){
+                    this.stance = 16;
+                }
+                else{
+                    this.stance = 10;
+                }
             }
-            else if (this.hasShot){
-                this.stance = 23;
-            }
-            else{
-                this.stance = 19;
-            }
-        }
-        else if (g_keys[this.GO_DOWN]){
-            if (g_keys[this.AIM_UP]){
-                this.stance = 13;
+            else if (g_keys[this.AIM_UP]){
+                this.stance = 4;
             }
             else if (g_keys[this.AIM_DOWN]){
-                this.stance = 15;
+                this.stance = 5;
             }
             else if (g_keys[this.GO_UP]){
-                this.stance = 17;
+                this.stance = 8;
             }
             else{
-                this.stance = 11;
+                this.stance = 1;
             }
-        }
-        else if (g_keys[this.AIM_UP]){
-            this.stance = 6;
-        }
-        else if (g_keys[this.AIM_DOWN]){
-            this.stance = 7;
-        }
-        else if (g_keys[this.GO_UP]){
-            this.stance = 9;
-        }
-        else{
-            this.stance = 0;
+        }  
+        else if (this.Xdirection < 0){
+            //Standing still, looking left
+            //Finished
+            if (!this.isGrounded){
+                if (g_keys[this.GO_UP]){
+                    this.stance = 27;
+                }
+                else if (g_keys[this.AIM_UP]){
+                    this.stance = 25;
+                }
+                else if (g_keys[this.AIM_DOWN]){
+                    this.stance = 29;
+                }
+                else if (g_keys[this.GO_DOWN]){
+                    this.stance = 31;
+                }
+                else if (this.hasShot){
+                    this.stance = 23;
+                }
+                else{
+                    this.stance = 19;
+                }
+            }
+            else if (g_keys[this.GO_DOWN]){
+                if (g_keys[this.AIM_UP]){
+                    this.stance = 13;
+                }
+                else if (g_keys[this.AIM_DOWN]){
+                    this.stance = 15;
+                }
+                else if (g_keys[this.GO_UP]){
+                    this.stance = 17;
+                }
+                else{
+                    this.stance = 11;
+                }
+            }
+            else if (g_keys[this.AIM_UP]){
+                this.stance = 6;
+            }
+            else if (g_keys[this.AIM_DOWN]){
+                this.stance = 7;
+            }
+            else if (g_keys[this.GO_UP]){
+                this.stance = 9;
+            }
+            else{
+                this.stance = 0;
+            }
         }
     }
 
@@ -1003,6 +1014,7 @@ Player.prototype.getSprite = function(){
 Player.prototype.updateAnimationFrame = function(){
     if (!this.isGrounded){
         if (this.velY < 0){
+            if (this.movingJump) return this.getMovingUpAnimationFrame();
             this.getUpAnimationFrame();
             return;
         }
@@ -1032,6 +1044,15 @@ Player.prototype.getDownAnimationFrame = function(){
         this.framenr = 0;
     }
 }
+
+Player.prototype.getMovingUpAnimationFrame = function(){
+    this.framenr += 1;
+    if (this.framenr >= this.framestoAnimationFrame){
+        if (this.animationFrame < 3) this.animationFrame += 1;
+        this.framenr = 0;
+    }
+}
+
 
 //Sprite sheet sizes
 Player.prototype.widths = [
