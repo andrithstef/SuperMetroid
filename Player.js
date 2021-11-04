@@ -28,6 +28,10 @@ Player.prototype.cy = 600;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
+Player.prototype.movingJump = false;
+Player.prototype.rotation = 1;
+Player.prototype.rotationSpeed = 5;
+
 Player.prototype.hasShot = false;
 
 Player.prototype.halfWidth = 23;
@@ -136,6 +140,7 @@ Player.prototype.update = function(du){
     }
     else{
         this.isGrounded = true;
+        this.movingJump = false;
         if (dir === 1){
             this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
         }
@@ -164,16 +169,24 @@ Player.prototype.update = function(du){
 }
 
 Player.prototype.render = function(ctx){
-    var s = this.getSprite();
+    ctx.save();
+    ctx.translate(this.cx, this.cy);
+    ctx.rotate(this.rotation);
+    ctx.translate(-this.cx, -this.cy);
     ctx.drawImage(spriteSheet,this.spriteData.x,
         this.spriteData.y, this.spriteData.w,
         this.spriteData.h,this.cx-this.halfWidth,
         this.cy-this.halfHeight,2*this.spriteData.w,2*this.spriteData.h);
+    ctx.restore();
 }
 
 Player.prototype.jump = function(){
+    if (this.velX > 0.01 || this.velX < -0.01){
+        this.movingJump = true;
+    }
     this.isGrounded = false;
     this.velY = -this.jumpSpeed;
+    this.hasShot = false;
     this.framenr = 0;
     this.animationFrame = 0;
 }
@@ -292,7 +305,27 @@ Player.prototype.getStance = function(){
 
     //Player is running right, unfinished
     else if (this.velX > 0){
-        if (g_keys[this.GO_UP]){
+        if (!this.isGrounded){
+            if (g_keys[this.GO_UP]){
+                this.stance = 26;
+            }
+            else if (g_keys[this.AIM_UP]){
+                this.stance = 24;
+            }
+            else if (g_keys[this.AIM_DOWN]){
+                this.stance = 28;
+            }
+            else if (g_keys[this.GO_DOWN]){
+                this.stance = 30;
+            }
+            else if (this.hasShot){
+                this.stance = 22;
+            }
+            else{
+                this.stance = 36;
+            }
+        }
+        else if (g_keys[this.GO_UP]){
             this.stance = 32;
         }
         else if (g_keys[this.GO_DOWN]){
@@ -307,7 +340,27 @@ Player.prototype.getStance = function(){
     }
     //Player is running left, unfinished
     else if (this.velX < 0){
-        if (g_keys[this.GO_UP]){
+        if (!this.isGrounded){
+            if (g_keys[this.GO_UP]){
+                this.stance = 27;
+            }
+            else if (g_keys[this.AIM_UP]){
+                this.stance = 25;
+            }
+            else if (g_keys[this.AIM_DOWN]){
+                this.stance = 29;
+            }
+            else if (g_keys[this.GO_DOWN]){
+                this.stance = 31;
+            }
+            else if (this.hasShot){
+                this.stance = 23;
+            }
+            else{
+                this.stance = 37;
+            }
+        }
+        else if (g_keys[this.GO_UP]){
             this.stance = 33;
         }
         else if (g_keys[this.GO_DOWN]){
@@ -323,10 +376,14 @@ Player.prototype.getStance = function(){
     if (!(this.stance === 3 || this.stance === 2 || this.stance >= 20)){
         this.hasShot = false;
     }
+    if (!(this.stance === 36 || this.stance === 37)){
+        this.rotation = 0;
+    }
     console.log(this.stance);
 }
 
 Player.prototype.getSprite = function(){
+    console.log(this.stance);
     switch(this.stance){
         case 1:
             //Looking right
@@ -879,7 +936,7 @@ Player.prototype.getSprite = function(){
         case 34: 
             //Running right, shooting vertically down
             this.halfHeight = 42;
-            this.halfWidth = this.widths[12][this.animationFrame];
+            this.halfWidth = this.widths[12][this.animationFrame]+1;
 
             this.bulletXvel = 1;
             this.bulletYvel = 1;
@@ -889,13 +946,13 @@ Player.prototype.getSprite = function(){
             return{
                 x : this.dists[12][this.animationFrame],
                 y : 379,
-                w : this.widths[12][this.animationFrame],
+                w : this.widths[12][this.animationFrame]+1,
                 h : 42
             }
         case 35: 
             //Running left, shooting vertically down
             this.halfHeight = 42;
-            this.halfWidth = this.widths[11][this.animationFrame];
+            this.halfWidth = this.widths[13][this.animationFrame]+1;
 
             this.bulletXvel = -1;
             this.bulletYvel = 1;
@@ -905,8 +962,40 @@ Player.prototype.getSprite = function(){
             return{
                 x : this.dists[13][this.animationFrame],
                 y : 434,
-                w : this.widths[13][this.animationFrame],
+                w : this.widths[13][this.animationFrame]+1,
                 h : 42
+            }
+        case 36: 
+            //Running right, jump;
+            this.halfHeight = 44;
+            this.halfWidth = this.widths[14][this.animationFrame]+1;
+
+            this.bulletXvel = 1;
+            this.bulletYvel = 0;
+
+            this.bulletX = this.cx + 35;
+            this.bulletY = this.cy;
+            return{
+                x : this.dists[14][this.animationFrame],
+                y : 137,
+                w : this.widths[14][this.animationFrame]+1,
+                h : 44
+            }
+        case 37: 
+            //Running left, shooting vertically down
+            this.halfHeight = 44;
+            this.halfWidth = this.widths[15][this.animationFrame]+1;
+
+            this.bulletXvel = -1;
+            this.bulletYvel = 0;
+
+            this.bulletX = this.cx - 35;
+            this.bulletY = this.cy;
+            return{
+                x : this.dists[15][this.animationFrame],
+                y : 192,
+                w : this.widths[15][this.animationFrame]+1,
+                h : 44
             }
     }
 }
@@ -959,8 +1048,11 @@ Player.prototype.widths = [
     [26, 30, 33, 35, 34, 27, 29, 33, 36, 35], //Running right, shooting up
     [26, 30, 33, 35, 34, 27, 29, 33, 36, 35], //Running left, shooting up
     [26, 29, 32, 34, 33, 26, 28, 32, 35, 34], //Running right, shooting down
-    [26, 29, 32, 34, 33, 27, 28, 32, 35, 34]  //Running left, shooting down
+    [26, 29, 32, 34, 33, 26, 28, 32, 35, 34],  //Running left, shooting down
+    [18, 17, 22, 18, 18, 17, 21, 20, 20], //running right jumping
+    [18, 17, 22, 18, 18, 17, 21, 20, 20]  //running left jumping
 ];
+
 Player.prototype.dists = [
     [242, 242, 242, 274, 274, 274, 306, 306, 306, 306], //looking left
     [243, 243, 243, 276, 276, 276, 308, 308, 308, 308], //looking right
@@ -975,5 +1067,7 @@ Player.prototype.dists = [
     [394, 428, 468, 511, 558, 605, 642, 682, 724, 776], //Running right, shooting up
     [375, 410, 451, 498, 546, 588, 625, 665, 712, 765],  //Running left, shooting up
     [457, 493, 529, 571, 616, 659, 696, 733, 773, 820], //Running right, shooting down
-    [462, 504, 545, 582, 618, 659, 692, 730, 772, 815]  //Running left, shooting down
+    [582, 545, 462, 504, 618, 659, 692, 730, 772, 815],  //Running left, shooting down
+    [9, 37, 66, 98, 125, 155, 184, 219, 250], //running right jumping
+    [9, 40, 70, 102, 131, 160, 188, 217, 245]  //running left jumping
 ];

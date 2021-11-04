@@ -9,7 +9,7 @@ const bulletSheet = 'resrc/Weapons.png';
 //put in bullet sprites based on current bullet
 
 Bullet.prototype.rad = 5;
-Bullet.prototype.speed = 20;
+Bullet.prototype.speed = 30;
 
 Bullet.prototype.shape = "Circ";
 
