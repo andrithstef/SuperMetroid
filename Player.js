@@ -18,7 +18,7 @@ Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0);
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
-Player.prototype.gravity = 0.6;
+Player.prototype.gravity = 0.5;
 Player.prototype.accel = 1.5;
 Player.prototype.friction = 0.4;
 Player.prototype.maxSpeed = 8;
@@ -29,14 +29,13 @@ Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
 Player.prototype.movingJump = false;
-Player.prototype.rotation = 1;
-Player.prototype.rotationSpeed = 0.25;
 
 Player.prototype.hasShot = false;
 
 Player.prototype.halfWidth = 23;
 Player.prototype.halfHeight = 50;
 
+Player.prototype.isJumping = false;
 Player.prototype.isGrounded = false;
 Player.prototype.jumpFrame = 0;
 
@@ -64,15 +63,6 @@ Player.prototype.spriteData;
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
 
-    if (this.movingJump){
-        if (this.Xdirection > 0){
-            this.rotation += this.rotationSpeed*du;
-        }
-        else{
-            this.rotation -= this.rotationSpeed*du;
-        }
-    }
-
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
             //Slow down over time
@@ -88,11 +78,21 @@ Player.prototype.update = function(du){
     }
 
     //jump
-    if (eatKey(this.JUMP) && this.isGrounded){
+    if (g_keys[this.JUMP] && this.isGrounded){
         //TODO : Check if on ground
         this.jump();
+        this.isJumping = true;
         this.isGrounded = false;
         this.framenr = 0;
+    }
+
+    if (this.velY > 0){
+        this.isJumping = false;
+    }
+
+    if (this.isJumping && !g_keys[this.JUMP]){
+        this.velY *= 0.5;
+        this.isJumping = false;
     }
 
     //apply gravity
@@ -179,15 +179,10 @@ Player.prototype.update = function(du){
 }
 
 Player.prototype.render = function(ctx){
-    ctx.save();
-    ctx.translate(this.cx, this.cy);
-    ctx.rotate(this.rotation);
-    ctx.translate(-this.cx, -this.cy);
     ctx.drawImage(spriteSheet,this.spriteData.x,
         this.spriteData.y, this.spriteData.w,
         this.spriteData.h,this.cx-this.halfWidth,
         this.cy-this.halfHeight,2*this.spriteData.w,2*this.spriteData.h);
-    ctx.restore();
 }
 
 Player.prototype.jump = function(){
@@ -387,14 +382,9 @@ Player.prototype.getStance = function(){
     if (!(this.stance === 3 || this.stance === 2 || this.stance >= 20)){
         this.hasShot = false;
     }
-    if (!(this.stance === 36 || this.stance === 37)){
-        this.rotation = 0;
-    }
-    console.log(this.stance);
 }
 
 Player.prototype.getSprite = function(){
-    console.log(this.stance);
     switch(this.stance){
         case 1:
             //Looking right
