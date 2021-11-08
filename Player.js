@@ -8,6 +8,9 @@ spriteSheet.src = "resrc/samus_sprite_sheet.gif"
 
 Player.prototype = new Entity();
 
+Player.prototype.nextX;
+Player.prototype.nextY;
+
 
 Player.prototype.GO_LEFT = 'A'.charCodeAt(0); 
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0); 
@@ -31,9 +34,6 @@ Player.prototype.velY = 0;
 Player.prototype.movingJump = false;
 
 Player.prototype.hasShot = false;
-
-Player.prototype.halfWidth = 23;
-Player.prototype.halfHeight = 50;
 
 Player.prototype.isJumping = false;
 Player.prototype.isGrounded = false;
@@ -125,15 +125,15 @@ Player.prototype.update = function(du){
     }
 
     var oldX = this.cx, oldY = this.cy;
-    var nextY = this.cy + this.velY * du;
-    var nextX = this.cx + this.velX * du;
+    this.nextY = this.cy + this.velY * du;
+    this.nextX = this.cx + this.velX * du;
 
     //make sure we dont fall off the level for testing
-    if (nextX > g_canvas.width || nextX< 0){
-        nextX = oldX;
+    if (this.nextX > g_canvas.width || this.nextX < 0){
+        this.nextX = oldX;
     }
-    if (nextY < 0){
-        nextY=oldY;
+    if (this.nextY < 0){
+        this.nextY=oldY;
     }
 
     //Shoot
@@ -143,6 +143,7 @@ Player.prototype.update = function(du){
 
     this.getStance();
 
+    /*
     //Check collisions with floor
     var dir = Math.sign(this.velY)
     var hitData = this.hitsMap(nextX, nextY+dir*this.halfHeight)
@@ -171,7 +172,10 @@ Player.prototype.update = function(du){
             this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
         }
     }
+    */
 
+
+    
     this.updateAnimationFrame();
     this.spriteData = this.getSprite();
     spatialManager.register(this);
@@ -194,10 +198,6 @@ Player.prototype.jump = function(){
     this.hasShot = false;
     this.framenr = 0;
     this.animationFrame = 0;
-}
-
-Player.prototype.hitsMap = function(x,y){
-    return g_map.collidesWith(x,y);
 }
 
 Player.prototype.shoot = function(){
