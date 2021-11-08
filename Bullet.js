@@ -33,6 +33,11 @@ Bullet.prototype.update = function(du){
     var nextX = this.cx + this.velX*du;
     var nextY = this.cy + this.velY*du;
 
+    var hitData = g_map.collidesWith(nextX, nextY);
+    if (hitData.hits){
+        return entityManager.KILL_ME_NOW;
+    }
+
     this.cx = nextX;
     this.cy = nextY;
 

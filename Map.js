@@ -44,22 +44,22 @@ Map.prototype.tileWidth = 50;
 Map.prototype.tiles = [];
 
 Map.prototype.gameMap = [
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "                    ",
-    "11111111111111111111",
+    "                      ",
+    "                      ",
+    "                      ",
+    "                      ",
+    "                      ",
+    "                      ",
+    "   11                 ",
+    "    1                 ",
+    "    111               ",
+    "      111             ",
+    "        11            ",
+    "                      ",
+    "              1       ",
+    "             11       ",
+    "            111       ",
+    "11111111111111111111  ",
 ];
 
 Map.prototype.render = function(ctx){
@@ -98,7 +98,7 @@ Map.prototype.getTiles = function(){
     }
 }
 
-/*
+
 Map.prototype.collidesWith = function(cx, cy){
     var hits = false;
     var tileX = Math.floor(this.x_tiles * cx/g_canvas.width);
@@ -106,7 +106,7 @@ Map.prototype.collidesWith = function(cx, cy){
     if (tileX < 0 || tileX > this.x_tiles || tileY < 0 || tileY > this.y_tiles){
         return false;
     }
-    if (this.gameMap[tileY][tileX] === 1){
+    if (this.gameMap[tileY][tileX] != " "){
         hits = true;
     }
     return {
@@ -115,4 +115,3 @@ Map.prototype.collidesWith = function(cx, cy){
         tileY: tileY
     };
 }
-*/

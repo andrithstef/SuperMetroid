@@ -1,6 +1,8 @@
 function Player(descr){
     this.setup(descr);
 
+    this.halfHeight = 50;
+    this.halfWidth = 20;
 }
 
 const spriteSheet = new Image();
@@ -125,15 +127,15 @@ Player.prototype.update = function(du){
     }
 
     var oldX = this.cx, oldY = this.cy;
-    this.nextY = this.cy + this.velY * du;
-    this.nextX = this.cx + this.velX * du;
+    var nextY = this.cy + this.velY * du;
+    var nextX = this.cx + this.velX * du;
 
     //make sure we dont fall off the level for testing
-    if (this.nextX > g_canvas.width || this.nextX < 0){
-        this.nextX = oldX;
+    if (nextX > g_canvas.width || nextX < 0){
+        nextX = oldX;
     }
-    if (this.nextY < 0){
-        this.nextY=oldY;
+    if (nextY < 0){
+        nextY=oldY;
     }
 
     //Shoot
@@ -143,9 +145,8 @@ Player.prototype.update = function(du){
 
     this.getStance();
 
-    /*
     //Check collisions with floor
-    var dir = Math.sign(this.velY)
+    var dir = Math.sign(this.velY);
     var hitData = this.hitsMap(nextX, nextY+dir*this.halfHeight)
     if(!hitData.hits){
         this.cy = nextY;
@@ -172,7 +173,6 @@ Player.prototype.update = function(du){
             this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
         }
     }
-    */
 
 
     
@@ -180,6 +180,10 @@ Player.prototype.update = function(du){
     this.spriteData = this.getSprite();
     spatialManager.register(this);
 
+}
+
+Player.prototype.hitsMap = function(x,y){
+    return g_map.collidesWith(x,y);
 }
 
 Player.prototype.render = function(ctx){
