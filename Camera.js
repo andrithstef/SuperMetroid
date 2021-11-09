@@ -2,20 +2,25 @@ function Camera(cx, cy){
   this.cx = cx;
   this.cy = cy;
 }
+var g_canvas = document.getElementById("myCanvas");
 var cameraWidth = g_canvas.width;
 var cameraHeight = g_canvas.height;
 //Finetuning needed
 var moveHorizontalCameraBuffer = cameraWidth/3;
 var moveVerticalCameraBuffer = cameraHeight/3;
 
+var map = new Map();
+console.log(map);
+
+Camera.prototype.width = map.gameMap[0].length*64;
+Camera.prototype.length = map.gameMap.length*64;
+
 Camera.prototype.cameraWidth = cameraWidth;
-Camera.prototype.cameraX = this.cx;
 Camera.prototype.moveHorizontalCameraBuffer = moveHorizontalCameraBuffer;
 Camera.prototype.leftCameraEdge = moveHorizontalCameraBuffer;
 Camera.prototype.rightCameraEdge = cameraWidth - moveHorizontalCameraBuffer;
 
 Camera.prototype.cameraHeight = cameraHeight;
-Camera.prototype.cameraY = this.cy;
 Camera.prototype.moveVerticalCameraBuffer = moveVerticalCameraBuffer;
 Camera.prototype.topCameraEdge = moveVerticalCameraBuffer;
 Camera.prototype.bottomCameraEdge = cameraHeight - moveVerticalCameraBuffer;
@@ -24,15 +29,19 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
   var moveHorizontally = false;
   var moveVertically = false;
   var moveX = true;
-  var moveY = false
+  var moveY = false;
+  cx = cx - this.cx;
+  cy = cy - this.cy
   if (cx + halfWidth > this.rightCameraEdge || cx - halfWidth < this.leftCameraEdge){
-      if(cx + halfWidth > this.rightCameraEdge && this.cameraX < this.width - this.cameraWidth) {
+    //console.log(this.cx);
+    //console.log(this.width - this.cameraWidth);
+      if(cx + halfWidth > this.rightCameraEdge && this.cx < this.width - this.cameraWidth) {
           //console.log("right");
-          //console.log(this.cameraX);
+          //console.log(this.cx);
           //console.log(this.width - this.cameraWidth);
           var moveX = true;
           moveHorizontally = true;
-      } else if(cx - halfWidth < this.leftCameraEdge && this.cameraX != 0) {
+      } else if(cx - halfWidth < this.leftCameraEdge && this.cx != 0) {
           //console.log("left");
           var moveX = false;
           moveHorizontally = true;
@@ -42,7 +51,7 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
   if (cy + halfHeight > this.bottomCameraEdge || cy - halfHeight < this.topCameraEdge){
       if(cy + halfHeight > this.bottomCameraEdge && this.cameraY < this.height - this.cameraHeight) {
           //console.log("bot");
-          //console.log(this.cameraX);
+          //console.log(this.cx);
           //console.log(this.width - this.cameraWidth);
           var moveY = true;
           moveVertically = true;
@@ -61,10 +70,10 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
 }
 
 Camera.prototype.moveCamera = function(x,y){
-  this.cameraX += x;
-  this.cameraY += y;
-  if(this.cameraX > this.width - this.cameraWidth) this.cameraX = this.width - this.cameraWidth;
-  if(this.cameraX < 0) this.cameraX = 0;
-  if(this.cameraY > this.height - this.cameraHeight) this.cameraY = this.height - this.cameraHeight;
-  if(this.cameraY < 0) this.cameraY = 0;
+  this.cx += x;
+  this.cy += y;
+  if(this.cx > this.width - this.cameraWidth) this.cx = this.width - this.cameraWidth;
+  if(this.cx < 0) this.cx = 0;
+  if(this.cy > this.height - this.cameraHeight) this.cy = this.height - this.cameraHeight;
+  if(this.cy < 0) this.cy = 0;
 }

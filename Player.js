@@ -52,7 +52,6 @@ Player.prototype.bulletY = this.cy;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
-    console.log(g_camera.cx);
 
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
@@ -69,11 +68,21 @@ Player.prototype.update = function(du){
     }
 
     //jump
-    if (eatKey(this.JUMP) && this.isGrounded){
-        //Check if on ground
+    if (g_keys[this.JUMP] && this.isGrounded){
+        //TODO : Check if on ground
         this.jump();
+        this.isJumping = true;
         this.isGrounded = false;
         this.framenr = 0;
+    }
+
+    if (this.velY > 0){
+        this.isJumping = false;
+    }
+
+    if (this.isJumping && !g_keys[this.JUMP]){
+        this.velY *= 0.5;
+        this.isJumping = false;
     }
 
     //apply gravity
@@ -100,72 +109,107 @@ Player.prototype.update = function(du){
         this.Xdirection = -1;
     }
 
+    if (this.velX < 0.1 && this.velX > -0.01){
+        this.velX = 0;
+        this.movingJump = 0;
+    }
+
     var oldX = this.cx, oldY = this.cy;
     var nextY = this.cy + this.velY * du;
     var nextX = this.cx + this.velX * du;
 
     //make sure we dont fall off the level for testing
-    if (nextX > g_canvas.width || nextX< 0){
-        nextX = oldX;
+    if (nextX + this.halfWidth - g_camera.cx > g_canvas.width || nextX - this.halfWidth < 0){
+        if(nextX + this.halfWidth - g_camera.cx > g_canvas.width) nextX = g_canvas.width - this.halfWidth;
+        else nextX = this.halfWidth;
+        
     }
-    if (nextY < 0){
-        nextY=oldY;
+    if (nextY - this.halfHeight < 0){
+        nextY = this.halfHeight;
+        this.velY = 0;
+    } else if(nextY + this.halfHeight > g_canvas.height){
+        nextY = g_canvas.height - this.halfHeight;
+        this.velY = 0;
     }
-
-
-    this.getStance();
 
     //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
+        console.log(this.cx);
+        console.log(this.cy);
     }
 
-    if (eatKey(this.GO_DOWN)){
-        this.isKneeling = !this.isKneeling;
-    }
+    this.getStance();
 
     //Check collisions with floor
     var dir = Math.sign(this.velY);
-    var hitData = this.isColliding();
-    console.log(hitData);
-    if(!hitData){
+    var hitData = 0;//this.hitsMap(nextX, nextY+dir*this.halfHeight);
+    if(!hitData.hits){
         this.cy = nextY;
     }
     else{
         this.isGrounded = true;
-        if (dir === 1){
-            this.cy = hitData.cy-hitData.halfHeight - this.halfHeight;
-            //im unsure what this is im just trying to remove gmap refs
+        this.movingJump = false;
+        if (dir > 0){
+            this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
         }
     }
 
 
-    if (!this.isKneeling){
-        //Check collisions with walls
-        var dir = Math.sign(this.velX);
-        var hitData = this.isColliding();
-        if (!hitData){
-            this.cx = nextX;
+    //Check collisions with walls
+    //var hitData = this.hitsMap(nextX + this.Xdirection*this.halfWidth, nextY);
+    if (!hitData.hits){
+        this.cx = nextX;
+    }
+    else{
+        if (this.Xdirection < 0){
+            this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
         }
         else{
-            if (dir === -1){
-                this.cx = hitData.cx+hitData.halfWidth + this.halfWidth;
-            }
-            else{
-                this.cx = hitData.cx -hitData.halfWidth- this.halfWidth;
-            }
-
+            this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
         }
     }
-    this.updateAnimationFrame();
 
+    var test = g_camera.shouldWeMoveCamera(this.cx, this.cy, this.halfWidth, this.halfHeight);
+    if(test.moveHorizontally) {
+        if(test.moveX) {
+            if(this.velX > 0) {
+                this.cx -= this.velX;
+                g_camera.moveCamera(1.5*this.velX,0);
+            }
+        }
+        else{
+            if(this.velX < 0) {
+                this.cx -= this.velX;
+                g_camera.moveCamera(1.5*this.velX,0);
+            }
+        }
+    }
+
+    if(test.moveVertically) {
+        if(test.moveY) {
+            if(this.velY > 0) {
+                this.cy -= this.velY;
+                g_camera.moveCamera(0,1.5*this.velY);
+            }
+        }
+        else {
+            if(this.velY < 0) {
+                this.cy -= this.velY;
+                g_camera.moveCamera(0,1.5*this.velY);
+            }
+        }
+    }
+
+    this.updateAnimationFrame();
+    this.spriteData = this.getSprite();
     spatialManager.register(this);
 
 }
 
 Player.prototype.render = function(ctx){
     var s = this.getSprite();
-    ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth,this.cy-this.halfHeight,2*s.w,2*s.h);
+    ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w,2*s.h);
 }
 
 Player.prototype.jump = function(){

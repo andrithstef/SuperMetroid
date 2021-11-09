@@ -14,6 +14,7 @@ Tile.prototype.collidable = false;
 
 //replacement for sprite data, until then
 Tile.prototype.colour = 'white';
+Tile.prototype.shape = "Rect";
 
 Tile.prototype.setTile = function(){
     if (this.id ===1){

@@ -108,7 +108,7 @@ render: function(ctx) {
     for (var ID in this._entities) {
         var e = this._entities[ID];
         if(e.shape == "Rect") {
-            util.strokeBox(ctx, e.posX, e.posY, e.width, e.height, "green");
+            util.strokeBox(ctx, e.posX - g_camera.cx, e.posY - g_camera.cy, e.width, e.height, "green");
         } else {
             util.strokeCircle(ctx, e.posX, e.posY, e.radius);
         }

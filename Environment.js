@@ -11,7 +11,7 @@ Environment.prototype.tileWidth = 100;
 
 //now this can be anything i think. hope. think/hope.
 Environment.prototype.map = new Map();
-var g_Camera = new Camera(0,0);
+
 
 Environment.prototype.tiles = [];
 // use the existing map to create a grid
@@ -22,8 +22,8 @@ Environment.prototype.createGrid = function(){
     for (var r = 0; r < this.map.gameMap.length; r++){
         for (var c = 0; c < this.map.gameMap[r].length; c++){
             var newTile = new Tile({id: this.map.gameMap[r][c],
-                                  cx: c*64,
-                                  cy: r*64});
+                                  cx: c*64 + 32,
+                                  cy: r*64 + 32});
             this.tiles.push(newTile);
         }
     }
@@ -39,9 +39,14 @@ Environment.prototype.registerGrid = function(){
 };
 
 Environment.prototype.render = function(ctx){
+    var count = 1;
     for (var i = 0; i<this.tiles.length; i++){
         ctx.fillStyle = this.tiles[i].colour;
-        ctx.fillRect(this.tiles[i].cx, this.tiles[i].cy, this.tiles[i].width, this.tiles[i].height);
+        ctx.fillRect(this.tiles[i].cx - 32 - g_camera.cy, this.tiles[i].cy - 32 - g_camera.cy, this.tiles[i].width, this.tiles[i].height);
+        if(count == 1 && this.tiles[i].colour == "blue") {
+            console.log(this.tiles[i].cx - 32 - g_camera.cy);
+            count = 2;
+        }
         //console.log('got here');
 
     }
