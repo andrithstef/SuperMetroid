@@ -139,6 +139,8 @@ Player.prototype.update = function(du){
     //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
+        console.log(this.cx);
+        console.log(this.cy);
     }
 
     this.getStance();
@@ -165,13 +167,29 @@ Player.prototype.update = function(du){
     }
     else{
         if (this.Xdirection < 0){
-            this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
+            this.cx = (hitData.tileX + 1)*g_map.tileWidth + this.halfWidth - hitData.offset;
         }
         else{
-            this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
+            this.cx = (hitData.tileX)*g_map.tileWidth - this.halfWidth - hitData.offset;
         }
     }
 
+    var test = g_map.shouldWeMoveCamera(this.cx, nextY, this.halfWidth, this.halfHeight);
+    if(test.moveHorizontally) {
+        console.log(this.velX);
+        if(test.moveX) {
+            this.cx -= 2*this.velX;
+            g_map.moveCamera(2*this.velX,0);
+        }
+        else {
+            this.cx -= 2*this.velX;
+            g_map.moveCamera(-2*this.velX,0);
+        }
+        console.log(this.cx);
+        
+    }
+
+    //console.log(this.cx);
     this.updateAnimationFrame();
     this.spriteData = this.getSprite();
     spatialManager.register(this);
