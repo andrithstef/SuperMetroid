@@ -33,6 +33,7 @@ Environment.prototype.createGrid = function(){
 Environment.prototype.registerGrid = function(){
     for (tile in this.tiles){
         if (this.tiles[tile].collidable){
+            spatialManager.unregister(this.tiles[tile]);
             spatialManager.register(this.tiles[tile]);
         }
     }
@@ -42,9 +43,9 @@ Environment.prototype.render = function(ctx){
     var count = 1;
     for (var i = 0; i<this.tiles.length; i++){
         ctx.fillStyle = this.tiles[i].colour;
-        ctx.fillRect(this.tiles[i].cx - 32 - g_camera.cy, this.tiles[i].cy - 32 - g_camera.cy, this.tiles[i].width, this.tiles[i].height);
+        ctx.fillRect(this.tiles[i].cx - 32 - g_camera.cx, this.tiles[i].cy - 32 - g_camera.cy, this.tiles[i].width, this.tiles[i].height);
         if(count == 1 && this.tiles[i].colour == "blue") {
-            console.log(this.tiles[i].cx - 32 - g_camera.cy);
+            //console.log(this.tiles[i].cx - 32 - g_camera.cy);
             count = 2;
         }
         //console.log('got here');

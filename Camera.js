@@ -10,7 +10,6 @@ var moveHorizontalCameraBuffer = cameraWidth/3;
 var moveVerticalCameraBuffer = cameraHeight/3;
 
 var map = new Map();
-console.log(map);
 
 Camera.prototype.width = map.gameMap[0].length*64;
 Camera.prototype.length = map.gameMap.length*64;

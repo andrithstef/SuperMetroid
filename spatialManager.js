@@ -45,8 +45,8 @@ register: function(entity) {
     // TODO: YOUR STUFF HERE!
     if(entity.shape = "Rect") {
         this._entities[spatialID] = {
-            posX: pos.posX - entity.halfWidth,
-            posY: pos.posY - entity.halfHeight,
+            posX: pos.posX - entity.halfWidth - g_camera.cx,
+            posY: pos.posY - entity.halfHeight  - g_camera.cy,
     
             width: 2*entity.halfWidth,
             height: 2*entity.halfHeight,
@@ -108,7 +108,7 @@ render: function(ctx) {
     for (var ID in this._entities) {
         var e = this._entities[ID];
         if(e.shape == "Rect") {
-            util.strokeBox(ctx, e.posX - g_camera.cx, e.posY - g_camera.cy, e.width, e.height, "green");
+            util.strokeBox(ctx, e.posX, e.posY, e.width, e.height, "green");
         } else {
             util.strokeCircle(ctx, e.posX, e.posY, e.radius);
         }

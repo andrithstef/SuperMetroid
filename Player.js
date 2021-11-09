@@ -120,7 +120,7 @@ Player.prototype.update = function(du){
 
     //make sure we dont fall off the level for testing
     if (nextX + this.halfWidth - g_camera.cx > g_canvas.width || nextX - this.halfWidth < 0){
-        if(nextX + this.halfWidth - g_camera.cx > g_canvas.width) nextX = g_canvas.width - this.halfWidth;
+        if(nextX + this.halfWidth - g_camera.cx > g_canvas.width) nextX = g_canvas.width - this.halfWidth + g_camera.cx;
         else nextX = this.halfWidth;
         
     }
@@ -130,6 +130,7 @@ Player.prototype.update = function(du){
     } else if(nextY + this.halfHeight > g_canvas.height){
         nextY = g_canvas.height - this.halfHeight;
         this.velY = 0;
+        this.isGrounded = true;
     }
 
     //Shoot
@@ -170,24 +171,24 @@ Player.prototype.update = function(du){
         }
     }
 
-    var test = g_camera.shouldWeMoveCamera(this.cx, this.cy, this.halfWidth, this.halfHeight);
-    if(test.moveHorizontally) {
-        if(test.moveX) {
+    var cam = g_camera.shouldWeMoveCamera(this.cx, this.cy, this.halfWidth, this.halfHeight);
+    if(cam.moveHorizontally) {
+        if(cam.moveX) {
             if(this.velX > 0) {
-                this.cx -= this.velX;
-                g_camera.moveCamera(1.5*this.velX,0);
+                //this.cx -= this.velX;
+                g_camera.moveCamera(2*this.velX,0);
             }
         }
         else{
             if(this.velX < 0) {
-                this.cx -= this.velX;
-                g_camera.moveCamera(1.5*this.velX,0);
+                //this.cx -= this.velX;
+                g_camera.moveCamera(2*this.velX,0);
             }
         }
     }
 
-    if(test.moveVertically) {
-        if(test.moveY) {
+    if(cam.moveVertically) {
+        if(cam.moveY) {
             if(this.velY > 0) {
                 this.cy -= this.velY;
                 g_camera.moveCamera(0,1.5*this.velY);
@@ -303,7 +304,7 @@ Player.prototype.shoot = function(){
             bulletYvel = -1;
             break;
     }
-    entityManager.addBullet(this.bulletX, this.bulletY, bulletXvel, bulletYvel);
+    entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, bulletXvel, bulletYvel);
 }
 
 Player.prototype.getStance = function(){
