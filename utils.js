@@ -5,6 +5,9 @@
 
 "use strict";
 
+var g_canvas = document.getElementById("myCanvas");
+var g_ctx = g_canvas.getContext("2d");
+var g_Camera = new Camera(0,0);
 
 var util = {
 

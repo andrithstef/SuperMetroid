@@ -65,6 +65,7 @@ register: function(entity) {
             shape: entity.shape
         }
     }
+    //console.log(this._entities[spatialID]);
     
 },
 

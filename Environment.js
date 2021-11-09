@@ -11,6 +11,7 @@ Environment.prototype.tileWidth = 100;
 
 //now this can be anything i think. hope. think/hope.
 Environment.prototype.map = new Map();
+var g_Camera = new Camera(0,0);
 
 Environment.prototype.tiles = [];
 // use the existing map to create a grid
@@ -28,10 +29,11 @@ Environment.prototype.createGrid = function(){
     }
     this.registerGrid();
 };
+
 Environment.prototype.registerGrid = function(){
     for (tile in this.tiles){
-        if (tile.collidable){
-            spatialManager.register(tile);
+        if (this.tiles[tile].collidable){
+            spatialManager.register(this.tiles[tile]);
         }
     }
 };
@@ -45,3 +47,5 @@ Environment.prototype.render = function(ctx){
     }
 
 };
+
+

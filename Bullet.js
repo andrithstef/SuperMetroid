@@ -8,6 +8,8 @@ function Bullet(cx, cy, xVel ,yVel){
 const bulletSheet = 'resrc/Weapons.png';
 //put in bullet sprites based on current bullet
 
+Bullet.prototype = new Entity();
+
 Bullet.prototype.rad = 5;
 Bullet.prototype.speed = 20;
 
@@ -44,5 +46,6 @@ Bullet.prototype.update = function(du){
 }
 
 Bullet.prototype.hitsMap = function(x,y){
-    return g_map.collidesWith(x,y);
+    if(this.isColliding()) return this.isColliding().collidable == true;
+    return false;
 }

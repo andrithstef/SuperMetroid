@@ -52,6 +52,7 @@ Player.prototype.bulletY = this.cy;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
+    console.log(g_camera.cx);
 
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
@@ -125,7 +126,8 @@ Player.prototype.update = function(du){
 
     //Check collisions with floor
     var dir = Math.sign(this.velY);
-    var hitData = this.isColliding;
+    var hitData = this.isColliding();
+    console.log(hitData);
     if(!hitData){
         this.cy = nextY;
     }
@@ -141,7 +143,7 @@ Player.prototype.update = function(du){
     if (!this.isKneeling){
         //Check collisions with walls
         var dir = Math.sign(this.velX);
-        var hitData = this.isColliding;
+        var hitData = this.isColliding();
         if (!hitData){
             this.cx = nextX;
         }
