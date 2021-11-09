@@ -125,14 +125,15 @@ Player.prototype.update = function(du){
 
     //Check collisions with floor
     var dir = Math.sign(this.velY);
-    var hitData = this.hitsMap(nextX, nextY+dir*this.halfHeight)
-    if(!hitData.hits){
+    var hitData = this.isColliding;
+    if(!hitData){
         this.cy = nextY;
     }
     else{
         this.isGrounded = true;
         if (dir === 1){
-            this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
+            this.cy = hitData.cy-hitData.halfHeight - this.halfHeight;
+            //im unsure what this is im just trying to remove gmap refs
         }
     }
 
@@ -140,16 +141,16 @@ Player.prototype.update = function(du){
     if (!this.isKneeling){
         //Check collisions with walls
         var dir = Math.sign(this.velX);
-        var hitData = this.hitsMap(nextX + dir*this.halfWidth, nextY);
-        if (!hitData.hits){
+        var hitData = this.isColliding;
+        if (!hitData){
             this.cx = nextX;
         }
         else{
             if (dir === -1){
-                this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
+                this.cx = hitData.cx+hitData.halfWidth + this.halfWidth;
             }
             else{
-                this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
+                this.cx = hitData.cx -hitData.halfWidth- this.halfWidth;
             }
 
         }
@@ -172,9 +173,9 @@ Player.prototype.jump = function(){
     this.animationFrame = 0;
 }
 
-Player.prototype.hitsMap = function(x,y){
-    return g_map.collidesWith(x,y);
-}
+// Player.prototype.hitsMap = function(x,y){
+//     return g_map.collidesWith(x,y);
+// }
 
 Player.prototype.shoot = function(){
     if (this.velX > 0.01 || this.velX < -0.01){

@@ -4,7 +4,7 @@
 
 
 // Tell jslint not to complain about my use of underscore prefixes (nomen),
-// my flattening of some indentation (white), or my use of incr/decr ops 
+// my flattening of some indentation (white), or my use of incr/decr ops
 // (plusplus).
 //
 /*jslint nomen: true, white: true, plusplus: true*/
@@ -13,12 +13,14 @@
 function EntityManager(){
     this._player = new Player();
     this._bullets = [];
+    this._environment = new Environment();
 }
 
 // "PRIVATE" DATA
 
 EntityManager.prototype._player;
 EntityManager.prototype._bullets;
+EntityManager.prototype._environment;
 
 
 
@@ -50,7 +52,7 @@ EntityManager.prototype.init = function() {
 },
 
 EntityManager.prototype.update = function(du) {
-    
+
     //update bullets
     for (var i = 0; i<this._bullets.length; i++){
         var status = this._bullets[i].update(du);
@@ -67,12 +69,13 @@ EntityManager.prototype.update = function(du) {
 
 EntityManager.prototype.render = function(ctx) {
 
+    this._environment.render(ctx);
     //render bullets
     for (var i = 0; i<this._bullets.length; i++){
         this._bullets[i].render(ctx);
     }
 
-    //render player 
+    //render player
     this._player.render(ctx);
 }
 
@@ -82,6 +85,6 @@ EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir){
     this._bullets.push(new Bullet(cx, cy, xVel, yVel));
 }
 
-Entity.prototype.getSpatialID = function(){
-    return this.spatialID ++;
-}
+// Entity.prototype.getSpatialID = function(){
+//     return this.spatialID ++;
+// }
