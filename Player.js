@@ -27,6 +27,8 @@ Player.prototype.cy = 600;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
+Player.prototype.isColliding = false;
+
 Player.prototype.isKneeling = false;
 
 Player.prototype.halfWidth = 23;
