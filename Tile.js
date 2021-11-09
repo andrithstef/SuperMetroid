@@ -9,7 +9,7 @@ Tile.prototype.shape = "Rect";
 Tile.prototype.width = 64;
 Tile.prototype.height = 64;
 Tile.prototype.halfWidth = 32;
-Tile.prototype.haldHeight = 32;
+Tile.prototype.halfHeight = 32;
 Tile.prototype.collidable = false;
 
 //replacement for sprite data, until then

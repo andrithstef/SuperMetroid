@@ -21,8 +21,8 @@ Environment.prototype.createGrid = function(){
     for (var r = 0; r < this.map.gameMap.length; r++){
         for (var c = 0; c < this.map.gameMap[r].length; c++){
             var newTile = new Tile({id: this.map.gameMap[r][c],
-                                  cx: r*64,
-                                  cy: c*64});
+                                  cx: c*64,
+                                  cy: r*64});
             this.tiles.push(newTile);
         }
     }
@@ -39,8 +39,8 @@ Environment.prototype.registerGrid = function(){
 Environment.prototype.render = function(ctx){
     for (var i = 0; i<this.tiles.length; i++){
         ctx.fillStyle = this.tiles[i].colour;
-        ctx.fillRect(this.tiles[i].cx,this.tiles[i].cy,this.tiles[i].width,this.tiles[i].height);
-        console.log('got here');
+        ctx.fillRect(this.tiles[i].cx, this.tiles[i].cy, this.tiles[i].width, this.tiles[i].height);
+        //console.log('got here');
 
     }
 
