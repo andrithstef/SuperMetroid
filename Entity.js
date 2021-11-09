@@ -32,6 +32,9 @@ function Entity() {
 
 };
 
+Entity.prototype.nextX;
+Entity.prototype.nextY;
+
 Entity.prototype.setup = function (descr) {
 
     // Apply all setup properies from the (optional) descriptor

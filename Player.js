@@ -29,7 +29,7 @@ Player.prototype.friction = 0.4;
 Player.prototype.maxSpeed = 8;
 Player.prototype.jumpSpeed = 17;
 Player.prototype.cx = 100;
-Player.prototype.cy = 600;
+Player.prototype.cy = 700;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -127,15 +127,15 @@ Player.prototype.update = function(du){
     }
 
     var oldX = this.cx, oldY = this.cy;
-    var nextY = this.cy + this.velY * du;
-    var nextX = this.cx + this.velX * du;
+    this.nextY = this.cy + this.velY * du;
+    this.nextX = this.cx + this.velX * du;
 
     //make sure we dont fall off the level for testing
-    if (nextX > g_canvas.width || nextX < 0){
-        nextX = oldX;
+    if (this.nextX > g_canvas.width || this.nextX < 0){
+        this.nextX = oldX;
     }
-    if (nextY < 0){
-        nextY=oldY;
+    if (this.nextY < 0){
+        this.nextY = oldY;
     }
 
     //Shoot
@@ -145,41 +145,18 @@ Player.prototype.update = function(du){
 
     this.getStance();
 
-    //Check collisions with floor
     var dir = Math.sign(this.velY);
     var hitData = this.findCollision();
+    console.log(hitData);
     if(!hitData){
-        this.cy = nextY;
+        this.cy = this.nextY;
     }
     else{
         this.isGrounded = true;
-        if (dir === 1){
-            //this.cy = hitData.cy-hitData.halfHeight - this.halfHeight;
-            //im unsure what this is im just trying to remove gmap refs
-        }
-    }
-
-
-    if (!this.isKneeling){
-        //Check collisions with walls
-        var dir = Math.sign(this.velX);
-        var hitData = this.findCollision();
-        if (!hitData){
-            this.cx = nextX;
-        }
-        else{
-            if (dir === -1){
-                //this.cx = hitData.cx+hitData.halfWidth + this.halfWidth;
-            }
-            else{
-                //this.cx = hitData.cx -hitData.halfWidth- this.halfWidth;
-            }
-
-        }
+        this.cy = hitData.cy-hitData.halfHeight - this.halfHeight;
     }
     
-
-
+    this.cx = this.nextX;
     
     this.updateAnimationFrame();
     this.spriteData = this.getSprite();
