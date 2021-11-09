@@ -38,7 +38,9 @@ Environment.prototype.registerGrid = function(){
 
 Environment.prototype.render = function(ctx){
     for (var i = 0; i<this.tiles.length; i++){
-        util.fillBox(ctx, tile.cx,tile.cy, tile.width,tile.height, tile.colour);
+        ctx.fillStyle = this.tiles[i].colour;
+        ctx.fillRect(this.tiles[i].cx,this.tiles[i].cy,this.tiles[i].width,this.tiles[i].height);
+        console.log('got here');
 
     }
 
