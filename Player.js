@@ -145,22 +145,26 @@ Player.prototype.update = function(du){
 
     this.getStance();
 
-    var dir = Math.sign(this.velY);
     var hitData = this.findCollision();
-    if(!hitData){
-        this.cy = this.nextY;
+    while(hitData){
+        this.resolve(hitData);
+        hitData = this.findCollision()
     }
-    else{
-        this.isGrounded = true;
-        this.cy = hitData.cy-hitData.halfHeight - this.halfHeight;
-    }
-    
+
     this.cx = this.nextX;
+    this.cy = this.nextY;
     
     this.updateAnimationFrame();
     this.spriteData = this.getSprite();
     spatialManager.register(this);
 
+}
+
+Player.prototype.isColliding = function(entity){
+    return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
+        && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
+        && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
+        && this.nextY + this.halfHeight > entity.cy - entity.halfHeight);
 }
 
 Player.prototype.hitsMap = function(x,y){
@@ -188,6 +192,34 @@ Player.prototype.jump = function(){
 Player.prototype.shoot = function(){
     this.hasShot = true;
     entityManager.addBullet(this.bulletX, this.bulletY, this.bulletXvel, this.bulletYvel);
+}
+
+Player.prototype.resolve = function(hitEntity){
+    var d1;
+    var d2;
+    var d3;
+    var d4;
+
+    d1 = Math.abs((this.cx + this.halfWidth) - (hitEntity.cx - hitEntity.halfWidth));
+    d2 = Math.abs((this.cx - this.halfWidth) - (hitEntity.cx + hitEntity.halfWidth));
+    d3 = Math.abs((this.cy + this.halfHeight) - (hitEntity.cy - hitEntity.halfHeight));
+    d4 = Math.abs((this.cy - this.halfHeight) - (hitEntity.cy + hitEntity.halfHeight));
+
+    var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
+    if (d1 === minimum) {
+        this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
+    }
+    else if (d2 === minimum) {
+        this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
+    }
+    else if (d3 === minimum) {
+        this.isGrounded = true;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+    }
+    else{
+        this.velY = 0;
+        this.nextY =hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
+    }
 }
 
 Player.prototype.getStance = function(){
