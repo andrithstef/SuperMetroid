@@ -2,6 +2,8 @@ function Tile(descr) {
     this.setup(descr);
     this.setTile();
 
+    this.cx += this.halfWidth;
+    this.cy += this.halfHeight;
 }
 
 Tile.prototype = new Entity();

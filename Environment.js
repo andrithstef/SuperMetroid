@@ -30,8 +30,8 @@ Environment.prototype.createGrid = function(){
 };
 Environment.prototype.registerGrid = function(){
     for (tile in this.tiles){
-        if (tile.collidable){
-            spatialManager.register(tile);
+        if (this.tiles[tile].collidable){
+            spatialManager.register(this.tiles[tile]);
         }
     }
 };
@@ -39,9 +39,7 @@ Environment.prototype.registerGrid = function(){
 Environment.prototype.render = function(ctx){
     for (var i = 0; i<this.tiles.length; i++){
         ctx.fillStyle = this.tiles[i].colour;
-        ctx.fillRect(this.tiles[i].cx, this.tiles[i].cy, this.tiles[i].width, this.tiles[i].height);
-        //console.log('got here');
-
+        ctx.fillRect(this.tiles[i].cx-this.tiles[i].halfWidth, this.tiles[i].cy-this.tiles[i].halfHeight, this.tiles[i].width, this.tiles[i].height);
     }
 
 };
