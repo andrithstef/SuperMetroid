@@ -115,6 +115,23 @@ render: function(ctx) {
         
     }
     ctx.strokeStyle = oldStyle;
-}
+},
 
+findCollision: function(entity){
+    for (var e in this._entities) {
+        var ent = this._entities[e].realEntity;
+        if (ent.getSpatialID() != entity.getSpatialID()){  
+            if (this.rectVsRect(entity, ent)){
+                return ent;
+            }
+        }
+    }
+},
+
+rectVsRect: function(e1, e2){
+    return (e1.nextX - e1.halfWidth < e2.cx + e2.halfWidth
+        && e1.nextX + e1.halfWidth > e2.cx - e2.halfWidth
+        && e1.nextY - e1.halfHeight < e2.cy + e2.halfHeight
+        && e1.nextY + e1.halfHeight > e2.cy - e2.halfHeight);
+}
 }
