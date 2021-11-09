@@ -129,11 +129,14 @@ Player.prototype.update = function(du){
     var nextX = this.cx + this.velX * du;
 
     //make sure we dont fall off the level for testing
-    if (nextX > g_canvas.width || nextX< 0){
-        nextX = oldX;
+    if (nextX + this.halfWidth > g_canvas.width || nextX - this.halfWidth< 0){
+        if(nextX + this.halfWidth > g_canvas.width) nextX = g_canvas.width - this.halfWidth;
+        else nextX = this.halfWidth;
+        
     }
-    if (nextY < 0){
-        nextY=oldY;
+    if (nextY - this.halfHeight < 0){
+        nextY = this.halfHeight;
+        this.velY = 0;
     }
 
     //Shoot
@@ -155,7 +158,7 @@ Player.prototype.update = function(du){
         this.isGrounded = true;
         this.movingJump = false;
         if (dir > 0){
-            this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
+            this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight - hitData.offsetY;
         }
     }
 
@@ -167,26 +170,42 @@ Player.prototype.update = function(du){
     }
     else{
         if (this.Xdirection < 0){
-            this.cx = (hitData.tileX + 1)*g_map.tileWidth + this.halfWidth - hitData.offset;
+            this.cx = (hitData.tileX + 1)*g_map.tileWidth + this.halfWidth - hitData.offsetX;
         }
         else{
-            this.cx = (hitData.tileX)*g_map.tileWidth - this.halfWidth - hitData.offset;
+            this.cx = (hitData.tileX)*g_map.tileWidth - this.halfWidth - hitData.offsetX;
         }
     }
 
-    var test = g_map.shouldWeMoveCamera(this.cx, nextY, this.halfWidth, this.halfHeight);
+    var test = g_map.shouldWeMoveCamera(this.cx, this.cy, this.halfWidth, this.halfHeight);
     if(test.moveHorizontally) {
-        console.log(this.velX);
         if(test.moveX) {
-            this.cx -= 2*this.velX;
-            g_map.moveCamera(2*this.velX,0);
+            if(this.velX > 0) {
+                this.cx -= this.velX;
+                g_map.moveCamera(1.5*this.velX,0);
+            }
+        }
+        else{
+            if(this.velX < 0) {
+                this.cx -= this.velX;
+                g_map.moveCamera(1.5*this.velX,0);
+            }
+        }
+    }
+
+    if(test.moveVertically) {
+        if(test.moveY) {
+            if(this.velY > 0) {
+                this.cy -= this.velY;
+                g_map.moveCamera(0,1.5*this.velY);
+            }
         }
         else {
-            this.cx -= 2*this.velX;
-            g_map.moveCamera(-2*this.velX,0);
+            if(this.velY < 0) {
+                this.cy -= this.velY;
+                g_map.moveCamera(0,1.5*this.velY);
+            }
         }
-        console.log(this.cx);
-        
     }
 
     //console.log(this.cx);
