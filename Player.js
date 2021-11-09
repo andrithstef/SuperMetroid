@@ -4,7 +4,7 @@ function Player(descr){
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "https://notendur.hi.is/ats21/samus_sprite_sheet.gif"
+spriteSheet.src = "resrc/samus_sprite_sheet.gif";
 
 Player.prototype = new Entity();
 
