@@ -39,7 +39,9 @@ Environment.prototype.registerGrid = function(){
 Environment.prototype.render = function(ctx){
     for (var i = 0; i<this.tiles.length; i++){
         ctx.fillStyle = this.tiles[i].colour;
-        ctx.fillRect(this.tiles[i].cx-this.tiles[i].halfWidth, this.tiles[i].cy-this.tiles[i].halfHeight, this.tiles[i].width, this.tiles[i].height);
+        ctx.fillRect(this.tiles[i].cx - this.tiles[i].halfWidth, this.tiles[i].cy - this.tiles[i].halfHeight, this.tiles[i].width, this.tiles[i].height);
+        //console.log('got here');
+
     }
 
 };

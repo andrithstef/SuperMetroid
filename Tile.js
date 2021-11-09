@@ -18,7 +18,7 @@ Tile.prototype.collidable = false;
 Tile.prototype.colour = 'white';
 
 Tile.prototype.setTile = function(){
-    if (this.id ===1){
+    if (this.id === "1"){
         this.collidable = true;
         this.colour = 'blue';
     }

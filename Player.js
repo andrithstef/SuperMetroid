@@ -29,7 +29,7 @@ Player.prototype.friction = 0.4;
 Player.prototype.maxSpeed = 8;
 Player.prototype.jumpSpeed = 17;
 Player.prototype.cx = 100;
-Player.prototype.cy = 700;
+Player.prototype.cy = 750;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
