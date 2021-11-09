@@ -8,6 +8,7 @@ function Bullet(cx, cy, xVel ,yVel){
 const bulletSheet = 'resrc/Weapons.png';
 //put in bullet sprites based on current bullet
 
+Bullet.prototype = new Entity();
 
 Bullet.prototype.rad = 5;
 Bullet.prototype.speed = 20;
@@ -34,14 +35,18 @@ Bullet.prototype.update = function(du){
     var nextX = this.cx + this.velX*du;
     var nextY = this.cy + this.velY*du;
 
-    /*
-    var hitData = this.findCollision();
-    if(hitData){
-        //return entityManager.KILL_ME_NOW;
+    
+    var hitData = this.hitsMap(nextX, nextY);
+    if(hitData.hits){
+        return entityManager.KILL_ME_NOW;
     }
-    */
+    
     this.cx = nextX;
     this.cy = nextY;
 
 }
 
+Bullet.prototype.hitsMap = function(x,y){
+    if(this.isColliding()) return this.isColliding().collidable == true;
+    return false;
+}

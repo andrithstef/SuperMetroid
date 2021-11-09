@@ -72,6 +72,7 @@ EntityManager.prototype.render = function(ctx) {
     this._environment.render(ctx);
     //render bullets
     for (var i = 0; i<this._bullets.length; i++){
+        console.log(this._bullets[i]);
         this._bullets[i].render(ctx);
     }
 

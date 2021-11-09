@@ -147,7 +147,6 @@ Player.prototype.update = function(du){
 
     var dir = Math.sign(this.velY);
     var hitData = this.findCollision();
-    console.log(hitData);
     if(!hitData){
         this.cy = this.nextY;
     }
