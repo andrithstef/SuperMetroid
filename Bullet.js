@@ -9,7 +9,7 @@ const bulletSheet = 'resrc/Weapons.png';
 //put in bullet sprites based on current bullet
 
 Bullet.prototype.rad = 5;
-Bullet.prototype.speed = 20;
+Bullet.prototype.speed = 30;
 
 Bullet.prototype.shape = "Circ";
 
@@ -33,16 +33,12 @@ Bullet.prototype.update = function(du){
     var nextX = this.cx + this.velX*du;
     var nextY = this.cy + this.velY*du;
 
-    var hitData = this.hitsMap(nextX, nextY);
-    if(hitData.hits){
+    var hitData = g_map.collidesWith(nextX, nextY);
+    if (hitData.hits){
         return entityManager.KILL_ME_NOW;
     }
 
     this.cx = nextX;
     this.cy = nextY;
 
-}
-
-Bullet.prototype.hitsMap = function(x,y){
-    return g_map.collidesWith(x,y);
 }

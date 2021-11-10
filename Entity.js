@@ -34,6 +34,9 @@ function Entity() {
 
 Entity.prototype.setup = function (descr) {
 
+Entity.prototype.halfWidth;
+Entity.prototype.halfHeight;
+
     // Apply all setup properies from the (optional) descriptor
     for (var property in descr) {
         this[property] = descr[property];
@@ -69,8 +72,8 @@ Entity.prototype.kill = function () {
 
 Entity.prototype.findHitEntity = function () {
     var pos = this.getPos();
-    return spatialManager.findEntityInRange(
-        pos.posX, pos.posY, this.getRadius()
+    return spatialManager.findEntitie(
+        pos.posX, pos.posY, this.halfWidth, this.halfHeight
     );
 };
 
@@ -83,3 +86,4 @@ Entity.prototype.wrapPosition = function () {
     this.cx = util.wrapRange(this.cx, 0, g_canvas.width);
     this.cy = util.wrapRange(this.cy, 0, g_canvas.height);
 };
+
