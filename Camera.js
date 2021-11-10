@@ -9,6 +9,9 @@ var cameraHeight = g_canvas.height;
 var moveHorizontalCameraBuffer = cameraWidth/3;
 var moveVerticalCameraBuffer = cameraHeight/3;
 
+Camera.prototype.xThreshold = cameraWidth/10;
+Camera.prototype.yThreshold = cameraHeight/10;
+
 var map = new Map();
 
 Camera.prototype.width = map.gameMap[0].length*64;
@@ -26,6 +29,7 @@ Camera.prototype.moveVerticalCameraBuffer = moveVerticalCameraBuffer;
 Camera.prototype.topCameraEdge = moveVerticalCameraBuffer;
 Camera.prototype.bottomCameraEdge = cameraHeight - moveVerticalCameraBuffer;
 
+/*
 Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
   var moveHorizontally = false;
   var moveVertically = false;
@@ -69,12 +73,39 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
       moveY: moveY
   };
 }
+*/
 
-Camera.prototype.moveCamera = function(x,y){
-  this.cx += x;
-  this.cy += y;
-  if(this.cx > this.width - this.cameraWidth) this.cx = this.width - this.cameraWidth;
-  if(this.cx < 0) this.cx = 0;
-  if(this.cy > this.height - this.cameraHeight) this.cy = this.height - this.cameraHeight;
-  if(this.cy < 0) this.cy = 0;
+Camera.prototype.updateCamera = function(cx, cy){
+  cx = cx - this.width/4;
+  cy = cy - this.height/4;
+  
+  if (cx > this.cx + this.xThreshold) {
+    this.cx = cx - this.xThreshold;
+  }
+  else if (cx < this.cx - this.xThreshold){
+    this.cx = cx + this.xThreshold;
+  }
+
+  if (cy > this.cy + this.yThreshold) {
+    this.cy = cy - this.yThreshold;
+  }
+  else if (cy < this.cy - this.yThreshold){
+    this.cy = cy + this.yThreshold;
+  }
+
+  //Can't move camera too far
+  if(this.cx < 0){
+    this.cx = 0
+  }
+  else if (this.cx + this.cameraWidth > this.width){
+    console.log(this.cx);
+    this.cx = this.width - this.cameraWidth;
+  }
+  
+ if (this.cy < 0){
+   this.cy = 0;
+ }
+ else if(this.cy + this.cameraHeight > this.height){
+   this.cy = this.height - this.cameraHeight;
+ }
 }

@@ -142,7 +142,6 @@ Player.prototype.update = function(du){
 
     //Shoot
     if (eatKey(this.SHOOT)){
-        console.log(this.cx, this.cy);
         this.shoot();
     }
 
@@ -156,23 +155,23 @@ Player.prototype.update = function(du){
 
     this.getStance();
 
-    console.log(this.halfWidth);
-
     this.cx = this.nextX;
     this.cy = this.nextY;
 
-    var cam = g_camera.shouldWeMoveCamera(this.cx, this.cy, this.halfWidth, this.halfHeight);
+    g_camera.updateCamera(this.cx, this.cy);
+    
+    /*
     if(cam.moveHorizontally) {
         if(cam.moveX) {
             if(this.velX > 0) {
                 //this.cx -= this.velX;
-                g_camera.moveCamera(2*this.velX,0);
+                g_camera.moveCamera2(this.cx, this.cy);
             }
         }
         else{
             if(this.velX < 0) {
                 //this.cx -= this.velX;
-                g_camera.moveCamera(2*this.velX,0);
+                g_camera.moveCamera2(this.cx, this.cy);
             }
         }
     }
@@ -191,7 +190,7 @@ Player.prototype.update = function(du){
             }
         }
     }
-
+*/
     this.updateAnimationFrame();
     this.spriteData = this.getSprite();
     spatialManager.register(this);
@@ -244,20 +243,16 @@ Player.prototype.resolve = function(hitEntity){
 
     var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
     if (d1 === minimum) {
-        console.log("d1");
         this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
     }
     else if (d2 === minimum) {
-        console.log("d2");
         this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
     }
     else if (d3 === minimum) {
-        console.log("d3");
         this.isGrounded = true;
         this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
     }
     else{
-        console.log("d4");
         this.velY = 0;
         this.nextY = hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
     }
@@ -448,6 +443,7 @@ Player.prototype.getStance = function(){
 }
 
 Player.prototype.getSprite = function(){
+    console.log(this.stance);
     switch(this.stance){
         case 1:
             //Looking right
@@ -942,7 +938,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = 1;
 
             this.bulletX = this.cx + 10;
-            this.bulletY = this.cy + 18;
+            this.bulletY = this.cy + 35;
             return{
                 x : 446,
                 y : 150,
@@ -952,13 +948,13 @@ Player.prototype.getSprite = function(){
         case 31: 
             //jumping left, shooting vertically down
             this.halfHeight = 34;
-            this.halfWidth = 21;
+            this.halfWidth = 35;
 
             this.bulletXvel = 0;
             this.bulletYvel = 1;
 
-            this.bulletX = this.cx - 10;
-            this.bulletY = this.cy + 18;
+            this.bulletX = this.cx - 26;
+            this.bulletY = this.cy + 35;
             return{
                 x : 449,
                 y : 205,
