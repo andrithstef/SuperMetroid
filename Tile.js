@@ -2,6 +2,9 @@ function Tile(descr) {
     this.setup(descr);
     this.setTile();
 
+    this.cx += this.halfWidth;
+    this.cy += this.halfHeight;
+
 }
 
 Tile.prototype = new Entity();
@@ -13,11 +16,11 @@ Tile.prototype.halfHeight = 32;
 Tile.prototype.collidable = false;
 
 //replacement for sprite data, until then
-Tile.prototype.colour = 'white';
+Tile.prototype.colour = 'Black';
 Tile.prototype.shape = "Rect";
 
 Tile.prototype.setTile = function(){
-    if (this.id ===1){
+    if (this.id === "1"){
         this.collidable = true;
         this.colour = 'blue';
     }

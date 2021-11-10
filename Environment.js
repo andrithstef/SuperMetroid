@@ -22,18 +22,16 @@ Environment.prototype.createGrid = function(){
     for (var r = 0; r < this.map.gameMap.length; r++){
         for (var c = 0; c < this.map.gameMap[r].length; c++){
             var newTile = new Tile({id: this.map.gameMap[r][c],
-                                  cx: c*64 + 32,
-                                  cy: r*64 + 32});
+                                  cx: c*64,
+                                  cy: r*64});
             this.tiles.push(newTile);
         }
     }
     this.registerGrid();
 };
-
 Environment.prototype.registerGrid = function(){
     for (tile in this.tiles){
         if (this.tiles[tile].collidable){
-            spatialManager.unregister(this.tiles[tile]);
             spatialManager.register(this.tiles[tile]);
         }
     }

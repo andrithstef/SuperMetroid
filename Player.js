@@ -12,8 +12,8 @@ Player.prototype.GO_LEFT = 'A'.charCodeAt(0);
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0);
 Player.prototype.GO_UP = 'W'.charCodeAt(0);
 Player.prototype.GO_DOWN = 'S'.charCodeAt(0);
-Player.prototype.AIM_UP = 16; //SHIFT
-Player.prototype.AIM_DOWN = 17; //CTRL
+Player.prototype.AIM_UP = 'E'.charCodeAt(0);
+Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0);
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
@@ -25,7 +25,7 @@ Player.prototype.jumpSpeed = 17;
 console.log(g_camera.cx);
 console.log(g_camera.cy);
 Player.prototype.cx = 100;
-Player.prototype.cy = 400;
+Player.prototype.cy = 700;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -51,6 +51,8 @@ Player.prototype.framestoAnimationFrame = 5;
 
 Player.prototype.bulletX = this.cx;
 Player.prototype.bulletY = this.cy;
+
+Player.prototype.resolveTries = 0;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
@@ -140,17 +142,18 @@ Player.prototype.update = function(du){
     //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
-        console.log(this.cx);
-        console.log(this.cy);
     }
 
-    this.getStance();
-
+    this.isGrounded = false;
+    this.resolveTries = 0;
     var hitData = this.findCollision();
     while(hitData){
         this.resolve(hitData);
         hitData = this.findCollision()
     }
+
+    this.getStance();
+
     this.cx = this.nextX;
     this.cy = this.nextY;
 
@@ -220,6 +223,11 @@ Player.prototype.shoot = function(){
 }
 
 Player.prototype.resolve = function(hitEntity){
+    if (this.resolveTries > 10){
+        this.isGrounded = true;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+        return;
+    }
     var d1;
     var d2;
     var d3;
@@ -245,6 +253,7 @@ Player.prototype.resolve = function(hitEntity){
         this.velY = 0;
         this.nextY =hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
     }
+    this.resolveTries += 1;
 }
 
 Player.prototype.getStance = function(){

@@ -66,7 +66,7 @@ g_main.gameOver = function () {
 
 // Simple voluntary quit mechanism
 //
-var KEY_QUIT = 'Q'.charCodeAt(0);
+var KEY_QUIT = 'M'.charCodeAt(0);
 function requestedQuit() {
     return g_keys[KEY_QUIT];
 }
