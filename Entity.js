@@ -46,6 +46,9 @@ Entity.prototype.setup = function (descr) {
     this._isDeadNow = false;
 };
 
+Entity.prototype.nextX;
+Entity.prototype.nextY;
+
 Entity.prototype.setPos = function (cx, cy) {
     this.cx = cx;
     this.cy = cy;
