@@ -9,8 +9,8 @@ var cameraHeight = g_canvas.height;
 var moveHorizontalCameraBuffer = cameraWidth/3;
 var moveVerticalCameraBuffer = cameraHeight/3;
 
-Camera.prototype.xThreshold = cameraWidth/10;
-Camera.prototype.yThreshold = cameraHeight/10;
+Camera.prototype.xThreshold = cameraWidth/9;
+Camera.prototype.yThreshold = cameraHeight/9;
 
 var map = new Map();
 
@@ -98,7 +98,6 @@ Camera.prototype.updateCamera = function(cx, cy){
     this.cx = 0
   }
   else if (this.cx + this.cameraWidth > this.width){
-    console.log(this.cx);
     this.cx = this.width - this.cameraWidth;
   }
   

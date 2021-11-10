@@ -443,7 +443,6 @@ Player.prototype.getStance = function(){
 }
 
 Player.prototype.getSprite = function(){
-    console.log(this.stance);
     switch(this.stance){
         case 1:
             //Looking right
@@ -948,12 +947,12 @@ Player.prototype.getSprite = function(){
         case 31: 
             //jumping left, shooting vertically down
             this.halfHeight = 34;
-            this.halfWidth = 35;
+            this.halfWidth = 21;
 
             this.bulletXvel = 0;
             this.bulletYvel = 1;
 
-            this.bulletX = this.cx - 26;
+            this.bulletX = this.cx - 13;
             this.bulletY = this.cy + 35;
             return{
                 x : 449,
