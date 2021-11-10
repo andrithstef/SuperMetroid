@@ -48,6 +48,7 @@ Entity.prototype.setup = function (descr) {
 
 Entity.prototype.nextX;
 Entity.prototype.nextY;
+Entity.prototype.collidable = false;
 
 Entity.prototype.setPos = function (cx, cy) {
     this.cx = cx;
