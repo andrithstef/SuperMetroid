@@ -9,12 +9,12 @@ var cameraHeight = g_canvas.height;
 var moveHorizontalCameraBuffer = cameraWidth/3;
 var moveVerticalCameraBuffer = cameraHeight/3;
 
-var map = new Map();
 
-Camera.prototype.width = map.gameMap[0].length*64;
-Camera.prototype.height = map.gameMap.length*64;
-console.log(map.gameMap[0].length*64);
-console.log(map.gameMap.length*64);
+
+Camera.prototype.width = Map.gameMap[0].length*64;
+Camera.prototype.height = Map.gameMap.length*64;
+console.log(Map.gameMap[0].length*64);
+console.log(Map.gameMap.length*64);
 
 Camera.prototype.cameraWidth = cameraWidth;
 Camera.prototype.moveHorizontalCameraBuffer = moveHorizontalCameraBuffer;
@@ -46,9 +46,9 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
           //console.log("left");
           var moveX = false;
           moveHorizontally = true;
-      }  
+      }
   }
-  
+
   if (cy + halfHeight > this.bottomCameraEdge || cy - halfHeight < this.topCameraEdge){
       if(cy + halfHeight > this.bottomCameraEdge && this.cy < this.height - this.cameraHeight) {
           //console.log("bot");
@@ -60,7 +60,7 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
           //console.log("top");
           var moveY = false;
           moveVertically = true;
-      }   
+      }
   }
   return {
       moveHorizontally: moveHorizontally,
