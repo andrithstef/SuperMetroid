@@ -53,7 +53,7 @@ EntityManager.prototype.init = function() {
 
 EntityManager.prototype.update = function(du) {
 
-    this._environment.registerGrid();
+    
     //update bullets
     for (var i = 0; i<this._bullets.length; i++){
         var status = this._bullets[i].update(du);
@@ -66,6 +66,7 @@ EntityManager.prototype.update = function(du) {
 
     //Update player
     this._player.update(du);
+    this._environment.registerGrid();
 },
 
 EntityManager.prototype.render = function(ctx) {

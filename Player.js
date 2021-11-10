@@ -4,7 +4,7 @@ function Player(descr){
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "https://notendur.hi.is/ats21/samus_sprite_sheet.gif"
+spriteSheet.src = "resrc/samus_sprite_sheet.gif"
 
 Player.prototype = new Entity();
 
@@ -45,6 +45,7 @@ Player.prototype.Ydirection = 1;
 Player.prototype.shape = "Rect";
 
 Player.prototype.stance = 1;
+Player.prototype.oldStance = 1;
 Player.prototype.animationFrame = 0;
 Player.prototype.framenr = 0;
 Player.prototype.framestoAnimationFrame = 5;
@@ -141,6 +142,7 @@ Player.prototype.update = function(du){
 
     //Shoot
     if (eatKey(this.SHOOT)){
+        console.log(this.cx, this.cy);
         this.shoot();
     }
 
@@ -153,6 +155,8 @@ Player.prototype.update = function(du){
     }
 
     this.getStance();
+
+    console.log(this.halfWidth);
 
     this.cx = this.nextX;
     this.cy = this.nextY;
@@ -240,18 +244,22 @@ Player.prototype.resolve = function(hitEntity){
 
     var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
     if (d1 === minimum) {
+        console.log("d1");
         this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
     }
     else if (d2 === minimum) {
+        console.log("d2");
         this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
     }
     else if (d3 === minimum) {
+        console.log("d3");
         this.isGrounded = true;
         this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
     }
     else{
+        console.log("d4");
         this.velY = 0;
-        this.nextY =hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
+        this.nextY = hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
     }
     this.resolveTries += 1;
 }
@@ -259,6 +267,7 @@ Player.prototype.resolve = function(hitEntity){
 Player.prototype.getStance = function(){
     //Player is standing still looking right
     //Finished
+    this.oldStance = this.stance;
     if (this.velX === 0){
         if (this.Xdirection > 0){
             if (!this.isGrounded){
@@ -432,6 +441,9 @@ Player.prototype.getStance = function(){
     }
     if (!(this.stance === 3 || this.stance === 2 || this.stance >= 20)){
         this.hasShot = false;
+    }
+    if (this.oldStance != this.stance){
+        this.animationFrame = 0;
     }
 }
 
