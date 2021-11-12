@@ -508,13 +508,33 @@ Tile.prototype.setTile = function(){
         this.sy = 448;
         // 512,448
     }
-    else if(this.id ==='DL'){
+    else if(this.id ==='DL1'){
         this.collidable = true;
 
         this.sx = 512;
         this.sy = 512;
         // 512,512
-        //width 128, height 256
+    }
+    else if(this.id ==='DL2'){
+        this.collidable = true;
+
+        this.sx = 512;
+        this.sy = 576;
+        // 512,512
+    }
+    else if(this.id ==='DL3'){
+        this.collidable = true;
+
+        this.sx = 512;
+        this.sy = 640;
+        // 512,512
+    }
+    else if(this.id ==='DL4'){
+        this.collidable = true;
+
+        this.sx = 512;
+        this.sy = 704;
+        // 512,512
     }
     else if(this.id ==='|#L'){
         this.collidable = false;
@@ -571,6 +591,30 @@ Tile.prototype.setTile = function(){
         this.sx = 576;
         this.sy = 448;
         // 576,448
+    }
+    else if(this.id ==='DL5'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 512;
+    }
+    else if(this.id ==='DL6'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 576;
+    }
+    else if(this.id ==='DL7'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 640;
+    }
+    else if(this.id ==='DL8'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 704;
     }
     else if(this.id ==='|_L'){
         this.collidable = false;
@@ -633,12 +677,26 @@ Tile.prototype.setTile = function(){
 
         this.sx = 640;
         this.sy = 512;
-        this.width = 128;
-        this.halfWidth = 64;
-        this.height = 256;
-        this.halfHeight = 128;
         // 640,512
-        //width 128, height 256
+    }
+    else if(this.id ==='DR2'){
+        this.collidable = true;
+
+        this.sx = 640;
+        this.sy = 576;
+    }
+
+    else if(this.id ==='DR3'){
+        this.collidable = true;
+
+        this.sx = 640;
+        this.sy = 640;
+    }
+    else if(this.id ==='DR4'){
+        this.collidable = true;
+
+        this.sx = 640;
+        this.sy = 704;
     }
     else if(this.id ==='_|L'){
         this.collidable = false;
@@ -695,6 +753,33 @@ Tile.prototype.setTile = function(){
         this.sx = 704;
         this.sy = 448;
         // 704,448
+    }
+
+    else if(this.id ==='DR5'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 512;
+        // 640,512
+    }
+    else if(this.id ==='DR6'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 576;
+    }
+
+    else if(this.id ==='DR7'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 640;
+    }
+    else if(this.id ==='DR8'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 704;
     }
     else if(this.id ==='#|L'){
         this.collidable = false;
