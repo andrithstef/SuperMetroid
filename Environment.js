@@ -25,22 +25,25 @@ Environment.prototype.createGrid = function(){
         for (var c = 0; c < Map.gameMap[r].length; c++){
 
             var newTile = new Tile({id: Map.gameMap[r][c],
-                                   cx: c*64,
-                                   cy: r*64});
+                                   cx: (c+1)*64 - 32,
+                                   cy: (r+1)*64 - 32});
 
 
-            if (newTile.isCollidable){
-                console.log("we're in")
-                //this.tilesColl.push(newTile);
-                console.log("and got here")
+            if (newTile.isCollidable()){
+                console.log(newTile);
+                this.tilesColl.push(newTile);
+                //console.log("and got here");
             //
             }
-            else if (!newTile.isCollidable){
+            else if (!newTile.isCollidable()){
+                console.log(newTile);
                 this.tilesBack.push(newTile);
             }
         }
     }
     this.registerGrid();
+    console.log(this.tilesColl);
+    console.log(this.tilesBack);
 };
 
 Environment.prototype.registerGrid = function(){
@@ -54,19 +57,22 @@ Environment.prototype.render = function(ctx){
 
     //creates an infinite load so not this but essentially this
     for (var l = 0; l<this.tilesBack.length; l++){
-        // ctx.drawImage(this.tileSheet, this.tilesBack[l].sx, this.tilesBack[l].sy,
-        //               this.tilesBack[l].width, this.tilesBack[l].height,
-        //               this.tilesBack[l].cx, this.tilesBack[l].cy,
-        //               this.tilesBack[l].width, this.tilesBack[l].height)
-        //
+        //console.log(l);
+        ctx.drawImage(this.tileSheet, this.tilesBack[l].sx, this.tilesBack[l].sy,
+                       this.tilesBack[l].width, this.tilesBack[l].height,
+                       this.tilesBack[l].cx - g_camera.cx - this.tilesBack[l].halfWidth,
+                       this.tilesBack[l].cy - g_camera.cy - this.tilesBack[l].halfHeight,
+                       this.tilesBack[l].width, this.tilesBack[l].height)
+        
         // g_camera.cy,2*s.w,2*s.h
     }
     for (var i = 0; i<this.tilesColl.length; i++){
-        // ctx.drawImage(this.tileSheet, this.tilesColl[i].sx, this.tilesColl[i].sy,
-        //               this.tilesColl[i].width, this.tilesColl[i].height,
-        //               this.tilesColl[i].cx, this.tilesColl[i].cy,
-        //               this.tilesColl[i].width, this.tilesColl[i].height)
-        //
+        ctx.drawImage(this.tileSheet, this.tilesColl[i].sx, this.tilesColl[i].sy,
+                       this.tilesColl[i].width, this.tilesColl[i].height,
+                       this.tilesColl[i].cx - g_camera.cx - this.tilesColl[i].halfWidth,
+                       this.tilesColl[i].cy - g_camera.cy - this.tilesColl[i].halfHeight,
+                       this.tilesColl[i].width, this.tilesColl[i].height)
+        
     }
 
 };
