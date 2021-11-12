@@ -82,12 +82,15 @@ Camera.prototype.updateCamera = function(cx, cy){
     this.cx = cx + this.xThreshold;
   }
 
+  /*
   if (cy > this.cy + this.yThreshold) {
     this.cy = cy - this.yThreshold;
   }
   else if (cy < this.cy - this.yThreshold){
     this.cy = cy + this.yThreshold;
   }
+  */
+ this.cy = cy + 400;
 
   //Can't move camera too far
   if(this.cx < 0){

@@ -46,6 +46,8 @@ Player.prototype.Ydirection = 1;
 
 Player.prototype.shape = "Rect";
 
+Player.prototype.scale = 1.5;
+
 Player.prototype.stance = 1;
 Player.prototype.oldStance = 1;
 Player.prototype.animationFrame = 0;
@@ -121,7 +123,6 @@ Player.prototype.update = function(du){
         this.movingJump = 0;
     }
 
-    var oldX = this.cx, oldY = this.cy;
     this.nextY = this.cy + this.velY * du;
     this.nextX = this.cx + this.velX * du;
 
@@ -146,10 +147,6 @@ Player.prototype.update = function(du){
     //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
-        console.log(this.cx);
-        console.log(this.cy);
-        console.log(g_camera.cx);
-        console.log(g_camera.cy);
     }
 
     this.isGrounded = false;
@@ -162,7 +159,6 @@ Player.prototype.update = function(du){
     }
 
     this.getStance();
-
 
     this.cx = this.nextX;
     this.cy = this.nextY;
@@ -201,7 +197,6 @@ Player.prototype.update = function(du){
     }
 */
     this.updateAnimationFrame();
-    this.spriteData = this.getSprite();
     spatialManager.register(this);
 
 }
@@ -216,7 +211,16 @@ Player.prototype.isColliding = function(entity){
 
 Player.prototype.render = function(ctx){
     var s = this.getSprite();
-    ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w,2*s.h);
+    this.halfHeight *= this.scale;
+    this.halfWidth *= this.scale;
+    this.bulletX -= this.cx;
+    this.bulletX *= this.scale;
+    this.bulletX += this.cx;
+    this.bulletY -= this.cy;
+    this.bulletY *= this.scale;
+    this.bulletY += this.cy;
+    console.log(this.scale);
+    ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
 
 }
 
@@ -532,8 +536,8 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = -1;
 
-            this.bulletX  = this.cx + 20;
-            this.bulletY = this.cy - 35;
+            this.bulletX  = this.cx + 25;
+            this.bulletY = this.cy - 38;
             return{
                 x : 110,
                 y : 13,
@@ -549,8 +553,8 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 1;
 
-            this.bulletX  = this.cx + 18;
-            this.bulletY = this.cy - 6;
+            this.bulletX  = this.cx + 36;
+            this.bulletY = this.cy + 15;
             return{
                 x : 504,
                 y : 19,
@@ -886,7 +890,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx;
-            this.bulletY = this.cy - 25;
+            this.bulletY = this.cy - 40;
             return{
                 x : 311,
                 y : 137,
@@ -902,7 +906,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx + 3;
-            this.bulletY = this.cy -25;
+            this.bulletY = this.cy - 40;
             return{
                 x : 309,
                 y : 192,

@@ -36,7 +36,6 @@ Environment.prototype.createGrid = function(){
             //
             }
             else if (!newTile.isCollidable()){
-                console.log(newTile);
                 this.tilesBack.push(newTile);
             }
         }
