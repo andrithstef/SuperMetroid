@@ -22,10 +22,10 @@ Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
 Player.prototype.gravity = 0.5;
-Player.prototype.accel = 1.5;
+Player.prototype.accel = 1.4;
 Player.prototype.friction = 0.4;
-Player.prototype.maxSpeed = 8;
-Player.prototype.jumpSpeed = 17;
+Player.prototype.maxSpeed = 10;
+Player.prototype.jumpSpeed = 22;
 Player.prototype.cx = 500;
 Player.prototype.cy = 300;
 Player.prototype.velX = 0;
@@ -219,7 +219,6 @@ Player.prototype.render = function(ctx){
     this.bulletY -= this.cy;
     this.bulletY *= this.scale;
     this.bulletY += this.cy;
-    console.log(this.scale);
     ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
 
 }
