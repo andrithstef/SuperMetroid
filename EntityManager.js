@@ -11,6 +11,7 @@
 
 
 function EntityManager(){
+    //this._map = new Map();
     this._player = new Player();
     this._bullets = [];
     this._environment = new Environment();
@@ -35,7 +36,7 @@ EntityManager.prototype._forEachOf = function(aCategory, fn) {
 
 // PUBLIC METHODS
 
-// A special return value, udsed by other objects,
+// A special return value, used by other objects,
 // to request the blessed release of death!
 //
 EntityManager.prototype.KILL_ME_NOW = -1,
@@ -71,7 +72,9 @@ EntityManager.prototype.update = function(du) {
 
 EntityManager.prototype.render = function(ctx) {
 
+
     this._environment.render(ctx);
+
 
     //render bullets
     for (var i = 0; i<this._bullets.length; i++){
@@ -87,6 +90,7 @@ EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir){
     var yVel = ydir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
     this._bullets.push(new Bullet(cx, cy, xVel, yVel));
 }
+
 
 // Entity.prototype.getSpatialID = function(){
 //     return this.spatialID ++;

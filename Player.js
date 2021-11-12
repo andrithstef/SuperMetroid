@@ -1,6 +1,8 @@
 function Player(descr){
     this.setup(descr);
 
+    this.halfHeight = 50;
+    this.halfWidth = 20;
 }
 
 const spriteSheet = new Image();
@@ -14,10 +16,12 @@ Player.prototype.GO_UP = 'W'.charCodeAt(0);
 Player.prototype.GO_DOWN = 'S'.charCodeAt(0);
 Player.prototype.AIM_UP = 'E'.charCodeAt(0);
 Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0);
+Player.prototype.nextX;
+Player.prototype.nextY;
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
-Player.prototype.gravity = 0.6;
+Player.prototype.gravity = 0.5;
 Player.prototype.accel = 1.5;
 Player.prototype.friction = 0.4;
 Player.prototype.maxSpeed = 8;
@@ -29,11 +33,11 @@ Player.prototype.cy = 700;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
-Player.prototype.isKneeling = false;
+Player.prototype.movingJump = false;
 
-Player.prototype.halfWidth = 23;
-Player.prototype.halfHeight = 50;
+Player.prototype.hasShot = false;
 
+Player.prototype.isJumping = false;
 Player.prototype.isGrounded = false;
 Player.prototype.jumpFrame = 0;
 
@@ -125,6 +129,7 @@ Player.prototype.update = function(du){
 
 
     //make sure we dont fall off the level for testing
+
     if (this.nextX + this.halfWidth - g_camera.cx > g_canvas.width || this.nextX - this.halfWidth < 0){
         if(this.nextX + this.halfWidth - g_camera.cx > g_canvas.width) this.nextX = g_canvas.width - this.halfWidth + g_camera.cx;
         else this.nextX = this.halfWidth;
@@ -151,9 +156,11 @@ Player.prototype.update = function(du){
     while(hitData){
         this.resolve(hitData);
         hitData = this.findCollision()
+
     }
 
     this.getStance();
+
 
     this.cx = this.nextX;
     this.cy = this.nextY;
@@ -197,6 +204,7 @@ Player.prototype.update = function(du){
 
 }
 
+
 Player.prototype.isColliding = function(entity){
     return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
         && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
@@ -207,6 +215,7 @@ Player.prototype.isColliding = function(entity){
 Player.prototype.render = function(ctx){
     var s = this.getSprite();
     ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w,2*s.h);
+
 }
 
 Player.prototype.jump = function(){
@@ -263,6 +272,7 @@ Player.prototype.getStance = function(){
     //Player is standing still looking right
     //Finished
     this.oldStance = this.stance;
+
     if (this.velX === 0){
         if (this.Xdirection > 0){
             if (!this.isGrounded){
@@ -439,6 +449,7 @@ Player.prototype.getStance = function(){
     }
     if (this.oldStance != this.stance){
         this.animationFrame = 0;
+
     }
 }
 
@@ -917,6 +928,7 @@ Player.prototype.getSprite = function(){
             this.halfHeight = 35;
             this.halfWidth = 25;
 
+
             this.bulletXvel = -1;
             this.bulletYvel = 1;
 
@@ -938,6 +950,7 @@ Player.prototype.getSprite = function(){
 
             this.bulletX = this.cx + 10;
             this.bulletY = this.cy + 35;
+
             return{
                 x : 446,
                 y : 150,

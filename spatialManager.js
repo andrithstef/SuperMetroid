@@ -24,6 +24,7 @@ _nextSpatialID : 1, // make all valid IDs non-falsey (i.e. don't start at 0)
 
 _entities : [],
 
+
 // "PRIVATE" METHODS
 //
 // <none yet>
@@ -76,7 +77,7 @@ unregister: function(entity) {
     this._entities[spatialID] = null;
 },
 
-findEntityInRange: function(posX, posY, radius) {
+findEntities: function(posX, posY, width, height) {
 
     // TODO: Fixing collision between rectangles and squares
     for (var ID in this._entities) {
@@ -125,5 +126,7 @@ rectVsRect: function(e1, e2){
         && e1.nextX + e1.halfWidth > e2.cx - e2.halfWidth
         && e1.nextY - e1.halfHeight < e2.cy + e2.halfHeight
         && e1.nextY + e1.halfHeight > e2.cy - e2.halfHeight);
+}
+
 }
 }

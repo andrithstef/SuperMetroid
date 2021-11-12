@@ -15,6 +15,7 @@ const bulletSheet = 'resrc/Weapons.png';
 
 Bullet.prototype = new Entity();
 
+
 Bullet.prototype.rad = 5;
 Bullet.prototype.speed = 30;
 
@@ -39,8 +40,10 @@ Bullet.prototype.update = function(du){
     this.nextX = this.cx + this.velX*du;
     this.nextY = this.cy + this.velY*du;
 
+
     var hitData = this.findCollision();
     if(hitData){
+
         return entityManager.KILL_ME_NOW;
     }
 
@@ -50,6 +53,4 @@ Bullet.prototype.update = function(du){
     spatialManager.register(this);
 
 }
-
-
 
