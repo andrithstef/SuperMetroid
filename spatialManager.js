@@ -127,6 +127,4 @@ rectVsRect: function(e1, e2){
         && e1.nextY - e1.halfHeight < e2.cy + e2.halfHeight
         && e1.nextY + e1.halfHeight > e2.cy - e2.halfHeight);
 }
-
-}
-}
+};

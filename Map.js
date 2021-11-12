@@ -62,7 +62,7 @@ Map.prototype.render = function(ctx){
         ci = 0;
     }
 }
-*/
+
 
 Map.prototype.x_tiles = 20;
 Map.prototype.y_tiles = 16;
