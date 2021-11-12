@@ -51,6 +51,8 @@ Environment.prototype.registerGrid = function(){
 };
 
 Environment.prototype.render = function(ctx){
+
+    //creates an infinite load so not this but essentially this
     for (var l = 0; l<this.tilesBack.length; l++){
         // ctx.drawImage(this.tileSheet, this.tilesBack[l].sx, this.tilesBack[l].sy,
         //               this.tilesBack[l].width, this.tilesBack[l].height,
