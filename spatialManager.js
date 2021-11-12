@@ -73,16 +73,7 @@ unregister: function(entity) {
     var spatialID = entity.getSpatialID();
 
     // TODO: Hacky solution, can be changed
-    this._entities[spatialID] = {
-        posX: 0 - 2*entity.getRadius(),
-        posY: 0 - 2*entity.getRadius(),
-
-        radius: 0,
-
-        realEntity: entity,
-
-        shape: entity.shape
-    }
+    this._entities[spatialID] = null;
 
 
 },
@@ -107,22 +98,25 @@ render: function(ctx) {
     
     for (var ID in this._entities) {
         var e = this._entities[ID];
-        if(e.shape == "Rect") {
-            util.strokeBox(ctx, e.posX, e.posY, e.width, e.height, "green");
-        } else {
-            util.strokeCircle(ctx, e.posX, e.posY, e.radius);
+        if (e){
+            if(e.shape == "Rect") {
+                util.strokeBox(ctx, e.posX, e.posY, e.width, e.height, "green");
+            } else {
+                util.strokeCircle(ctx, e.posX, e.posY, e.radius);
+            }
         }
-        
     }
     ctx.strokeStyle = oldStyle;
 },
 
 findCollision: function(entity){
     for (var e in this._entities) {
-        var ent = this._entities[e].realEntity;
-        if (ent.getSpatialID() != entity.getSpatialID()){  
-            if (this.rectVsRect(entity, ent)){
-                return ent;
+        if (this._entities[e]){
+            var ent = this._entities[e].realEntity;
+            if (ent.getSpatialID() != entity.getSpatialID()){  
+                if (this.rectVsRect(entity, ent)){
+                    return ent;
+                }
             }
         }
     }

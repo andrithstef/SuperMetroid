@@ -24,8 +24,8 @@ Player.prototype.maxSpeed = 8;
 Player.prototype.jumpSpeed = 17;
 console.log(g_camera.cx);
 console.log(g_camera.cy);
-Player.prototype.cx = 100;
-Player.prototype.cy = 400;
+Player.prototype.cx = 500;
+Player.prototype.cy = 500;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -146,6 +146,8 @@ Player.prototype.update = function(du){
 
     this.getStance();
 
+    this.isGrounded = false;
+    this.resolveTries = 0;
     var hitData = this.findCollision();
     while(hitData){
         this.resolve(hitData);
@@ -220,6 +222,11 @@ Player.prototype.shoot = function(){
 }
 
 Player.prototype.resolve = function(hitEntity){
+    if (this.resolveTries > 10){
+        this.isGrounded = true;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+        return;
+    }
     var d1;
     var d2;
     var d3;
@@ -245,6 +252,7 @@ Player.prototype.resolve = function(hitEntity){
         this.velY = 0;
         this.nextY =hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
     }
+    this.resolveTries += 1;
 }
 
 Player.prototype.getStance = function(){
