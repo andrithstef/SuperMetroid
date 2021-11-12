@@ -740,7 +740,7 @@ Tile.prototype.setTile = function(){
         this.sy = 320;
         // 704,320
     }
-    else if(this.id ==='STR'){
+    else if(this.id ==='StBR'){
         this.collidable = true;
 
         this.sx = 704;
@@ -907,7 +907,7 @@ Tile.prototype.setTile = function(){
         this.sy = 320;
         // 832,320
     }
-    else if(this.id ==='StBR'){
+    else if(this.id ==='STR'){
         this.collidable = true;
         this.sx = 832;
         this.sy = 384;
@@ -937,7 +937,7 @@ Tile.prototype.setTile = function(){
         this.sy = 640;
 896    // 832,640
     }
-    else if(this.id ==='[R'){
+    else if(this.id ==='[L'){
         this.collidable = false;
         this.sx = 896;
         this.sy = 0;
@@ -950,7 +950,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 896,64
     }
-    else if(this.id ==='!FT'){
+    else if(this.id ==='!FB'){
         this.collidable = false;
         this.sx = 896;
         this.sy = 128;
@@ -998,7 +998,7 @@ Tile.prototype.setTile = function(){
         this.sy = 640;
         // 896,640
     }
-    else if(this.id ==='[L'){
+    else if(this.id ==='[R'){
         this.collidable = false;
         this.sx = 960;
         this.sy = 0;
@@ -1010,7 +1010,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 960,64
     }
-    else if(this.id ==='!FB'){
+    else if(this.id ==='!FT'){
         this.collidable = false;
         this.sx = 960;
         this.sy = 128;
@@ -1052,7 +1052,7 @@ Tile.prototype.setTile = function(){
         this.sy = 512;
         //960,512
     }
-    else if(this.id ===']R'){
+    else if(this.id ===']L'){
         this.collidable = false;
         this.sx = 1024;
         this.sy = 0;
@@ -1064,7 +1064,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 1024,64
     }
-    else if(this.id ==='/FB'){
+    else if(this.id ==='/FT'){
         this.collidable = false;
         this.sx = 1024;
         this.sy = 128;
@@ -1106,7 +1106,7 @@ Tile.prototype.setTile = function(){
         this.sy = 512;
         // 1024,512
     }
-    else if(this.id ===']L'){
+    else if(this.id ===']R'){
         this.collidable = false;
         this.sx = 1088;
         this.sy = 0;
@@ -1118,7 +1118,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 1088,64
     }
-    else if(this.id ==='/FT'){
+    else if(this.id ==='/FB'){
         this.collidable = false;
         this.sx = 1088;
         this.sy = 128;
