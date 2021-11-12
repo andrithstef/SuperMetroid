@@ -468,7 +468,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx + 10;
+            this.bulletX  = this.cx + 15;
             this.bulletY = this.cy - 9;
             return{
                 x : this.dists[1][this.animationFrame],
@@ -485,7 +485,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 10;
+            this.bulletX  = this.cx - 15;
             this.bulletY = this.cy - 9;
             return{
                 x : this.dists[0][this.animationFrame],
@@ -824,7 +824,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx + 10;
+            this.bulletX  = this.cx + 15;
             this.bulletY = this.cy;
             return{
                 x : 380,
@@ -840,7 +840,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 10;
+            this.bulletX  = this.cx - 15;
             this.bulletY = this.cy;
             return{
                 x : 381,

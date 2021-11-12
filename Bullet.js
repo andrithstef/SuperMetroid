@@ -16,7 +16,7 @@ const bulletSheet = 'resrc/Weapons.png';
 Bullet.prototype = new Entity();
 
 
-Bullet.prototype.rad = 5;
+Bullet.prototype.rad = 7;
 Bullet.prototype.speed = 30;
 
 Bullet.prototype.lifeSpan = 2000 / 16.666;
