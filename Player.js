@@ -26,10 +26,8 @@ Player.prototype.accel = 1.5;
 Player.prototype.friction = 0.4;
 Player.prototype.maxSpeed = 8;
 Player.prototype.jumpSpeed = 17;
-console.log(g_camera.cx);
-console.log(g_camera.cy);
-Player.prototype.cx = 100;
-Player.prototype.cy = 700;
+Player.prototype.cx = 500;
+Player.prototype.cy = 300;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -148,6 +146,10 @@ Player.prototype.update = function(du){
     //Shoot
     if (eatKey(this.SHOOT)){
         this.shoot();
+        console.log(this.cx);
+        console.log(this.cy);
+        console.log(g_camera.cx);
+        console.log(g_camera.cy);
     }
 
     this.isGrounded = false;

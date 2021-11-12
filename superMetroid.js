@@ -73,5 +73,7 @@ function renderSimulation(ctx) {
 
 
 // Kick it off
+
+
 entityManager.init();
 g_main.init();

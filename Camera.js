@@ -12,12 +12,8 @@ var moveVerticalCameraBuffer = cameraHeight/3;
 Camera.prototype.xThreshold = cameraWidth/9;
 Camera.prototype.yThreshold = cameraHeight/9;
 
-var map = new Map();
-
-Camera.prototype.width = map.gameMap[0].length*64;
-Camera.prototype.height = map.gameMap.length*64;
-console.log(map.gameMap[0].length*64);
-console.log(map.gameMap.length*64);
+Camera.prototype.width = Map.gameMap[0].length*64;
+Camera.prototype.height = Map.gameMap.length*64;
 
 Camera.prototype.cameraWidth = cameraWidth;
 Camera.prototype.moveHorizontalCameraBuffer = moveHorizontalCameraBuffer;
