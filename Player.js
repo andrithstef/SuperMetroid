@@ -6,7 +6,7 @@ function Player(descr){
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "resrc/samus_sprite_sheet.gif"
+spriteSheet.src = "resrc/samus_sprite_sheet_upscaled.gif"
 
 Player.prototype = new Entity();
 
@@ -219,7 +219,7 @@ Player.prototype.render = function(ctx){
     this.bulletY -= this.cy;
     this.bulletY *= this.scale;
     this.bulletY += this.cy;
-    ctx.drawImage(spriteSheet,s.x,s.y,s.w,s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
+    ctx.drawImage(spriteSheet,s.x*4,4*s.y,4*s.w,4*s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
 
 }
 
