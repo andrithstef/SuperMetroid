@@ -68,7 +68,7 @@ function updateSimulation(du) {
 
 function renderSimulation(ctx) {
     entityManager.render(ctx);
-    //spatialManager.render(ctx);
+    spatialManager.render(ctx);
 }
 
 

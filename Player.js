@@ -228,6 +228,7 @@ Player.prototype.jump = function(){
         this.movingJump = true;
     }
     this.isGrounded = false;
+    this.hasJumped = true;
     this.velY = -this.jumpSpeed;
     this.hasShot = false;
     this.framenr = 0;
@@ -264,6 +265,7 @@ Player.prototype.resolve = function(hitEntity){
     }
     else if (d3 === minimum) {
         this.isGrounded = true;
+        this.hasJumped = false;
         this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
     }
     else{
@@ -295,6 +297,9 @@ Player.prototype.getStance = function(){
                 }
                 else if (this.hasShot){
                     this.stance = 22;
+                }
+                else if (!this.hasJumped){
+                    this.stance = 38;
                 }
                 else{
                     this.stance = 18;
@@ -345,6 +350,9 @@ Player.prototype.getStance = function(){
                 }
                 else if (this.hasShot){
                     this.stance = 23;
+                }
+                else if (!this.hasJumped){
+                    this.stance = 39;
                 }
                 else{
                     this.stance = 19;
@@ -397,6 +405,9 @@ Player.prototype.getStance = function(){
             else if (this.hasShot){
                 this.stance = 22;
             }
+            else if (!this.hasJumped){
+                this.stance = 38;
+            }
             else{
                 this.stance = 36;
             }
@@ -431,6 +442,9 @@ Player.prototype.getStance = function(){
             }
             else if (this.hasShot){
                 this.stance = 23;
+            }
+            else if (!this.hasJumped){
+                this.stance = 39;
             }
             else{
                 this.stance = 37;
@@ -808,7 +822,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 30;
+            this.bulletX  = this.cx - 35;
             this.bulletY = this.cy - 16;
             return{
                 x : this.dists[9][this.animationFrame],
@@ -824,7 +838,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx + 15;
+            this.bulletX  = this.cx + 30;
             this.bulletY = this.cy;
             return{
                 x : 380,
@@ -837,7 +851,7 @@ Player.prototype.getSprite = function(){
             this.halfHeight = 35;
             this.halfWidth = 21;
 
-            this.bulletXvel = -1;
+            this.bulletXvel = -35;
             this.bulletYvel = 0;
 
             this.bulletX  = this.cx - 15;
@@ -1074,11 +1088,44 @@ Player.prototype.getSprite = function(){
                 w : this.widths[15][this.animationFrame]+1,
                 h : 44
             }
+        case 38: 
+            //Running left, shooting vertically down
+            this.halfHeight = 45;
+            this.halfWidth = this.widths[16][this.animationFrame]+1;
+
+            this.bulletXvel = -1;
+            this.bulletYvel = 0;
+
+            this.bulletX = this.cx - 35;
+            this.bulletY = this.cy;
+            return{
+                x : this.dists[16][this.animationFrame],
+                y : 138,
+                w : this.widths[16][this.animationFrame]+1,
+                h : 45
+            }
+        case 39: 
+            //Running left, shooting vertically down
+            this.halfHeight = 45;
+            this.halfWidth = this.widths[17][this.animationFrame]+1;
+
+            this.bulletXvel = -1;
+            this.bulletYvel = 0;
+
+            this.bulletX = this.cx - 35;
+            this.bulletY = this.cy;
+            return{
+                x : this.dists[17][this.animationFrame],
+                y : 192,
+                w : this.widths[17][this.animationFrame]+1,
+                h : 45
+            }
     }
 }
 
 Player.prototype.updateAnimationFrame = function(){
     if (!this.isGrounded){
+        if (!this.hasJumped) return this.getFallingAnimationFrame();
         if (this.velY < 0){
             if (this.movingJump) return this.getMovingUpAnimationFrame();
             this.getUpAnimationFrame();
@@ -1119,6 +1166,14 @@ Player.prototype.getMovingUpAnimationFrame = function(){
     }
 }
 
+Player.prototype.getFallingAnimationFrame = function(){
+    this.framenr += 1;
+    if (this.framenr >= this.framestoAnimationFrame){
+        if (this.animationFrame < 8 ) this.animationFrame += 1;
+        this.framnr = 0;
+    }
+}
+
 
 //Sprite sheet sizes
 Player.prototype.widths = [
@@ -1137,7 +1192,9 @@ Player.prototype.widths = [
     [26, 29, 32, 34, 33, 26, 28, 32, 35, 34], //Running right, shooting down
     [26, 29, 32, 34, 33, 26, 28, 32, 35, 34],  //Running left, shooting down
     [18, 17, 22, 18, 18, 17, 21, 20, 20], //running right jumping
-    [18, 17, 22, 18, 18, 17, 21, 20, 20]  //running left jumping
+    [18, 17, 22, 18, 18, 17, 21, 20, 20],  //running left jumping
+    [19, 19, 19, 18, 18, 18, 18, 18, 18], //Falling right
+    [19, 19, 19, 18, 18, 18, 18, 18, 18]  //Falling left
 ];
 
 Player.prototype.dists = [
@@ -1156,5 +1213,7 @@ Player.prototype.dists = [
     [457, 493, 529, 571, 616, 659, 696, 733, 773, 820], //Running right, shooting down
     [582, 545, 462, 504, 618, 659, 692, 730, 772, 815],  //Running left, shooting down
     [9, 37, 66, 98, 125, 155, 184, 219, 250], //running right jumping
-    [9, 40, 70, 102, 131, 160, 188, 217, 245]  //running left jumping
+    [9, 40, 70, 102, 131, 160, 188, 217, 245],  //running left jumping
+    [500, 500, 500, 527, 527, 527, 555, 555, 555], //Falling right
+    [498, 498, 498, 529, 529, 529, 559, 559, 559]  //Falling left
 ];
