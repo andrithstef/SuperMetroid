@@ -903,7 +903,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx;
-            this.bulletY = this.cy - 40;
+            this.bulletY = this.cy - 60;
             return{
                 x : 311,
                 y : 137,
@@ -919,7 +919,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx + 3;
-            this.bulletY = this.cy - 40;
+            this.bulletY = this.cy - 60;
             return{
                 x : 309,
                 y : 192,
