@@ -838,7 +838,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx + 30;
+            this.bulletX  = this.cx + 40;
             this.bulletY = this.cy;
             return{
                 x : 380,
@@ -854,7 +854,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -35;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 15;
+            this.bulletX  = this.cx - 40;
             this.bulletY = this.cy;
             return{
                 x : 381,
@@ -1089,15 +1089,16 @@ Player.prototype.getSprite = function(){
                 h : 44
             }
         case 38: 
-            //Running left, shooting vertically down
+            //Falling right
             this.halfHeight = 45;
             this.halfWidth = this.widths[16][this.animationFrame]+1;
 
-            this.bulletXvel = -1;
+            this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX = this.cx - 35;
-            this.bulletY = this.cy;
+            this.bulletX  = this.cx + 40;
+            this.bulletY = this.cy - 16;
+
             return{
                 x : this.dists[16][this.animationFrame],
                 y : 138,
@@ -1105,15 +1106,15 @@ Player.prototype.getSprite = function(){
                 h : 45
             }
         case 39: 
-            //Running left, shooting vertically down
+            //Falling left
             this.halfHeight = 45;
             this.halfWidth = this.widths[17][this.animationFrame]+1;
 
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX = this.cx - 35;
-            this.bulletY = this.cy;
+            this.bulletX  = this.cx - 40;
+            this.bulletY = this.cy - 16;
             return{
                 x : this.dists[17][this.animationFrame],
                 y : 192,
