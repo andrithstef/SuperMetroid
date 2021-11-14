@@ -14,6 +14,8 @@ function EntityManager(){
     //this._map = new Map();
     this._player = new Player();
     this._bullets = [];
+    this._enemies = [];
+    this._enemies.push(new Enemy());
     this._environment = new Environment();
 }
 
@@ -21,7 +23,9 @@ function EntityManager(){
 
 EntityManager.prototype._player;
 EntityManager.prototype._bullets;
+EntityManager.prototype._enemies;
 EntityManager.prototype._environment;
+
 
 
 
@@ -65,8 +69,21 @@ EntityManager.prototype.update = function(du) {
         }
     }
 
+
     //Update player
     this._player.update(du);
+
+    //update enemies
+    for (var i = 0; i<this._enemies.length; i++){
+        var status = this._enemies[i].update(du);
+
+        if (status === this.KILL_ME_NOW){
+            this._enemies.splice(i,1);
+            i -= 1;
+        }
+    }
+    
+    //update level
     this._environment.registerGrid();
 },
 
@@ -81,8 +98,14 @@ EntityManager.prototype.render = function(ctx) {
         this._bullets[i].render(ctx);
     }
 
+    //render enemies
+    for (var i = 0; i<this._enemies.length; i++){
+        this._enemies[i].render(ctx);
+    }
+
     //render player
     this._player.render(ctx);
+
 }
 
 EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir){

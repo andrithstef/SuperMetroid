@@ -6,7 +6,7 @@ function Player(descr){
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "resrc/samus_sprite_sheet_upscaled.gif"
+spriteSheet.src = "resrc/samus_more_upscaled.gif"
 
 Player.prototype = new Entity();
 
@@ -26,8 +26,8 @@ Player.prototype.accel = 1.4;
 Player.prototype.friction = 0.4;
 Player.prototype.maxSpeed = 10;
 Player.prototype.jumpSpeed = 22;
-Player.prototype.cx = 500;
-Player.prototype.cy = 300;
+Player.prototype.cx = 700;
+Player.prototype.cy = 310;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -201,16 +201,9 @@ Player.prototype.update = function(du){
 
 }
 
-
-Player.prototype.isColliding = function(entity){
-    return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
-        && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
-        && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
-        && this.nextY + this.halfHeight > entity.cy - entity.halfHeight);
-}
-
 Player.prototype.render = function(ctx){
     var s = this.getSprite();
+    //Scale stuff before drawing
     this.halfHeight *= this.scale;
     this.halfWidth *= this.scale;
     this.bulletX -= this.cx;
@@ -238,41 +231,6 @@ Player.prototype.jump = function(){
 Player.prototype.shoot = function(){
     this.hasShot = true;
     entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel);
-}
-
-Player.prototype.resolve = function(hitEntity){
-    if (this.resolveTries > 10){
-        this.isGrounded = true;
-        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
-        return;
-    }
-    var d1;
-    var d2;
-    var d3;
-    var d4;
-
-    d1 = Math.abs((this.cx + this.halfWidth) - (hitEntity.cx - hitEntity.halfWidth));
-    d2 = Math.abs((this.cx - this.halfWidth) - (hitEntity.cx + hitEntity.halfWidth));
-    d3 = Math.abs((this.cy + this.halfHeight) - (hitEntity.cy - hitEntity.halfHeight));
-    d4 = Math.abs((this.cy - this.halfHeight) - (hitEntity.cy + hitEntity.halfHeight));
-
-    var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
-    if (d1 === minimum) {
-        this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
-    }
-    else if (d2 === minimum) {
-        this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
-    }
-    else if (d3 === minimum) {
-        this.isGrounded = true;
-        this.hasJumped = false;
-        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
-    }
-    else{
-        this.velY = 0;
-        this.nextY = hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
-    }
-    this.resolveTries += 1;
 }
 
 Player.prototype.getStance = function(){
@@ -473,6 +431,7 @@ Player.prototype.getStance = function(){
 }
 
 Player.prototype.getSprite = function(){
+    console.log(this.stance);
     switch(this.stance){
         case 1:
             //Looking right
@@ -550,7 +509,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx + 25;
-            this.bulletY = this.cy - 38;
+            this.bulletY = this.cy - 43;
             return{
                 x : 110,
                 y : 13,
@@ -614,7 +573,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 0;
             this.bulletYvel = -1;
 
-            this.bulletX  = this.cx;
+            this.bulletX  = this.cx - 1;
             this.bulletY = this.cy-45;
             return{
                 x : 9,
@@ -1058,8 +1017,8 @@ Player.prototype.getSprite = function(){
             }
         case 36: 
             //Running right, jump;
-            this.halfHeight = 44;
-            this.halfWidth = this.widths[14][this.animationFrame]+1;
+            this.halfHeight = 30;
+            this.halfWidth = 30;
 
             this.bulletXvel = 1;
             this.bulletYvel = 0;
@@ -1068,14 +1027,14 @@ Player.prototype.getSprite = function(){
             this.bulletY = this.cy;
             return{
                 x : this.dists[14][this.animationFrame],
-                y : 137,
-                w : this.widths[14][this.animationFrame]+1,
-                h : 44
+                y : 542,
+                w : 30,
+                h : 30
             }
         case 37: 
-            //Running left, shooting vertically down
-            this.halfHeight = 44;
-            this.halfWidth = this.widths[15][this.animationFrame]+1;
+            //Running left, jump
+            this.halfHeight = 30;
+            this.halfWidth = 30;
 
             this.bulletXvel = -1;
             this.bulletYvel = 0;
@@ -1084,9 +1043,9 @@ Player.prototype.getSprite = function(){
             this.bulletY = this.cy;
             return{
                 x : this.dists[15][this.animationFrame],
-                y : 192,
-                w : this.widths[15][this.animationFrame]+1,
-                h : 44
+                y : 542,
+                w : 30,
+                h : 30
             }
         case 38: 
             //Falling right
@@ -1125,6 +1084,9 @@ Player.prototype.getSprite = function(){
 }
 
 Player.prototype.updateAnimationFrame = function(){
+    if (this.stance === 36 || this.stance === 37){
+        this.getFlipAnimationFrame();
+    }
     if (!this.isGrounded){
         if (!this.hasJumped) return this.getFallingAnimationFrame();
         if (this.velY < 0){
@@ -1141,6 +1103,15 @@ Player.prototype.updateAnimationFrame = function(){
         this.framenr = 0;
         this.animationFrame %= 10;
     }
+}
+
+Player.prototype.getFlipAnimationFrame = function(){
+    this.framenr += 1;
+    if (this.framenr >= this.framestoAnimationFrame){
+        this.animationFrame += 1;
+        this.framenr = 0;
+    }
+    if (this.animationFrame > 7) this.animationFrame -= 7;
 }
 
 Player.prototype.getUpAnimationFrame = function(){
@@ -1213,8 +1184,8 @@ Player.prototype.dists = [
     [375, 410, 451, 498, 546, 588, 625, 665, 712, 765],  //Running left, shooting up
     [457, 493, 529, 571, 616, 659, 696, 733, 773, 820], //Running right, shooting down
     [582, 545, 462, 504, 618, 659, 692, 730, 772, 815],  //Running left, shooting down
-    [9, 37, 66, 98, 125, 155, 184, 219, 250], //running right jumping
-    [9, 40, 70, 102, 131, 160, 188, 217, 245],  //running left jumping
+    [718, 763, 217, 269, 325, 370, 610, 662], //running right jumping
+    [468, 413, 167, 119, 75, 20, 560, 512],  //running left jumping
     [500, 500, 500, 527, 527, 527, 555, 555, 555], //Falling right
     [498, 498, 498, 529, 529, 529, 559, 559, 559]  //Falling left
 ];

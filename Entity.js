@@ -96,3 +96,44 @@ Entity.prototype.findCollision = function (){
     return spatialManager.findCollision(this);
 };
 
+Entity.prototype.resolve = function(hitEntity){
+    if (this.resolveTries > 10){
+        this.isGrounded = true;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+        return;
+    }
+    var d1;
+    var d2;
+    var d3;
+    var d4;
+
+    d1 = Math.abs((this.cx + this.halfWidth) - (hitEntity.cx - hitEntity.halfWidth));
+    d2 = Math.abs((this.cx - this.halfWidth) - (hitEntity.cx + hitEntity.halfWidth));
+    d3 = Math.abs((this.cy + this.halfHeight) - (hitEntity.cy - hitEntity.halfHeight));
+    d4 = Math.abs((this.cy - this.halfHeight) - (hitEntity.cy + hitEntity.halfHeight));
+
+    var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
+    if (d1 === minimum) {
+        this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
+    }
+    else if (d2 === minimum) {
+        this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
+    }
+    else if (d3 === minimum) {
+        this.isGrounded = true;
+        this.hasJumped = false;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+    }
+    else{
+        this.velY = 0;
+        this.nextY = hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
+    }
+    this.resolveTries += 1;
+}
+
+Entity.prototype.isColliding = function(entity){
+    return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
+        && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
+        && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
+        && this.nextY + this.halfHeight > entity.cy - entity.halfHeight);
+}
