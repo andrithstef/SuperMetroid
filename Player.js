@@ -3,65 +3,92 @@ function Player(descr){
 
     this.halfHeight = 50;
     this.halfWidth = 20;
+
+    this.isKillable = true;
+
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "resrc/samus_sprite_sheet_upscaled.gif"
+spriteSheet.src = "resrc/samus_more_upscaled.gif"
 
 Player.prototype = new Entity();
 
+//Keys
 Player.prototype.GO_LEFT = 'A'.charCodeAt(0);
 Player.prototype.GO_RIGHT = 'D'.charCodeAt(0);
 Player.prototype.GO_UP = 'W'.charCodeAt(0);
 Player.prototype.GO_DOWN = 'S'.charCodeAt(0);
 Player.prototype.AIM_UP = 'E'.charCodeAt(0);
 Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0);
-Player.prototype.nextX;
-Player.prototype.nextY;
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
-Player.prototype.gravity = 0.5;
+//movement data
 Player.prototype.accel = 1.4;
-Player.prototype.friction = 0.4;
-Player.prototype.maxSpeed = 10;
 Player.prototype.jumpSpeed = 22;
-Player.prototype.cx = 500;
-Player.prototype.cy = 300;
+Player.prototype.cx = 700;
+Player.prototype.cy = 310;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
+//This data is used to determine in which state the player is in
 Player.prototype.movingJump = false;
-
 Player.prototype.hasShot = false;
-
 Player.prototype.isJumping = false;
 Player.prototype.isGrounded = false;
-Player.prototype.jumpFrame = 0;
 
 //looking left or right?
 Player.prototype.Xdirection = 1;
 //looking down or up?
 Player.prototype.Ydirection = 1;
 
-Player.prototype.shape = "Rect";
-
+//What is the size of the player
 Player.prototype.scale = 1.5;
 
+//Information which is used to fetch sprite
 Player.prototype.stance = 1;
 Player.prototype.oldStance = 1;
+Player.prototype.spriteInfo;
 Player.prototype.animationFrame = 0;
 Player.prototype.framenr = 0;
 Player.prototype.framestoAnimationFrame = 5;
+Player.prototype.flipFramestoAnimationFrame = 4;
 
+//Where should bullets the player shoots spawn
 Player.prototype.bulletX = this.cx;
 Player.prototype.bulletY = this.cy;
 
+//How many times has the player tried to resolve a collision
+//This is used to prevent infinite loops of collision resolutions
 Player.prototype.resolveTries = 0;
+
+Player.prototype.playingBackground = false;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
 
+    this.gatherInputs(du);
+
+    this.applyPhysics(du);
+
+    this.resolveCollisions(du);
+
+    this.cx = this.nextX;
+    this.cy = this.nextY;
+
+    this.getStance();
+
+    g_camera.updateCamera(this.cx, this.cy);
+    
+    this.updateAnimationFrame();
+
+    this.updateAttributes();
+
+    spatialManager.register(this);
+
+}
+
+Player.prototype.gatherInputs = function(du){
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
             //Slow down over time
@@ -94,11 +121,17 @@ Player.prototype.update = function(du){
         this.isJumping = false;
     }
 
+    //Shoot
+    if (eatKey(this.SHOOT)){
+        this.shoot();
+    }
+}
+
+Player.prototype.applyPhysics = function(du){
     //apply gravity
     this.velY += this.gravity*du;
 
-    //correct velocity
-    //X
+    //correct Xvelocity
     if (this.velX > this.maxSpeed){
         this.velX = this.maxSpeed;
     }
@@ -106,11 +139,12 @@ Player.prototype.update = function(du){
         this.velX = -this.maxSpeed;
     }
 
-    //Y
+    //correct Yvelocity
     if (this.velY > this.maxSpeed){
         this.velY = this.maxSpeed;
     }
 
+    //Set direction in which the user is looking
     if (this.velX > 0){
         this.Xdirection = 1;
     }
@@ -118,99 +152,21 @@ Player.prototype.update = function(du){
         this.Xdirection = -1;
     }
 
+    //fix x velocity to zero if it's too small.
     if (this.velX < 0.1 && this.velX > -0.01){
         this.velX = 0;
-        this.movingJump = 0;
+        this.movingJump = false;
     }
 
+    //give us nextX and nextY
     this.nextY = this.cy + this.velY * du;
     this.nextX = this.cx + this.velX * du;
-
-
-    //make sure we dont fall off the level for testing
-
-    if (this.nextX + this.halfWidth - g_camera.cx > g_canvas.width || this.nextX - this.halfWidth < 0){
-        if(this.nextX + this.halfWidth - g_camera.cx > g_canvas.width) this.nextX = g_canvas.width - this.halfWidth + g_camera.cx;
-        else this.nextX = this.halfWidth;
-        
-    }
-    if (this.nextY - this.halfHeight < 0){
-        this.nextY = this.halfHeight;
-        this.velY = 0;
-    } /*else if(this.nextY + this.halfHeight > g_canvas.height){
-        console.log("hæ");
-        this.nextY = g_canvas.height - this.halfHeight;
-        this.velY = 0;
-        this.isGrounded = true;
-    }*/
-
-    //Shoot
-    if (eatKey(this.SHOOT)){
-        this.shoot();
-    }
-
-    this.isGrounded = false;
-    this.resolveTries = 0;
-    var hitData = this.findCollision();
-    while(hitData){
-        this.resolve(hitData);
-        hitData = this.findCollision()
-
-    }
-
-    this.getStance();
-
-    this.cx = this.nextX;
-    this.cy = this.nextY;
-
-    g_camera.updateCamera(this.cx, this.cy);
-    
-    /*
-    if(cam.moveHorizontally) {
-        if(cam.moveX) {
-            if(this.velX > 0) {
-                //this.cx -= this.velX;
-                g_camera.moveCamera2(this.cx, this.cy);
-            }
-        }
-        else{
-            if(this.velX < 0) {
-                //this.cx -= this.velX;
-                g_camera.moveCamera2(this.cx, this.cy);
-            }
-        }
-    }
-
-    if(cam.moveVertically) {
-        if(cam.moveY) {
-            if(this.velY > 0) {
-                //this.cy -= this.velY;
-                g_camera.moveCamera(0,1.5*this.velY);
-            }
-        }
-        else {
-            if(this.velY < 0) {
-                //this.cy -= this.velY;
-                g_camera.moveCamera(0,1.5*this.velY);
-            }
-        }
-    }
-*/
-    this.updateAnimationFrame();
-    spatialManager.register(this);
-
 }
 
 
-Player.prototype.isColliding = function(entity){
-    return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
-        && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
-        && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
-        && this.nextY + this.halfHeight > entity.cy - entity.halfHeight);
-}
+Player.prototype.updateAttributes = function(){
+    this.spriteInfo = this.getSprite();
 
-Player.prototype.render = function(ctx){
-    var s = this.getSprite();
     this.halfHeight *= this.scale;
     this.halfWidth *= this.scale;
     this.bulletX -= this.cx;
@@ -219,67 +175,41 @@ Player.prototype.render = function(ctx){
     this.bulletY -= this.cy;
     this.bulletY *= this.scale;
     this.bulletY += this.cy;
-    ctx.drawImage(spriteSheet,s.x*4,4*s.y,4*s.w,4*s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
+}
+
+Player.prototype.render = function(ctx){
+    var s = this.spriteInfo;
+    
+    //Draw the image
+    ctx.drawImage(spriteSheet,
+        s.x*4,4*s.y,4*s.w,4*s.h,
+        this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,
+        2*s.w*this.scale,2*s.h*this.scale);
 
 }
 
 Player.prototype.jump = function(){
-    if (this.velX > 0.01 || this.velX < -0.01){
+    if (this.velX > 0.1 || this.velX < -0.1){
         this.movingJump = true;
     }
     this.isGrounded = false;
     this.hasJumped = true;
     this.velY = -this.jumpSpeed;
     this.hasShot = false;
-    this.framenr = 0;
-    this.animationFrame = 0;
 }
 
 Player.prototype.shoot = function(){
     this.hasShot = true;
-    entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel);
-}
-
-Player.prototype.resolve = function(hitEntity){
-    if (this.resolveTries > 10){
-        this.isGrounded = true;
-        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
-        return;
-    }
-    var d1;
-    var d2;
-    var d3;
-    var d4;
-
-    d1 = Math.abs((this.cx + this.halfWidth) - (hitEntity.cx - hitEntity.halfWidth));
-    d2 = Math.abs((this.cx - this.halfWidth) - (hitEntity.cx + hitEntity.halfWidth));
-    d3 = Math.abs((this.cy + this.halfHeight) - (hitEntity.cy - hitEntity.halfHeight));
-    d4 = Math.abs((this.cy - this.halfHeight) - (hitEntity.cy + hitEntity.halfHeight));
-
-    var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
-    if (d1 === minimum) {
-        this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
-    }
-    else if (d2 === minimum) {
-        this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
-    }
-    else if (d3 === minimum) {
-        this.isGrounded = true;
-        this.hasJumped = false;
-        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
-    }
-    else{
-        this.velY = 0;
-        this.nextY = hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
-    }
-    this.resolveTries += 1;
+    gunshot.play();
+    entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
 }
 
 Player.prototype.getStance = function(){
-    //Player is standing still looking right
-    //Finished
+    //Determine in which state the player was
     this.oldStance = this.stance;
 
+    //A lot of ugly nested if statements
+    //Look away
     if (this.velX === 0){
         if (this.Xdirection > 0){
             if (!this.isGrounded){
@@ -333,8 +263,6 @@ Player.prototype.getStance = function(){
             }
         }  
         else if (this.Xdirection < 0){
-            //Standing still, looking left
-            //Finished
             if (!this.isGrounded){
                 if (g_keys[this.GO_UP]){
                     this.stance = 27;
@@ -473,6 +401,8 @@ Player.prototype.getStance = function(){
 }
 
 Player.prototype.getSprite = function(){
+    //get data about which sprite to show
+    //This function also updates our player size
     switch(this.stance){
         case 1:
             //Looking right
@@ -550,7 +480,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx + 25;
-            this.bulletY = this.cy - 38;
+            this.bulletY = this.cy - 43;
             return{
                 x : 110,
                 y : 13,
@@ -614,7 +544,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 0;
             this.bulletYvel = -1;
 
-            this.bulletX  = this.cx;
+            this.bulletX  = this.cx - 1;
             this.bulletY = this.cy-45;
             return{
                 x : 9,
@@ -1058,8 +988,8 @@ Player.prototype.getSprite = function(){
             }
         case 36: 
             //Running right, jump;
-            this.halfHeight = 44;
-            this.halfWidth = this.widths[14][this.animationFrame]+1;
+            this.halfHeight = 30;
+            this.halfWidth = 30;
 
             this.bulletXvel = 1;
             this.bulletYvel = 0;
@@ -1068,14 +998,14 @@ Player.prototype.getSprite = function(){
             this.bulletY = this.cy;
             return{
                 x : this.dists[14][this.animationFrame],
-                y : 137,
-                w : this.widths[14][this.animationFrame]+1,
-                h : 44
+                y : 542,
+                w : 30,
+                h : 30
             }
         case 37: 
-            //Running left, shooting vertically down
-            this.halfHeight = 44;
-            this.halfWidth = this.widths[15][this.animationFrame]+1;
+            //Running left, jump
+            this.halfHeight = 30;
+            this.halfWidth = 30;
 
             this.bulletXvel = -1;
             this.bulletYvel = 0;
@@ -1084,9 +1014,9 @@ Player.prototype.getSprite = function(){
             this.bulletY = this.cy;
             return{
                 x : this.dists[15][this.animationFrame],
-                y : 192,
-                w : this.widths[15][this.animationFrame]+1,
-                h : 44
+                y : 542,
+                w : 30,
+                h : 30
             }
         case 38: 
             //Falling right
@@ -1125,16 +1055,27 @@ Player.prototype.getSprite = function(){
 }
 
 Player.prototype.updateAnimationFrame = function(){
+    //This function decides how to update the animationFrame
+    if (this.stance === 36 || this.stance === 37){
+        //Player is doing a flip
+        this.getFlipAnimationFrame();
+    }
     if (!this.isGrounded){
-        if (!this.hasJumped) return this.getFallingAnimationFrame();
+        //In the air
+        if (!this.hasJumped) return this.getFallingAnimationFrame(); //didn't jump
         if (this.velY < 0){
-            if (this.movingJump) return this.getMovingUpAnimationFrame();
+            if (this.movingJump) return this.getMovingUpAnimationFrame(); //going up
             this.getUpAnimationFrame();
             return;
         }
-        this.getDownAnimationFrame();
+        this.getDownAnimationFrame(); //going down
         return;
     }
+    this.getAnimationFrame();
+}
+
+Player.prototype.getAnimationFrame = function(){
+    //Normal circumstances
     this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         this.animationFrame += 1;
@@ -1143,7 +1084,18 @@ Player.prototype.updateAnimationFrame = function(){
     }
 }
 
+Player.prototype.getFlipAnimationFrame = function(){
+    //Flipping
+    this.framenr += 1;
+    if (this.framenr >= this.flipFramestoAnimationFrame){
+        this.animationFrame += 1;
+        this.framenr = 0;
+    }
+    if (this.animationFrame > 7) this.animationFrame -= 7;
+}
+
 Player.prototype.getUpAnimationFrame = function(){
+    //Going up
     this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         if (this.animationFrame < 2) this.animationFrame += 1;
@@ -1152,6 +1104,7 @@ Player.prototype.getUpAnimationFrame = function(){
 }
 
 Player.prototype.getDownAnimationFrame = function(){
+    //Going down
     this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         if (this.animationFrame < 6) this.animationFrame += 1;
@@ -1174,7 +1127,6 @@ Player.prototype.getFallingAnimationFrame = function(){
         this.framnr = 0;
     }
 }
-
 
 //Sprite sheet sizes
 Player.prototype.widths = [
@@ -1213,8 +1165,8 @@ Player.prototype.dists = [
     [375, 410, 451, 498, 546, 588, 625, 665, 712, 765],  //Running left, shooting up
     [457, 493, 529, 571, 616, 659, 696, 733, 773, 820], //Running right, shooting down
     [582, 545, 462, 504, 618, 659, 692, 730, 772, 815],  //Running left, shooting down
-    [9, 37, 66, 98, 125, 155, 184, 219, 250], //running right jumping
-    [9, 40, 70, 102, 131, 160, 188, 217, 245],  //running left jumping
+    [718, 763, 217, 269, 325, 370, 610, 662], //running right jumping
+    [468, 413, 167, 119, 75, 20, 560, 512],  //running left jumping
     [500, 500, 500, 527, 527, 527, 555, 555, 555], //Falling right
     [498, 498, 498, 529, 529, 529, 559, 559, 559]  //Falling left
 ];

@@ -9,6 +9,8 @@ function Environment(descr) {
 
 Environment.prototype.tileSheet = new Image();
 Environment.prototype.tileSheet.src = "resrc/enviro.png";
+Environment.prototype.objectSheet = new Image();
+Environment.prototype.objectSheet.src = "resrc/objects&Items.png"
 
 
 //now this can be anything i think. hope. think/hope.

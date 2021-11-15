@@ -12,6 +12,17 @@
 
 
 
+var gunshot = new Howl({
+    src: ['sounds/gunshot.mp3']
+  });
+
+var background = new Howl({
+  src: ['sounds/background.mp3'],
+  html5: true,
+  loop: true
+});
+
+
 var entityManager = new EntityManager();
 
 
@@ -23,6 +34,7 @@ var NOMINAL_UPDATE_INTERVAL = 16.666;
 // Multiply by this to convert seconds into "nominals"
 var SECS_TO_NOMINALS = 1000 / NOMINAL_UPDATE_INTERVAL;
 
+var updatesDone = 0;
 
 // =============
 // GATHER INPUTS
@@ -48,6 +60,9 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+    if(background.state() === "loaded" && !background.playing()){
+       background.play();
+    }
     entityManager.update(du);
 }
 
@@ -68,7 +83,7 @@ function updateSimulation(du) {
 
 function renderSimulation(ctx) {
     entityManager.render(ctx);
-    //spatialManager.render(ctx);
+    spatialManager.render(ctx);
 }
 
 
