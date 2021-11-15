@@ -124,7 +124,7 @@ Enemy.prototype.shoot = function(){
 
 Enemy.prototype.render = function(ctx){
     var s = this.spriteData;
-    ctx.drawImage(enemySheet,6*s.x,6*s.y,6*s.w,6*s.h,this.cx-10-this.halfWidth,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
+    ctx.drawImage(enemySheet,6*s.x,6*s.y,6*s.w,6*s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
 }
 
 Enemy.prototype.updateAnimationFrame = function(){
@@ -163,6 +163,12 @@ Enemy.prototype.die = function(){
     this.shoot();
     enemyDie.play();
     return entityManager.KILL_ME_NOW;
+}
+
+Enemy.prototype.getShot = function(entity){
+    if (entity.type != 2){
+        this.isDead = true;
+    }
 }
 
 Enemy.prototype.getSprite = function(){
