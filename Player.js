@@ -3,6 +3,8 @@ function Player(descr){
 
     this.halfHeight = 50;
     this.halfWidth = 20;
+
+    this.isKillable = true;
 }
 
 const spriteSheet = new Image();
@@ -53,6 +55,7 @@ Player.prototype.oldStance = 1;
 Player.prototype.animationFrame = 0;
 Player.prototype.framenr = 0;
 Player.prototype.framestoAnimationFrame = 5;
+Player.prototype.flipFramestoAnimationFrame = 4;
 
 Player.prototype.bulletX = this.cx;
 Player.prototype.bulletY = this.cy;
@@ -230,7 +233,7 @@ Player.prototype.jump = function(){
 
 Player.prototype.shoot = function(){
     this.hasShot = true;
-    entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel);
+    entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
 }
 
 Player.prototype.getStance = function(){
@@ -431,7 +434,6 @@ Player.prototype.getStance = function(){
 }
 
 Player.prototype.getSprite = function(){
-    console.log(this.stance);
     switch(this.stance){
         case 1:
             //Looking right
@@ -1107,7 +1109,7 @@ Player.prototype.updateAnimationFrame = function(){
 
 Player.prototype.getFlipAnimationFrame = function(){
     this.framenr += 1;
-    if (this.framenr >= this.framestoAnimationFrame){
+    if (this.framenr >= this.flipFramestoAnimationFrame){
         this.animationFrame += 1;
         this.framenr = 0;
     }

@@ -52,6 +52,7 @@ Entity.prototype.halfHeight;
 Entity.prototype.nextX;
 Entity.prototype.nextY;
 Entity.prototype.collidable = false;
+Entity.prototype.isKillable = false;
 
 Entity.prototype.setPos = function (cx, cy) {
     this.cx = cx;

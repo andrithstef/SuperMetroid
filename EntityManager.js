@@ -75,7 +75,7 @@ EntityManager.prototype.update = function(du) {
 
     //update enemies
     for (var i = 0; i<this._enemies.length; i++){
-        var status = this._enemies[i].update(du);
+        var status = this._enemies[i].update(du, this._player);
 
         if (status === this.KILL_ME_NOW){
             this._enemies.splice(i,1);
@@ -108,10 +108,10 @@ EntityManager.prototype.render = function(ctx) {
 
 }
 
-EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir){
+EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){
     var xVel = xdir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
     var yVel = ydir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
-    this._bullets.push(new Bullet(cx, cy, xVel, yVel));
+    this._bullets.push(new Bullet(cx, cy, xVel, yVel, nr));
 }
 
 

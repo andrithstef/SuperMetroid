@@ -1,4 +1,8 @@
-function Bullet(cx, cy, xVel ,yVel, descr){
+function Bullet(cx, cy, xVel ,yVel, nr, descr){
+
+    if (nr === 1) this.speed = 35;
+    else if (nr === 2) this.speed = 10;
+
     this.cx = cx + g_camera.cx;
     this.cy = cy + g_camera.cy;
     this.velX = xVel*this.speed;
@@ -13,6 +17,8 @@ function Bullet(cx, cy, xVel ,yVel, descr){
 
     this.halfWidth = this.scale * this.spriteW;
     this.halfHeight = this.scale * this.spriteH;
+
+    this.isDamaging = true;
 }
 
 const bulletSheet = new Image();
@@ -34,15 +40,7 @@ Bullet.prototype.stance = 0;
 Bullet.prototype.lifeSpan = 2000 / 16.666;
 
 Bullet.prototype.render = function(ctx){
-    /*
-    ctx.save();
-    ctx.beginPath();
-    ctx.fillStyle = "red";
-    ctx.arc(this.cx - g_camera.cx, this.cy - g_camera.cy, this.rad, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    */
-   console.log(this.stance);
+
     ctx.drawImage(bulletSheet,
         this.spriteX,this.spriteY,this.spriteW,this.spriteH, 
         this.cx-this.halfWidth - g_camera.cx, this.cy -this.halfHeight - g_camera.cy, 
@@ -63,7 +61,9 @@ Bullet.prototype.update = function(du){
 
     var hitData = this.findCollision();
     if(hitData){
-
+        if (hitData.isKillable){
+            hitData.isDead = true;
+        }
         return entityManager.KILL_ME_NOW;
     }
 
