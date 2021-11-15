@@ -3,7 +3,6 @@
 // =================
 
 var g_keys = [];
-
 function handleKeydown(evt) {
     g_keys[evt.keyCode] = true;
 }

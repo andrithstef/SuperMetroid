@@ -160,16 +160,6 @@ Player.prototype.applyPhysics = function(du){
     this.nextX = this.cx + this.velX * du;
 }
 
-Player.prototype.resolveCollisions = function(du){
-    this.isGrounded = false;
-    this.resolveTries = 0;
-    var hitData = this.findCollision(); //Find an entity that's colliding with the object
-    while(hitData){
-        this.resolve(hitData);
-        hitData = this.findCollision()
-
-    }
-}
 
 Player.prototype.updateAttributes = function(){
     this.spriteInfo = this.getSprite();
@@ -207,6 +197,7 @@ Player.prototype.jump = function(){
 
 Player.prototype.shoot = function(){
     this.hasShot = true;
+    gunshot.play();
     entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
 }
 

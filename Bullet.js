@@ -37,6 +37,8 @@ Bullet.prototype.spriteH = 7;
 Bullet.prototype.scale = 1;
 Bullet.prototype.stance = 0;
 
+Bullet.prototype.collidable = false;
+
 Bullet.prototype.lifeSpan = 2000 / 16.666;
 
 Bullet.prototype.render = function(ctx){

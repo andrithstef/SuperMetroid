@@ -56,7 +56,7 @@ Entity.prototype.gravity = 0.5;
 Entity.prototype.maxSpeed = 10;
 Entity.prototype.friction = 0.4;
 
-Entity.prototype.collidable = false;
+Entity.prototype.collidable = true;
 Entity.prototype.isKillable = false;
 
 Entity.prototype.setPos = function (cx, cy) {
@@ -126,4 +126,17 @@ Entity.prototype.isColliding = function(entity){
         && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
         && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
         && this.nextY + this.halfHeight > entity.cy - entity.halfHeight);
+}
+
+Entity.prototype.resolveCollisions = function(du){
+    this.isGrounded = false;
+    this.resolveTries = 0;
+    var hitData = this.findCollision(); //Find an entity that's colliding with the object
+    while(hitData){
+        if(!hitData.collidable){
+            break;
+        }
+        this.resolve(hitData);
+        hitData = this.findCollision()
+    }
 }

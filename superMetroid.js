@@ -10,6 +10,9 @@
 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+var gunshot = new Howl({
+    src: ['sounds/gunshot.mp3']
+  });
 
 
 var entityManager = new EntityManager();
@@ -23,6 +26,7 @@ var NOMINAL_UPDATE_INTERVAL = 16.666;
 // Multiply by this to convert seconds into "nominals"
 var SECS_TO_NOMINALS = 1000 / NOMINAL_UPDATE_INTERVAL;
 
+var updatesDone = 0;
 
 // =============
 // GATHER INPUTS
@@ -68,7 +72,7 @@ function updateSimulation(du) {
 
 function renderSimulation(ctx) {
     entityManager.render(ctx);
-    //spatialManager.render(ctx);
+    spatialManager.render(ctx);
 }
 
 
