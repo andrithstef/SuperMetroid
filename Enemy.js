@@ -1,4 +1,6 @@
-function Enemy(descr){
+function Enemy(x,y,descr){
+    this.cx = x;
+    this.cy = y;
     this.setup(descr);
 
     this.halfHeight = 50;
@@ -159,6 +161,7 @@ Enemy.prototype.updateShootingAnimationFrame = function(){
 
 Enemy.prototype.die = function(){
     this.shoot();
+    enemyDie.play();
     return entityManager.KILL_ME_NOW;
 }
 

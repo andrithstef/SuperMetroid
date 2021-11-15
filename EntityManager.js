@@ -15,7 +15,7 @@ function EntityManager(){
     this._player = new Player();
     this._bullets = [];
     this._enemies = [];
-    this._enemies.push(new Enemy());
+    this.addEnemies();
     this._environment = new Environment();
 }
 
@@ -117,4 +117,10 @@ EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){
 
 EntityManager.prototype.spawnEnemy = function(x,y){
     this._enemies.push(new Enemy(x,y));
+}
+
+EntityManager.prototype.addEnemies = function(){
+    for (var i = 0; i<Map.enemies.length; i++){
+        this.spawnEnemy(Map.enemies[i].x, Map.enemies[i].y);
+    }
 }
