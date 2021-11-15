@@ -10,9 +10,17 @@
 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+
+
 var gunshot = new Howl({
     src: ['sounds/gunshot.mp3']
   });
+
+var background = new Howl({
+  src: ['sounds/background.mp3'],
+  html5: true,
+  loop: true
+});
 
 
 var entityManager = new EntityManager();
@@ -52,6 +60,9 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+    if(background.state() === "loaded" && !background.playing()){
+       background.play();
+    }
     entityManager.update(du);
 }
 

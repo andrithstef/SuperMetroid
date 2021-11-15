@@ -5,6 +5,7 @@ function Player(descr){
     this.halfWidth = 20;
 
     this.isKillable = true;
+
 }
 
 const spriteSheet = new Image();
@@ -60,6 +61,8 @@ Player.prototype.bulletY = this.cy;
 //How many times has the player tried to resolve a collision
 //This is used to prevent infinite loops of collision resolutions
 Player.prototype.resolveTries = 0;
+
+Player.prototype.playingBackground = false;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
