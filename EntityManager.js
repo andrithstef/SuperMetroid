@@ -115,6 +115,6 @@ EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){
 }
 
 
-// Entity.prototype.getSpatialID = function(){
-//     return this.spatialID ++;
-// }
+EntityManager.prototype.spawnEnemy = function(x,y){
+    this._enemies.push(new Enemy(x,y));
+}
