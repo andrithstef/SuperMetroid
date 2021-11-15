@@ -22,6 +22,10 @@ var background = new Howl({
   loop: true
 });
 
+var enemyDie = new Howl({
+  src: ['sounds/enemyDie.mp3']
+});
+
 
 var entityManager = new EntityManager();
 
@@ -83,7 +87,7 @@ function updateSimulation(du) {
 
 function renderSimulation(ctx) {
     entityManager.render(ctx);
-    spatialManager.render(ctx);
+    //spatialManager.render(ctx);
 }
 
 

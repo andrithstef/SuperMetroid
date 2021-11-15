@@ -8,6 +8,8 @@ function Bullet(cx, cy, xVel ,yVel, nr, descr){
     this.velX = xVel*this.speed;
     this.velY = yVel*this.speed;
 
+    this.type = nr;
+
     this.setup(descr);
 
     this.stance = this.getStance();
@@ -19,6 +21,8 @@ function Bullet(cx, cy, xVel ,yVel, nr, descr){
     this.halfHeight = this.scale * this.spriteH;
 
     this.isDamaging = true;
+
+    
 }
 
 const bulletSheet = new Image();
@@ -36,6 +40,8 @@ Bullet.prototype.spriteW = 7;
 Bullet.prototype.spriteH = 7;
 Bullet.prototype.scale = 1;
 Bullet.prototype.stance = 0;
+
+Bullet.prototype.type = 1;
 
 Bullet.prototype.collidable = false;
 
@@ -64,7 +70,7 @@ Bullet.prototype.update = function(du){
     var hitData = this.findCollision();
     if(hitData){
         if (hitData.isKillable){
-            hitData.isDead = true;
+            hitData.getShot(this);
         }
         return entityManager.KILL_ME_NOW;
     }

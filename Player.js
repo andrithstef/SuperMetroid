@@ -58,6 +58,8 @@ Player.prototype.flipFramestoAnimationFrame = 4;
 Player.prototype.bulletX = this.cx;
 Player.prototype.bulletY = this.cy;
 
+Player.prototype.energy = 100;
+
 //How many times has the player tried to resolve a collision
 //This is used to prevent infinite loops of collision resolutions
 Player.prototype.resolveTries = 0;
@@ -186,6 +188,10 @@ Player.prototype.render = function(ctx){
         this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,
         2*s.w*this.scale,2*s.h*this.scale);
 
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("energy: "+ this.energy, 1100, 100);
 }
 
 Player.prototype.jump = function(){
@@ -202,6 +208,13 @@ Player.prototype.shoot = function(){
     this.hasShot = true;
     gunshot.play();
     entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
+}
+
+Player.prototype.getShot = function(entity){
+    this.energy -= 12;
+    var dir = Math.sign(this.cx - entity.cx);
+    this.velX -= dir*6;
+    this.velY -= 6;
 }
 
 Player.prototype.getStance = function(){
