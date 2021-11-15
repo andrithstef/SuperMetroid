@@ -18,9 +18,6 @@ Enemy.prototype.cy = 500;
 Enemy.prototype.velX = 0;
 Enemy.prototype.velY = 0;
 Enemy.prototype.maxSpeed = 14;
-Enemy.prototype.gravity = 0.5;
-Enemy.prototype.friction = 0.3;
-Enemy.prototype.maxSpeed = 14;
 Enemy.prototype.walkSpeed = 2;
 
 Enemy.prototype.nextX;

@@ -51,6 +51,11 @@ Entity.prototype.halfHeight;
 
 Entity.prototype.nextX;
 Entity.prototype.nextY;
+
+Entity.prototype.gravity = 0.5;
+Entity.prototype.maxSpeed = 10;
+Entity.prototype.friction = 0.4;
+
 Entity.prototype.collidable = false;
 Entity.prototype.isKillable = false;
 
@@ -63,28 +68,12 @@ Entity.prototype.getPos = function () {
     return {posX : this.cx, posY : this.cy};
 };
 
-Entity.prototype.getRadius = function () {
-    return 0;
-};
-
 Entity.prototype.getSpatialID = function () {
     return this._spatialID;
 };
 
 Entity.prototype.kill = function () {
     this._isDeadNow = true;
-};
-
-Entity.prototype.findHitEntity = function () {
-    var pos = this.getPos();
-    return spatialManager.findEntitie(
-        pos.posX, pos.posY, this.halfWidth, this.halfHeight
-    );
-};
-
-// This is just little "convenience wrapper"
-Entity.prototype.isColliding = function () {
-    return this.findHitEntity();
 };
 
 Entity.prototype.wrapPosition = function () {
