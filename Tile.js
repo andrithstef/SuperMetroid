@@ -1,6 +1,8 @@
 function Tile(descr) {
     this.setup(descr);
     this.setTile();
+
+
 }
 
 
@@ -12,7 +14,7 @@ Tile.prototype.halfWidth = 32;
 Tile.prototype.halfHeight = 32;
 
 //replacement for sprite data, until then
-Tile.prototype.colour = 'Black';
+Tile.prototype.colour = 'white';
 Tile.prototype.shape = "Rect";
 
 Tile.prototype.setTile = function(){
@@ -297,14 +299,14 @@ Tile.prototype.setTile = function(){
         // 256,448
     }
     else if(this.id ==='D/'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 320;
         this.sy = 0;
         // 320,0
     }
     else if(this.id ==='ML/'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 320;
         this.sy = 64;
@@ -353,14 +355,14 @@ Tile.prototype.setTile = function(){
         // 320,448
     }
     else if(this.id ==='L/'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 384;
         this.sy = 0;
         //384,0
     }
     else if(this.id ==='MR/'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 384;
         this.sy = 64;
@@ -478,7 +480,7 @@ Tile.prototype.setTile = function(){
         this.sy = 192;
         // 512,192
     }
-    else if(this.id ==='-#DD'){
+    else if(this.id ==='-#D'){
         this.collidable = false;
 
         this.sx = 512;
@@ -506,13 +508,33 @@ Tile.prototype.setTile = function(){
         this.sy = 448;
         // 512,448
     }
-    else if(this.id ==='DL'){
+    else if(this.id ==='DL1'){
         this.collidable = true;
 
         this.sx = 512;
         this.sy = 512;
         // 512,512
-        //width 128, height 256
+    }
+    else if(this.id ==='DL2'){
+        this.collidable = true;
+
+        this.sx = 512;
+        this.sy = 576;
+        // 512,512
+    }
+    else if(this.id ==='DL3'){
+        this.collidable = true;
+
+        this.sx = 512;
+        this.sy = 640;
+        // 512,512
+    }
+    else if(this.id ==='DL4'){
+        this.collidable = true;
+
+        this.sx = 512;
+        this.sy = 704;
+        // 512,512
     }
     else if(this.id ==='|#L'){
         this.collidable = false;
@@ -569,6 +591,30 @@ Tile.prototype.setTile = function(){
         this.sx = 576;
         this.sy = 448;
         // 576,448
+    }
+    else if(this.id ==='DL5'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 512;
+    }
+    else if(this.id ==='DL6'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 576;
+    }
+    else if(this.id ==='DL7'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 640;
+    }
+    else if(this.id ==='DL8'){
+        this.collidable = true;
+
+        this.sx = 576;
+        this.sy = 704;
     }
     else if(this.id ==='|_L'){
         this.collidable = false;
@@ -631,12 +677,26 @@ Tile.prototype.setTile = function(){
 
         this.sx = 640;
         this.sy = 512;
-        this.width = 128;
-        this.halfWidth = 64;
-        this.height = 256;
-        this.halfHeight = 128;
         // 640,512
-        //width 128, height 256
+    }
+    else if(this.id ==='DR2'){
+        this.collidable = true;
+
+        this.sx = 640;
+        this.sy = 576;
+    }
+
+    else if(this.id ==='DR3'){
+        this.collidable = true;
+
+        this.sx = 640;
+        this.sy = 640;
+    }
+    else if(this.id ==='DR4'){
+        this.collidable = true;
+
+        this.sx = 640;
+        this.sy = 704;
     }
     else if(this.id ==='_|L'){
         this.collidable = false;
@@ -680,7 +740,7 @@ Tile.prototype.setTile = function(){
         this.sy = 320;
         // 704,320
     }
-    else if(this.id ==='STR'){
+    else if(this.id ==='StBR'){
         this.collidable = true;
 
         this.sx = 704;
@@ -693,6 +753,33 @@ Tile.prototype.setTile = function(){
         this.sx = 704;
         this.sy = 448;
         // 704,448
+    }
+
+    else if(this.id ==='DR5'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 512;
+        // 640,512
+    }
+    else if(this.id ==='DR6'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 576;
+    }
+
+    else if(this.id ==='DR7'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 640;
+    }
+    else if(this.id ==='DR8'){
+        this.collidable = true;
+
+        this.sx = 704;
+        this.sy = 704;
     }
     else if(this.id ==='#|L'){
         this.collidable = false;
@@ -820,7 +907,7 @@ Tile.prototype.setTile = function(){
         this.sy = 320;
         // 832,320
     }
-    else if(this.id ==='StBR'){
+    else if(this.id ==='STR'){
         this.collidable = true;
         this.sx = 832;
         this.sy = 384;
@@ -850,7 +937,7 @@ Tile.prototype.setTile = function(){
         this.sy = 640;
 896    // 832,640
     }
-    else if(this.id ==='[R'){
+    else if(this.id ==='[L'){
         this.collidable = false;
         this.sx = 896;
         this.sy = 0;
@@ -863,7 +950,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 896,64
     }
-    else if(this.id ==='!FT'){
+    else if(this.id ==='!FB'){
         this.collidable = false;
         this.sx = 896;
         this.sy = 128;
@@ -911,7 +998,7 @@ Tile.prototype.setTile = function(){
         this.sy = 640;
         // 896,640
     }
-    else if(this.id ==='[L'){
+    else if(this.id ==='[R'){
         this.collidable = false;
         this.sx = 960;
         this.sy = 0;
@@ -923,7 +1010,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 960,64
     }
-    else if(this.id ==='!FB'){
+    else if(this.id ==='!FT'){
         this.collidable = false;
         this.sx = 960;
         this.sy = 128;
@@ -965,7 +1052,7 @@ Tile.prototype.setTile = function(){
         this.sy = 512;
         //960,512
     }
-    else if(this.id ===']R'){
+    else if(this.id ===']L'){
         this.collidable = false;
         this.sx = 1024;
         this.sy = 0;
@@ -977,7 +1064,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 1024,64
     }
-    else if(this.id ==='/FB'){
+    else if(this.id ==='/FT'){
         this.collidable = false;
         this.sx = 1024;
         this.sy = 128;
@@ -1019,7 +1106,7 @@ Tile.prototype.setTile = function(){
         this.sy = 512;
         // 1024,512
     }
-    else if(this.id ===']L'){
+    else if(this.id ===']R'){
         this.collidable = false;
         this.sx = 1088;
         this.sy = 0;
@@ -1031,7 +1118,7 @@ Tile.prototype.setTile = function(){
         this.sy = 64;
         // 1088,64
     }
-    else if(this.id ==='/FT'){
+    else if(this.id ==='/FB'){
         this.collidable = false;
         this.sx = 1088;
         this.sy = 128;
@@ -1066,6 +1153,22 @@ Tile.prototype.setTile = function(){
         this.sx = 1088;
         this.sy = 448;
         // 1088, 448
+    }
+    else if(this.id ==='BBsR'){
+        this.collidable = true;
+        this.sx = 1088;
+        this.sy = 512;
+    }
+    else if(this.id ==='BBsL'){
+        this.collidable = true;
+        this.sx = 1088;
+        this.sy = 576;
+    }
+
+    else if(this.id ==='#r'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 0;
     }
     else{
         return false;
