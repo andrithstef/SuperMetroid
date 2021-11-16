@@ -43,6 +43,8 @@ Ridley.prototype.timeToNextshot = 30;
 Ridley.prototype.shotsFired = 0;
 
 Ridley.prototype.init = function() {
+    //This is just initial setup for each body part
+
     //Set body
     this.body.setup();
     this.body.isFireproof = true;
@@ -107,10 +109,13 @@ Ridley.prototype.init = function() {
 }
 
 Ridley.prototype.update = function(du, player){
+    //If there is a fireball in ridley's mouth, we must update it
     if(this.fireball){
         this.fireball.update(du, this);
         if (this.fireball.isDead) this.fireball = null;
     }
+
+    //Update each body part
     this.updateAnimationFrame();
     this.updateBody(du);
     this.updateHead(du, player);
@@ -121,6 +126,10 @@ Ridley.prototype.update = function(du, player){
 
 Ridley.prototype.updateBody = function(du){
     spatialManager.unregister(this.body);
+    //The body is the centre of the whole body
+    //Each body part's location is based on the body's location
+
+    //Right now it just goes randomly in some direction
     this.body.velY += 0.01*(2*Math.random()-1)*du;
     this.body.velX += 0.01*(2*Math.random()-1)*du;
     this.body.cx += this.body.velX*du;
@@ -130,23 +139,35 @@ Ridley.prototype.updateBody = function(du){
 
 Ridley.prototype.updateHead = function(du, player){
     spatialManager.unregister(this.head);
+
+    //The head's main purpose is to shoot fireballs 
+    //Update time to next fireball
     this.timeToFireball -= du;
+
+    //Follow the body
     this.head.setPos(this.body.cx-this.body.halfWidth-this.head.halfWidth + this.head.xOffsets[this.headAnimationFrame], 
         this.body.cy -this.body.halfWidth - this.head.halfWidth + this.head.yOffsets[this.headAnimationFrame]);
     
     if(this.closeMouth){
+        //The mouth is open, and should be closed
         this.shutMouth();
     }
 
     if(this.timeToFireball < 0 && !this.mouthOpen && !this.charged){
+        //Ridley can shoot a fireball, so she must open her mouth
         this.openMouth();
     }
     else if(this.mouthOpen && !this.charged){
+        //Her mouth is open, so she needs to charge up her fireball
         this.chargefireBall(du);
     }
     else if(this.charged && !this.closeMouth){
+        //She is charged up, and ready to fire
+
+        //She must wait a bit between each shot
         this.timeToNextshot -= du;
         if(this.timeToNextshot < 0){
+            //She can shoot
             this.shootFireball(player);
         }
     }
@@ -165,6 +186,8 @@ Ridley.prototype.updateHead = function(du, player){
 
 Ridley.prototype.updateHand = function(du){
     spatialManager.unregister(this.hand);
+
+    //the hands don't do anything, just follow the body
     this.hand.setPos(this.body.cx-this.body.halfWidth-this.hand.halfWidth + 10, 
         this.body.cy + this.hand.halfHeight+ 22);
     spatialManager.register(this.hand);
@@ -172,6 +195,8 @@ Ridley.prototype.updateHand = function(du){
 
 Ridley.prototype.updateLeg = function(du){
     spatialManager.unregister(this.leg);
+    
+    //The legs don't really do anything, they just follow the body
     this.leg.setPos(this.body.cx+this.body.halfWidth-this.leg.halfWidth - 5, 
         this.body.cy + this.leg.halfHeight+ 22);
     spatialManager.register(this.leg);
@@ -179,10 +204,16 @@ Ridley.prototype.updateLeg = function(du){
 
 Ridley.prototype.updateWing = function(du){
     spatialManager.unregister(this.wing);
+    
+    //The wings must always follow the body
     this.wing.setPos(this.body.cx+this.body.halfWidth-this.wing.halfWidth + 80, 
         this.body.cy  + this.wing.yOffsets[this.animationFrame] - 50);
+
+    //update the size, since they are always changing
     this.wing.halfHeight = this.wing.heights[this.animationFrame] * this.scale;
     this.wing.halfWidth = this.wing.widths[this.animationFrame] * this.scale;
+
+    //Update sprite, since it is always changing
     this.wing.spriteData = {
         x: this.wing.Xdists[this.animationFrame],
         y: this.wing.Ydists[this.animationFrame],
@@ -193,9 +224,12 @@ Ridley.prototype.updateWing = function(du){
 }
 
 Ridley.prototype.render = function(ctx){
+    //If there is a fireball in Ridley's mouth, render it
     if(this.fireball){
         this.fireball.render(ctx);
     }
+
+    //Draw each body part
     this.drawBodyPart(ctx, this.head);
     this.drawBodyPart(ctx, this.body);
     this.drawBodyPart(ctx, this.hand);
@@ -204,6 +238,7 @@ Ridley.prototype.render = function(ctx){
 }
 
 Ridley.prototype.drawBodyPart = function(ctx, part){
+    //Render a body part
     s = part.spriteData;
     ctx.drawImage(ridleySheet,6*s.x,6*s.y,6*s.w,6*s.h,
         part.cx-part.halfWidth - g_camera.cx,
@@ -212,6 +247,7 @@ Ridley.prototype.drawBodyPart = function(ctx, part){
 }
 
 Ridley.prototype.updateAnimationFrame = function(){
+    //This is for the wings, since they are always flapping
     this.framenr += 1;
     if (this.animationFrame === 5){
         this.reverseAnimationFrame = true;
@@ -241,6 +277,7 @@ Ridley.prototype.updateHeadAnimation = function(){
 }
 
 Ridley.prototype.openMouth = function(){
+    //Animation for opening Ridley's mouth
     this.updateHeadAnimation();
     if(this.headAnimationFrame === 2){
         this.mouthOpen = true;
@@ -250,6 +287,7 @@ Ridley.prototype.openMouth = function(){
 }
 
 Ridley.prototype.shutMouth = function(){
+    //Animation for closing Ridley's mouth
     this.headFramenr += 1;
     if (this.headFramenr > this.headFramesToAnimationFrame){
         this.headAnimationFrame -= 1;
@@ -264,8 +302,10 @@ Ridley.prototype.shutMouth = function(){
 }
 
 Ridley.prototype.chargefireBall = function(du){
+    //The mouth is open, so Ridley charges up a fireball
         this.chargeTime -= du;
         if (this.chargeTime < 0){
+            //She has charged up, ready to shoot
             this.charged = true;
             this.ballnr = 1;
             this.timeToNextshot = 0;
@@ -274,6 +314,7 @@ Ridley.prototype.chargefireBall = function(du){
 
 Ridley.prototype.shootFireball = function(player){
     if(this.shotsFired > 3){
+        //She has shot all of her fireballs and must close her mouth
         this.closeMouth = true;
         this.charged = false;
         this.hasShot = true;
@@ -282,10 +323,16 @@ Ridley.prototype.shootFireball = function(player){
         this.shotsFired = 0;
         if(this.fireball) this.fireball.isDead = true;
     }
+    //Find player and shoot in her direction
     this.findAngleToPlayer(player)
     this.shotsFired += 1;
     entityManager._bullets.push(new Fire(this.head.cx - g_camera.cx - 45, this.head.cy- g_camera.cy - 5, this.fireVelX, this.fireVelY));
     this.timeToNextshot = 30;
+}
+
+Ridley.prototype.getShot = function(shot){
+    //What happens if Ridley gets shot
+    this.health -= 10;
 }
 
 Ridley.prototype.findAngleToPlayer = function(player){

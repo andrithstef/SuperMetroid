@@ -24,7 +24,7 @@ Fire.prototype.scale = 1;
 Fire.prototype.stanceFire
 Fire.prototype.typeFire
 Fire.prototype.collidable = false;
-Fire.prototype.lifeSpan = 3000 / 16;
+Fire.prototype.lifeSpan = 4000 / 16;
 
 Fire.prototype.scale = 2;
 
