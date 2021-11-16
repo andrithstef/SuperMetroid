@@ -103,7 +103,6 @@ EntityManager.prototype.render = function(ctx) {
     //render bullets
     for (var i = 0; i<this._bullets.length; i++){
         this._bullets[i].render(ctx);
-        console.log(this._bullets);
     }
 
 

@@ -15,6 +15,7 @@ ridleySheet.src = "resrc/Ridley.png"
 Ridley.prototype.health = 1000;
 Ridley.prototype.scale = 2;
 
+//Body parts that make up Ridley
 Ridley.prototype.body = new Entity();
 Ridley.prototype.head = new Entity();
 Ridley.prototype.leg = new Entity();
@@ -22,17 +23,32 @@ Ridley.prototype.wing = new Entity();
 Ridley.prototype.hand = new Entity();
 Ridley.prototype.tail = new Entity();
 
+//Wing animation stuff
 Ridley.prototype.framenr = 0;
 Ridley.prototype.framesToAnimationFrame = 5;
 Ridley.prototype.animationFrame = 0;
 Ridley.prototype.reverseAnimationFrame = false;
 
+//Head animation stuff
 Ridley.prototype.headFramenr = 0;
 Ridley.prototype.headAnimationFrame = 0;
 Ridley.prototype.headFramesToAnimationFrame = 10;
 
-Ridley.prototype.timeToFireball = Math.floor(Math.random()*(500-300) + 300);
+//Location stuff
+Ridley.prototype.moveTargetX;
+Ridley.prototype.moveTargetY;
+Ridley.prototype.hasReachedTarget = true;
+Ridley.prototype.speed = 3;
+Ridley.prototype.velX = 0;
+Ridley.prototype.velY = 0;
+Ridley.prototype.maxDistFromPlayer = 700;
+Ridley.prototype.minDistFromPlayer = 300;
+Ridley.prototype.minAngleFromPlayer = 0.05;
+Ridley.prototype.maxAngleFromPlayer = Math.PI/3;
 
+
+//Fireball stuff
+Ridley.prototype.timeToFireball = Math.floor(Math.random()*(500-300) + 300);
 Ridley.prototype.ballnr = 0;
 Ridley.prototype.chargeTime = 100;
 Ridley.prototype.mouthOpen = false;
@@ -41,6 +57,8 @@ Ridley.prototype.hasShot = false;
 Ridley.prototype.closeMouth = false;
 Ridley.prototype.timeToNextshot = 30;
 Ridley.prototype.shotsFired = 0;
+Ridley.prototype.targetX;
+Ridley.prototype.targetY;
 
 Ridley.prototype.init = function() {
     //This is just initial setup for each body part
@@ -68,7 +86,7 @@ Ridley.prototype.init = function() {
     this.head.Ydists = [118, 68, 7]; //y coords of sprites
     this.head.widths = [41, 63, 54]; //widths of sprites
     this.head.heights = [54, 46, 54]; //Heights of sprites
-    this.head.xOffsets = [40, 70, 40]; //Offsets for the head
+    this.head.xOffsets = [45, 70, 40]; //Offsets for the head
     this.head.yOffsets = [40, 50, 16]; //Offsets for the head
 
     //set hand
@@ -117,23 +135,30 @@ Ridley.prototype.update = function(du, player){
 
     //Update each body part
     this.updateAnimationFrame();
-    this.updateBody(du);
+    this.updateBody(du, player);
     this.updateHead(du, player);
     this.updateHand(du);
     this.updateLeg(du);
     this.updateWing(du);
 }
 
-Ridley.prototype.updateBody = function(du){
+Ridley.prototype.updateBody = function(du, player){
     spatialManager.unregister(this.body);
     //The body is the centre of the whole body
     //Each body part's location is based on the body's location
 
-    //Right now it just goes randomly in some direction
-    this.body.velY += 0.01*(2*Math.random()-1)*du;
-    this.body.velX += 0.01*(2*Math.random()-1)*du;
-    this.body.cx += this.body.velX*du;
-    this.body.cy += this.body.velY*du;
+    if(this.hasReachedTarget || this.shouldMove(player)){
+        this.moveToNewPosition(player);
+    }
+
+    this.updateVelocity();
+
+    if(this.body.cx < this.moveTargetX + 10 && this.body.cx > this.moveTargetX - 10
+        && this.body.cy < this.moveTargetY + 10 && this.body.cy > this.moveTargetY - 10){
+            this.hasReachedTarget = true;
+        }
+    this.body.cx += this.velX * du * this.speed;
+    this.body.cy += this.velY * du * this.speed;
     spatialManager.register(this.body);
 }
 
@@ -227,6 +252,12 @@ Ridley.prototype.render = function(ctx){
     //If there is a fireball in Ridley's mouth, render it
     if(this.fireball){
         this.fireball.render(ctx);
+    }
+
+    if(this.moveTargetX){
+        ctx.beginPath();
+        ctx.fillRect(this.moveTargetX - g_camera.cx, this.moveTargetY - g_camera.cy, 20, 20);
+        ctx.stroke();
     }
 
     //Draw each body part
@@ -343,12 +374,12 @@ Ridley.prototype.findAngleToPlayer = function(player){
     const y = this.head.cy - 25;
 
     //Player coordinates
-    const targetX = player.cx;
-    const targetY = player.cy;
+    this.targetX = player.cx;
+    this.targetY = player.cy;
 
     //Difference between the two
-    var dx = targetX - x;
-    var dy = targetY - y;
+    var dx = this.targetX - x;
+    var dy = this.targetY - y;
 
     //Normalize the distance into a unit vector
     const len = Math.sqrt(dx*dx + dy*dy);
@@ -358,4 +389,49 @@ Ridley.prototype.findAngleToPlayer = function(player){
     this.fireVelX = dx;
     this.fireVelY = dy;
 
+}
+
+Ridley.prototype.moveToNewPosition = function(player){
+    //Ridley always wants to be in a specific frame around the player
+
+    console.log("new target!");
+
+    var x = player.cx;
+    var y = player.cy;
+
+    var dist = Math.random()*(this.maxDistFromPlayer-this.minDistFromPlayer) + this.minDistFromPlayer;
+    var angle = Math.random()*(this.maxAngleFromPlayer-this.minAngleFromPlayer) + this.minAngleFromPlayer;
+
+    console.log(dist, angle);
+
+    this.moveTargetX = x + dist*Math.cos(angle);
+    this.moveTargetY = y - dist*Math.sin(angle);
+
+    this.hasReachedTarget = false;
+}
+
+Ridley.prototype.updateVelocity = function(){
+    
+    var dx = this.moveTargetX - this.body.cx;
+    var dy = this.moveTargetY - this.body.cy;
+    const len = Math.sqrt(dx*dx + dy*dy);
+
+    this.velX = dx/len;
+    this.velY = dy/len;
+}
+
+Ridley.prototype.shouldMove = function(player){
+    var dist = Math.pow(player.cx - this.moveTargetX,2)+Math.pow(player.cy - this.moveTargetY,2)
+    if(this.moveTargetX < player.cx){
+        console.log("samus behind ridley");
+        return true;
+    }
+    if(dist < Math.pow(this.minDistFromPlayer,2)){
+        console.log("Too close!!!!");
+        return true;
+    }
+    if(dist > Math.pow(this.maxDistFromPlayer,2)){
+        console.log("too far!!1");
+        return true;
+    }
 }
