@@ -17,6 +17,9 @@ function EntityManager(){
     this._enemies = [];
     this.addEnemies();
     this._environment = new Environment();
+    if(Map.ridley){
+        this._enemies.push(new Ridley());
+    }
 }
 
 // "PRIVATE" DATA
@@ -92,16 +95,17 @@ EntityManager.prototype.render = function(ctx) {
 
     this._environment.render(ctx);
 
-
-    //render bullets
-    for (var i = 0; i<this._bullets.length; i++){
-        this._bullets[i].render(ctx);
-    }
-
     //render enemies
     for (var i = 0; i<this._enemies.length; i++){
         this._enemies[i].render(ctx);
     }
+
+    //render bullets
+    for (var i = 0; i<this._bullets.length; i++){
+        this._bullets[i].render(ctx);
+        console.log(this._bullets);
+    }
+
 
     //render player
     this._player.render(ctx);

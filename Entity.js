@@ -56,8 +56,9 @@ Entity.prototype.gravity = 0.5;
 Entity.prototype.maxSpeed = 10;
 Entity.prototype.friction = 0.4;
 
-Entity.prototype.collidable = true;
+Entity.prototype.collidable = false;
 Entity.prototype.isKillable = false;
+Entity.prototype.isFireproof = false;
 
 Entity.prototype.setPos = function (cx, cy) {
     this.cx = cx;

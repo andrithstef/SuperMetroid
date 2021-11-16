@@ -64,9 +64,11 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+  /*
     if(background.state() === "loaded" && !background.playing()){
        background.play();
     }
+    */
     entityManager.update(du);
 }
 
@@ -87,7 +89,7 @@ function updateSimulation(du) {
 
 function renderSimulation(ctx) {
     entityManager.render(ctx);
-    //spatialManager.render(ctx);
+    spatialManager.render(ctx);
 }
 
 

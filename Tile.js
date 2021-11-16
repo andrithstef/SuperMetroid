@@ -24,6 +24,19 @@ Tile.prototype.setTile = function(){
         this.sy = 0;
         // 0,0
     }
+
+    else if (this.id === 0){
+        this.collidable = false;
+        this.sx = 0;
+        this.sy = 0;
+    }
+
+    else if (this.id === 1){
+        this.collidable = true;
+        this.sx = 640;
+        this.sy = 64;
+    }
+
     else if(this.id ==='WL2'){
         this.collidable = true;
         this.sx = 0;
