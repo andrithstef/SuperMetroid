@@ -416,6 +416,14 @@ Tile.prototype.setTile = function(){
         this.sy = 0;
         // 448,0
     }
+
+    else if(this.id ==='0col'){
+        this.collidable = false;
+
+        this.sx = 448;
+        this.sy = 0;
+        // 448,0
+    }
     else if(this.id ==='!!L'){
         this.collidable = false;
 
@@ -1127,16 +1135,22 @@ Tile.prototype.setTile = function(){
     else if(this.id ==='|/F'){
         this.collidable = false;
         this.sx = 1088;
-        this.sy = 256;
+        this.sy = 192;
         // 1088,256
     }
     else if(this.id ==='|s'){
         this.collidable = false;
         this.sx = 1088;
-        this.sy = 320;
+        this.sy = 256;
         // 1088,320
     }
     else if(this.id ==='XT'){
+        this.collidable = false;
+        this.sx = 1088;
+        this.sy = 320;
+        // 1088,384
+    }
+    else if(this.id ==='Blk'){
         this.collidable = false;
         this.sx = 1088;
         this.sy = 384;
@@ -1164,11 +1178,55 @@ Tile.prototype.setTile = function(){
         this.sx = 1088;
         this.sy = 576;
     }
-
     else if(this.id ==='#r'){
         this.collidable = false;
         this.sx = 1152;
         this.sy = 0;
+    }
+    else if(this.id ==='#t'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 64;
+    }
+    else if(this.id ==='!!ext1'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 128;
+    }
+    else if(this.id ==='//ext1'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 192;
+    }
+    else if(this.id ==='!!ext2'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 448;
+    }
+    else if(this.id ==='//ext2'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 512;
+    }
+    else if(this.id ==='!!ext3'){
+        this.collidable = false;
+        this.sx = 1088;
+        this.sy = 640;
+    }
+    else if(this.id ==='.ext1'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 640;
+    }
+    else if(this.id ==='.ext2'){
+        this.collidable = false;
+        this.sx = 1088;
+        this.sy = 704;
+    }
+    else if(this.id ==='//ext3'){
+        this.collidable = false;
+        this.sx = 1152;
+        this.sy = 704;
     }
     else{
         return false;
