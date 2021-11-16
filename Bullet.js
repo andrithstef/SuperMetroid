@@ -72,19 +72,15 @@ Bullet.prototype.update = function(du){
 
     var hitData = this.findCollision();
     if(hitData){
-        re = 0;
-        console.log(hitData);
-        console.log(entityManager._player);
         if(!hitData.isKillable) {
-            re = entityManager.KILL_ME_NOW;
+            return entityManager.KILL_ME_NOW;
         } else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
             hitData.getShot(this);
-            re = entityManager.KILL_ME_NOW;
+            return entityManager.KILL_ME_NOW;
         } else if (hitData.isKillable && hitData != entityManager._player && this.type == 1) {
             hitData.getShot(this);
-            re = entityManager.KILL_ME_NOW;
+            return entityManager.KILL_ME_NOW;
         }
-        return re;
     }
 
     this.cx = this.nextX;
