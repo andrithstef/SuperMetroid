@@ -124,7 +124,11 @@ Enemy.prototype.shoot = function(){
 
 Enemy.prototype.render = function(ctx){
     var s = this.spriteData;
-    ctx.drawImage(enemySheet,6*s.x,6*s.y,6*s.w,6*s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
+    if(this.cx >= g_camera.cx - this.halfWidth && this.cx <= g_camera.cx + g_camera.width + this.halfWidth &&
+        this.cy >= g_camera.cy - this.halfHeight && this.cy <= g_camera.cy + g_camera.height + this.halfHeight) {
+        ctx.drawImage(enemySheet,6*s.x,6*s.y,6*s.w,6*s.h,this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,2*s.w*this.scale,2*s.h*this.scale);
+    }
+    
 }
 
 Enemy.prototype.updateAnimationFrame = function(){

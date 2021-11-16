@@ -55,24 +55,30 @@ Environment.prototype.registerGrid = function(){
 
 Environment.prototype.render = function(ctx){
 
-    //creates an infinite load so not this but essentially this
     for (var l = 0; l<this.tilesBack.length; l++){
         //console.log(l);
-        ctx.drawImage(this.tileSheet, this.tilesBack[l].sx, this.tilesBack[l].sy,
-                       this.tilesBack[l].width, this.tilesBack[l].height,
-                       this.tilesBack[l].cx - g_camera.cx - this.tilesBack[l].halfWidth,
-                       this.tilesBack[l].cy - g_camera.cy - this.tilesBack[l].halfHeight,
-                       this.tilesBack[l].width, this.tilesBack[l].height)
+        if(this.tilesBack[l].cx >= g_camera.cx - this.tilesBack[l].halfWidth && this.tilesBack[l].cx <= g_camera.cx + g_camera.width + this.tilesBack[l].halfWidth
+            && this.tilesBack[l].cy >= g_camera.cy - this.tilesBack[l].halfHeight && this.tilesBack[l].cy <= g_camera.cy + g_camera.height + this.tilesBack[l].halfHeight) {
+                ctx.drawImage(this.tileSheet, this.tilesBack[l].sx, this.tilesBack[l].sy,
+                    this.tilesBack[l].width, this.tilesBack[l].height,
+                    this.tilesBack[l].cx - g_camera.cx - this.tilesBack[l].halfWidth,
+                    this.tilesBack[l].cy - g_camera.cy - this.tilesBack[l].halfHeight,
+                    this.tilesBack[l].width, this.tilesBack[l].height);
+            }
+        
         
         // g_camera.cy,2*s.w,2*s.h
     }
     for (var i = 0; i<this.tilesColl.length; i++){
-        ctx.drawImage(this.tileSheet, this.tilesColl[i].sx, this.tilesColl[i].sy,
-                       this.tilesColl[i].width, this.tilesColl[i].height,
-                       this.tilesColl[i].cx - g_camera.cx - this.tilesColl[i].halfWidth,
-                       this.tilesColl[i].cy - g_camera.cy - this.tilesColl[i].halfHeight,
-                       this.tilesColl[i].width, this.tilesColl[i].height)
-        
+        if(this.tilesColl[i].cx >= g_camera.cx - this.tilesColl[i].halfWidth && this.tilesColl[i].cx <= g_camera.cx + g_camera.width + this.tilesColl[i].halfWidth
+            && this.tilesColl[i].cy >= g_camera.cy - this.tilesColl[i].halfHeight && this.tilesColl[i].cy <= g_camera.cy + g_camera.height + this.tilesColl[i].halfHeight) {
+            ctx.drawImage(this.tileSheet, this.tilesColl[i].sx, this.tilesColl[i].sy,
+                        this.tilesColl[i].width, this.tilesColl[i].height,
+                        this.tilesColl[i].cx - g_camera.cx - this.tilesColl[i].halfWidth,
+                        this.tilesColl[i].cy - g_camera.cy - this.tilesColl[i].halfHeight,
+                        this.tilesColl[i].width, this.tilesColl[i].height);
+            
+        }
     }
 
 };

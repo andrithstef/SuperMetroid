@@ -49,10 +49,13 @@ Bullet.prototype.lifeSpan = 2000 / 16.666;
 
 Bullet.prototype.render = function(ctx){
 
-    ctx.drawImage(bulletSheet,
-        this.spriteX,this.spriteY,this.spriteW,this.spriteH, 
-        this.cx-this.halfWidth - g_camera.cx, this.cy -this.halfHeight - g_camera.cy, 
-        2*this.spriteW*this.scale, 2*this.spriteH*this.scale);
+    if(this.cx >= g_camera.cx - this.halfWidth && this.cx <= g_camera.cx + g_camera.width + this.halfWidth &&
+        this.cy >= g_camera.cy - this.halfHeight && this.cy <= g_camera.cy + g_camera.height + this.halfHeight) {
+        ctx.drawImage(bulletSheet,
+            this.spriteX,this.spriteY,this.spriteW,this.spriteH, 
+            this.cx-this.halfWidth - g_camera.cx, this.cy -this.halfHeight - g_camera.cy, 
+            2*this.spriteW*this.scale, 2*this.spriteH*this.scale);
+    }
 
 }
 
@@ -69,10 +72,15 @@ Bullet.prototype.update = function(du){
 
     var hitData = this.findCollision();
     if(hitData){
-        if (hitData.isKillable){
+        if(!hitData.isKillable) {
+            return entityManager.KILL_ME_NOW;
+        } else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
             hitData.getShot(this);
+            return entityManager.KILL_ME_NOW;
+        } else if (hitData.isKillable && hitData != entityManager._player && this.type == 1) {
+            hitData.getShot(this);
+            return entityManager.KILL_ME_NOW;
         }
-        return entityManager.KILL_ME_NOW;
     }
 
     this.cx = this.nextX;
