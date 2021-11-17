@@ -3,6 +3,9 @@
 var g_doClear = true;
 var cnt = 0;
 
+const backGround = new Image();
+backGround.src = "resrc/bg1.png"
+
 
 function intro(ctx) {
     // I've pulled the clear out of `renderSimulation()` and into
@@ -10,7 +13,8 @@ function intro(ctx) {
     //*/
     if (g_doClear) util.clearCanvas(ctx);
 
-    
+    ctx.drawImage(backGround,0,0,g_canvas.width,g_canvas.height);
+
     if(cnt === 0)ctx.font = "50px Arial";
     else if(cnt === 15)ctx.font = "55px Arial";
     else if(cnt === 30)ctx.font = "60px Arial";
