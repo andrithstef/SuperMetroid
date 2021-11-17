@@ -1008,7 +1008,7 @@ Tile.prototype.setTile = function(){
     else if(this.id ==='BFR'){
         this.collidable = true;
         this.sx = 896;
-        this.sy = 640;
+        this.sy = 576;
         // 896,640
     }
     else if(this.id ==='[R'){

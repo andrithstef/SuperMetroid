@@ -12,8 +12,10 @@ function Ridley(){
 const ridleySheet = new Image();
 ridleySheet.src = "resrc/Ridley.png"
 
-Ridley.prototype.health = 500;
+Ridley.prototype.health = 20;
 Ridley.prototype.scale = 2;
+Ridley.prototype.isEscaping = false; 
+Ridley.prototype.isFlying = false;
 
 //Body parts that make up Ridley
 Ridley.prototype.body = new Entity();
@@ -42,14 +44,14 @@ Ridley.prototype.hasReachedTarget = true;
 Ridley.prototype.speed = 3;
 Ridley.prototype.velX = 0;
 Ridley.prototype.velY = 0;
-Ridley.prototype.maxDistFromPlayer = 700;
+Ridley.prototype.maxDistFromPlayer = 1000;
 Ridley.prototype.minDistFromPlayer = 300;
 Ridley.prototype.minAngleFromPlayer = 0.05;
 Ridley.prototype.maxAngleFromPlayer = Math.PI/3;
 
 
 //Fireball stuff
-Ridley.prototype.timeToFireball = Math.floor(Math.random()*(500-300) + 300);
+Ridley.prototype.timeToFireball = Math.floor(Math.random()*(300-200) + 200);
 Ridley.prototype.ballnr = 0;
 Ridley.prototype.chargeTime = 100;
 Ridley.prototype.mouthOpen = false;
@@ -79,6 +81,11 @@ Ridley.prototype.tailTargetY = 150;
 Ridley.prototype.tailDist = 200;
 Ridley.prototype.tailRadian = 1;
 Ridley.prototype.reverseTail = 1;
+
+//Flying away stuff
+Ridley.prototype.flyingAnimation = 0;
+Ridley.prototype.flyingFrame = 0;
+Ridley.prototype.flyingTime = 0;
 
 Ridley.prototype.init = function() {
     //This is just initial setup for each body part
@@ -169,6 +176,17 @@ Ridley.prototype.init = function() {
 }
 
 Ridley.prototype.update = function(du, player){
+
+    if(this.isDead){
+        this.unregister();
+        return entityManager.KILL_ME_NOW;
+    }
+
+    if(this.isFlying){
+        this.escape();
+        return;
+    }
+
     //If there is a fireball in ridley's mouth, we must update it
     if(this.fireball){
         this.fireball.update(du, this);
@@ -176,7 +194,7 @@ Ridley.prototype.update = function(du, player){
     }
 
     if(this.health < 0){
-        this.isDead = true;
+        this.isEscaping = true;
     }
 
     //Update each body part
@@ -200,6 +218,19 @@ Ridley.prototype.updateBody = function(du, player){
 
     if(this.isDead){
         return entityManager.KILL_ME_NOW;
+    }
+
+    if(this.isEscaping){
+        this.moveTargetY = -300;
+        this.updateVelocity();
+        this.body.cy += this.velY * du * this.speed * 3;
+        if(this.body.cy < - 200){
+            this.isFlying = true;
+            this.cx = 700;
+            this.cy = -300;
+            this.scale = 0.3;
+        }
+        return;
     }
 
     if(this.hasReachedTarget || this.shouldMove(player)){
@@ -413,6 +444,17 @@ Ridley.prototype.updatePoint = function(e1, e2){
 }
 
 Ridley.prototype.render = function(ctx){
+
+    
+    if(this.isFlying && this.spriteData){
+        this.drawBodyPart(ctx, this);
+        return;
+    }
+    
+    if(this.body.cy < -200){
+        return;
+    }
+
     //If there is a fireball in Ridley's mouth, render it
     if(this.fireball){
         this.fireball.render(ctx);
@@ -426,12 +468,12 @@ Ridley.prototype.render = function(ctx){
     this.drawBodyPart(ctx, this.leg);
     this.drawBodyPart(ctx, this.wing);
     this.renderTail(ctx);
-    
 }
 
 Ridley.prototype.drawBodyPart = function(ctx, part){
     //Render a body part
     s = part.spriteData;
+    console.log(s);
     ctx.drawImage(ridleySheet,6*s.x,6*s.y,6*s.w,6*s.h,
         part.cx-part.halfWidth - g_camera.cx,
         part.cy-part.halfHeight - g_camera.cy,
@@ -506,7 +548,7 @@ Ridley.prototype.shutMouth = function(){
         this.closeMouth = false;
         this.mouthOpen = false;
         this.charged = false;
-        this.timeToFireball = Math.floor(Math.random()*(500-300) + 300);
+        this.timeToFireball = Math.floor(Math.random()*(300-200) + 200);
     }
 }
 
@@ -581,6 +623,14 @@ Ridley.prototype.moveToNewPosition = function(player){
     this.moveTargetX = x + dist*Math.cos(angle);
     this.moveTargetY = y - dist*Math.sin(angle);
 
+    if(this.moveTargetX > g_canvas.width-100){
+        this.moveTargetX = g_canvas.width-100;
+    }
+
+    if(this.moveTargetY < 250){
+        this.moveTargetY = 250;
+    }
+
     this.hasReachedTarget = false;
 }
 
@@ -614,7 +664,8 @@ Ridley.prototype.chooseTailLocation = function(du){
     console.log("updating");
     this.tailRadian += this.reverseTail*0.5;
 
-    if(this.tailRadian > Math.random()*10+10 || this.tailRadian < Math.random()*5-10){
+    if((this.tailRadian > Math.random()*10 + 10 && this.reverseTail === 1)
+    || this.tailRadian < Math.random()*5-10 && this.reverseTail === -1){
         this.reverseTail *= -1;
     }
 
@@ -644,3 +695,54 @@ Ridley.prototype.chooseTailLocation = function(du){
     this.needsTailTarget = false;
     this.tailTimer = 0;
 }
+
+Ridley.prototype.updateFlyingFrame = function(){
+    this.flyingFrame += 1;
+    if(this.flyingFrame > 10){
+        this.flyingAnimation += 1;
+        this.flyingAnimation %= 2;
+        this.flyingFrame = 0;
+    }
+}
+
+Ridley.prototype.escape = function(du){
+    //TODO: update how she moves
+    this.flyingTime += 10;
+    this.updateFlyingFrame();
+    this.cy = 500 + (this.escapingSprites[4][this.flyingAnimation]*this.scale/2) - this.flyingTime;
+    this.cx = 500 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2);
+    console.log(this.flyingAnimation);
+    this.spriteData = {
+        x: this.escapingSprites[0][this.flyingAnimation],
+        y: this.escapingSprites[1][this.flyingAnimation],
+        w: this.escapingSprites[2][this.flyingAnimation],
+        h: this.escapingSprites[3][this.flyingAnimation]
+    }
+    this.halfWidth = this.escapingSprites[2][this.flyingAnimation]*this.scale;
+    this.halfHeight = this.escapingSprites[3][this.flyingAnimation]*this.scale;
+    this.scale *= 1.05;
+    if(this.scale > 7){
+        this.isDead = true;
+    }
+}
+
+Ridley.prototype.unregister = function(){
+    spatialManager.unregister(this.body);
+    spatialManager.unregister(this.head);
+    spatialManager.unregister(this.hand);
+    spatialManager.unregister(this.jar);
+    spatialManager.unregister(this.leg);
+    spatialManager.unregister(this.wing);
+    for(var i = 0; i< this.tailLength; i++){
+        spatialManager.unregister(this.tail[i]);
+    }
+}
+
+Ridley.prototype.escapingSprites = [
+    [4, 129],  //x
+    [418, 431],//y
+    [119, 127],//w
+    [116, 103], //h
+    [-26, 0], //Y offset
+    [-16, 0]  //X offset
+]
