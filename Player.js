@@ -1,6 +1,7 @@
-function Player(descr){
+function Player(energy,descr){
     this.setup(descr);
 
+    this.energy = energy;
     this.halfHeight = 50;
     this.halfWidth = 20;
 
@@ -216,6 +217,7 @@ Player.prototype.shoot = function(){
 
 Player.prototype.getShot = function(entity){
     this.energy -= 12;
+    g_energy -= 12;
     var dir = Math.sign(this.cx - entity.cx);
     this.velX -= dir*6;
     this.velY -= 6;

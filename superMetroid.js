@@ -32,7 +32,7 @@ var RidleyFight = new Howl({
 })
 
 
-var entityManager = new EntityManager(g_level, spawn);
+var entityManager = new EntityManager(g_level, spawn, g_energy);
 
 
 // The "nominal interval" is the one that all of our time-based units are

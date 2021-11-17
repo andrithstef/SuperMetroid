@@ -77,7 +77,7 @@ Bullet.prototype.update = function(du){
         } else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
             hitData.getShot(this);
             return entityManager.KILL_ME_NOW;
-        } else if (hitData.isKillable && hitData != entityManager._player && this.type == 1) {
+        } else if (hitData.isKillable && !(hitData instanceof Player) && this.type == 1) {
             hitData.getShot(this);
             return entityManager.KILL_ME_NOW;
         }

@@ -58,7 +58,7 @@ g_main._iterCore = function (dt) {
         g_camera = new Camera(0,0,g_level);
         spatialManager = Object.create(g_spatialManager);
         spatialManager.reset();
-        entityManager = new EntityManager(g_level, spawn);
+        entityManager = new EntityManager(g_level, spawn, g_energy);
     }
     g_newLevel = false;
     if(requestedStart() || this._startGame === true){
