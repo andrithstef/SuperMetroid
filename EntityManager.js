@@ -22,6 +22,11 @@ function EntityManager(lvl,spawn, energy){
         this._enemies.push(new Ridley());
     }
     this._player = new Player(energy, {cx: lvl.player[spawn].x, cy: lvl.player[spawn].y});
+    
+    if(lvl.foreGround){
+        this.foreGround = lvl.foreGround;
+    }
+
 }
 
 // "PRIVATE" DATA
@@ -122,6 +127,28 @@ EntityManager.prototype.render = function(ctx) {
         this._doors[i].render(ctx);
     }
 
+    if(this.foreGround){
+        this.renderForeGround(ctx);
+    }
+
+    this.renderUI(ctx);
+
+}
+
+EntityManager.prototype.renderUI = function(ctx){
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("energy: "+ g_energy, g_canvas.width-300, 100);
+}
+
+EntityManager.prototype.renderForeGround = function(ctx){
+    var s = this.foreGround[1];
+    console.log(s);
+    ctx.drawImage(doorSprite,
+        s.x,s.y,s.w,s.h,
+        this.foreGround[2] - g_camera.cx,this.foreGround[3] - g_camera.cy,
+        s.w*1.1,s.h*1.1);
 }
 
 EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){

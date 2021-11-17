@@ -1,7 +1,6 @@
 function Player(energy,descr){
     this.setup(descr);
 
-    this.energy = energy;
     this.halfHeight = 50;
     this.halfWidth = 20;
 
@@ -27,8 +26,6 @@ Player.prototype.HEAL = "H".charCodeAt(0);
 //movement data
 Player.prototype.accel = 1.4;
 Player.prototype.jumpSpeed = 22;
-//Player.prototype.cx = 700;
-//Player.prototype.cy = 310;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -62,7 +59,10 @@ Player.prototype.flipFramestoAnimationFrame = 4;
 Player.prototype.bulletX = this.cx;
 Player.prototype.bulletY = this.cy;
 
-Player.prototype.energy = 100;
+
+//So that the player can't spam bullets 
+Player.prototype.bulletTimer = 0;
+Player.prototype.coolDown = 10;
 
 //How many times has the player tried to resolve a collision
 //This is used to prevent infinite loops of collision resolutions
@@ -74,7 +74,6 @@ Player.prototype.update = function(du){
     spatialManager.unregister(this);
 
     if(eatKey(this.HEAL)){
-        this.energy += 100;
         g_energy += 100;
     }
 
@@ -133,7 +132,8 @@ Player.prototype.gatherInputs = function(du){
     }
 
     //Shoot
-    if (eatKey(this.SHOOT)){
+    this.bulletTimer -= du;
+    if (eatKey(this.SHOOT)  && this.bulletTimer < 0){
         this.shoot();
     }
 }
@@ -196,11 +196,6 @@ Player.prototype.render = function(ctx){
         s.x*4,4*s.y,4*s.w,4*s.h,
         this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,
         2*s.w*this.scale,2*s.h*this.scale);
-
-    ctx.font = "50px Arial";
-    ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-    ctx.fillText("energy: "+ this.energy, g_canvas.width-300, 100);
 }
 
 Player.prototype.jump = function(){
@@ -216,11 +211,11 @@ Player.prototype.jump = function(){
 Player.prototype.shoot = function(){
     this.hasShot = true;
     gunshot.play();
+    this.bulletTimer = this.coolDown;
     entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
 }
 
 Player.prototype.getShot = function(entity){
-    this.energy -= 12;
     g_energy -= 12;
     var dir = Math.sign(this.cx - entity.cx);
     this.velX -= dir*6;
