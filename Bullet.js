@@ -38,7 +38,7 @@ Bullet.prototype.spriteX;
 Bullet.prototype.spriteY;
 Bullet.prototype.spriteW = 7;
 Bullet.prototype.spriteH = 7;
-Bullet.prototype.scale = 1;
+Bullet.prototype.scale = 1.5;
 Bullet.prototype.stance = 0;
 
 Bullet.prototype.type = 1;
@@ -81,6 +81,10 @@ Bullet.prototype.update = function(du){
             hitData.getShot(this);
             return entityManager.KILL_ME_NOW;
         }
+        else if(hitData.owner){
+            hitData.owner.getShot(this, hitData);
+        }
+        return entityManager.KILL_ME_NOW;
     }
 
     this.cx = this.nextX;

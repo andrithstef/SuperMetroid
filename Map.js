@@ -187,5 +187,6 @@ var Map = {
     ridley : true,
     doors: [{x:0, y:384, direction:'left'}],
     player: [{x:96, y:480}],
-    background: 'resrc/bg1.png'}
+    background: 'resrc/bg1.png',
+    ripley: true}
 }

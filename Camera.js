@@ -82,9 +82,8 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
 */
 
 Camera.prototype.updateCamera = function(cx, cy){
-  cx = cx - this.width/6;
-  cy = cy - this.height/10;
-  //console.log(cx);
+  cx = cx - this.width/4;
+  cy = cy - this.height/4;
   
   if (cx > this.cx + this.xThreshold) {
     this.cx = cx - this.xThreshold;

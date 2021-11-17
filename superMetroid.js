@@ -26,6 +26,11 @@ var enemyDie = new Howl({
   src: ['sounds/enemyDie.mp3']
 });
 
+var RidleyFight = new Howl({
+  src: ['sounds/RidleyFight.mp3'], 
+  loop: true
+})
+
 
 var entityManager = new EntityManager(g_level, spawn);
 
@@ -64,9 +69,11 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
+  /*
     if(background.state() === "loaded" && !background.playing()){
        background.play();
     }
+    */
     entityManager.update(du);
 }
 

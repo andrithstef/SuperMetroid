@@ -19,6 +19,9 @@ function EntityManager(lvl,spawn){
     this._doors = [];
     this.addDoors(lvl);
     this._environment = new Environment(lvl);
+    if(Map.ridley){
+        this._enemies.push(new Ridley());
+    }
 }
 
 // "PRIVATE" DATA
@@ -101,16 +104,16 @@ EntityManager.prototype.render = function(ctx) {
     //render environment
     this._environment.render(ctx);
 
+    //render enemies
+    for (var i = 0; i<this._enemies.length; i++){
+        this._enemies[i].render(ctx);
+    }
 
     //render bullets
     for (var i = 0; i<this._bullets.length; i++){
         this._bullets[i].render(ctx);
     }
 
-    //render enemies
-    for (var i = 0; i<this._enemies.length; i++){
-        this._enemies[i].render(ctx);
-    }
 
     //render player
     this._player.render(ctx);
