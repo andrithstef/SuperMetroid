@@ -62,7 +62,7 @@ Player.prototype.bulletY = this.cy;
 
 //So that the player can't spam bullets 
 Player.prototype.bulletTimer = 0;
-Player.prototype.coolDown = 10;
+Player.prototype.coolDown = 8;
 
 //How many times has the player tried to resolve a collision
 //This is used to prevent infinite loops of collision resolutions

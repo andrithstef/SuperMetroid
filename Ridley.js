@@ -15,7 +15,7 @@ function Ridley(){
 const ridleySheet = new Image();
 ridleySheet.src = "resrc/Ridley.png"
 
-Ridley.prototype.health = 500;
+Ridley.prototype.health = 100;
 Ridley.prototype.scale = 2;
 Ridley.prototype.isEscaping = false; 
 Ridley.prototype.isFlying = false;
@@ -629,12 +629,12 @@ Ridley.prototype.moveToNewPosition = function(player){
     this.moveTargetX = x + dist*Math.cos(angle);
     this.moveTargetY = y - dist*Math.sin(angle);
 
-    if(this.moveTargetX > g_canvas.width-100){
-        this.moveTargetX = g_canvas.width-100;
+    if(this.moveTargetX > g_canvas.width-200){
+        this.moveTargetX = g_canvas.width-200;
     }
 
-    if(this.moveTargetY < 350){
-        this.moveTargetY = 350;
+    if(this.moveTargetY < 400){
+        this.moveTargetY = 400;
     }
 
     this.hasReachedTarget = false;
@@ -712,11 +712,11 @@ Ridley.prototype.escape = function(du){
     }
 
     //first flies down from the top of the screen
-    if(this.cy > 700) this.goingDown = false;
+    if(this.cy > 600) this.goingDown = false;
 
     if(this.goingDown){
         //Shes flying down
-        this.cy += 20;
+        this.cy += 15;
         this.cx = 650 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2) + this.flyingX;
         return;
     }
@@ -725,7 +725,7 @@ Ridley.prototype.escape = function(du){
     this.flyingTime += 1;
     this.flyingTime *= 1.08;
     this.flyingX += 1;
-    this.cy = 700 + (this.escapingSprites[4][this.flyingAnimation]*this.scale/2) - this.flyingTime;
+    this.cy = 600 + (this.escapingSprites[4][this.flyingAnimation]*this.scale/2) - this.flyingTime;
     this.cx = 650 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2) + this.flyingX;
     this.scale *= 1.05;
 

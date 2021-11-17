@@ -180,13 +180,11 @@ var Map = {
         ['^B','#','#','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','*R'],
         ['*L','#','#','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','*R'],
         ['*L','#','#','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','Blk','^T'],
-        ['BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR'],
-        ['BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR'],
         ['BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR','BFL','BFR']
 
     ],
     ridley : true,
     doors: [{x:0, y:384, direction:'left'}],
-    player: [{x:96, y:480}],
+    player: [{x:96, y:500}],
     background: 'resrc/bg1.png'}
 }

@@ -53,12 +53,12 @@ Door.prototype.isPlayerClose = function() {
 
 Door.prototype.updateAnimationFrame = function(){
   if(g_keys['Ridley']){
+    //Your stuck in the room until Ridley is gone
     this.animationFrame = 0;
     return;
   }
   this.framenr += 1;
   var player = this.isPlayerClose();
-  //console.log(this.animationFrame);
   if (this.framenr > this.framesToAnimationFrame){
     if(player){
       this.animationFrame += 1;
