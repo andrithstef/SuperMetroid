@@ -2,6 +2,7 @@
 
 function Environment(lvl,descr) {
     this.lvl = lvl;
+
     for (var property in descr) {
         this[property] = descr[property];
     }
@@ -12,6 +13,7 @@ Environment.prototype.tileSheet = new Image();
 Environment.prototype.tileSheet.src = "resrc/enviro.png";
 Environment.prototype.objectSheet = new Image();
 Environment.prototype.objectSheet.src = "resrc/objects&Items.png"
+Environment.prototype.background = new Image();
 
 
 //now this can be anything i think. hope. think/hope.
@@ -55,6 +57,8 @@ Environment.prototype.registerGrid = function(){
 };
 
 Environment.prototype.render = function(ctx){
+    this.background.src = this.lvl.background;
+    ctx.drawImage(this.background,0,0,g_camera.cameraWidth,g_camera.cameraHeight);
 
     for (var l = 0; l<this.tilesBack.length; l++){
         //console.log(l);
