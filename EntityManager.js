@@ -10,9 +10,8 @@
 /*jslint nomen: true, white: true, plusplus: true*/
 
 
-function EntityManager(lvl,spawn){
+function EntityManager(lvl,spawn, energy){
     //this._map = new Map();
-    
     this._bullets = [];
     this._enemies = [];
     this.addEnemies(lvl);

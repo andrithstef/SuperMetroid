@@ -12,6 +12,7 @@ var g_camera = new Camera(0,0,g_level);
 var spatialManager = Object.create(g_spatialManager);
 var g_newLevel = false;
 var spawn = 0;
+var g_energy = 100;
 
 var util = {
 

@@ -58,6 +58,7 @@ Environment.prototype.registerGrid = function(){
 
 Environment.prototype.render = function(ctx){
     this.background.src = this.lvl.background;
+    console.log(this.background.src);
     ctx.drawImage(this.background,0,0,g_camera.cameraWidth,g_camera.cameraHeight);
 
     for (var l = 0; l<this.tilesBack.length; l++){
