@@ -10,6 +10,8 @@
 // with genuine name-hiding *is* possible in JavaScript (via closures), but I 
 // haven't adopted it here.
 //
+//"use strict";
+
 var g_main = {
     
     // "Frame Time" is a (potentially high-precision) frame-clock for animations
@@ -52,9 +54,6 @@ g_main._iterCore = function (dt) {
         return;
     }
     
-    gatherInputs();
-    update(dt);
-    render(g_ctx);
     if(g_newLevel) {
         g_camera = new Camera(0,0,g_level);
         spatialManager = Object.create(g_spatialManager);
@@ -62,13 +61,30 @@ g_main._iterCore = function (dt) {
         entityManager = new EntityManager(g_level, spawn);
     }
     g_newLevel = false;
+    if(requestedStart() || this._startGame === true){
+        this.startGame();
+        gatherInputs();
+        update(dt);
+        render(g_ctx);
+        return;
+    }
+    intro(g_ctx);
+    
+
+
 };
 
 g_main._isGameOver = false;
+g_main._startGame = false;
 
 g_main.gameOver = function () {
     this._isGameOver = true;
     console.log("gameOver: quitting...");
+};
+
+//starts game
+g_main.startGame = function () {
+    this._startGame = true;
 };
 
 // Simple voluntary quit mechanism
@@ -76,6 +92,11 @@ g_main.gameOver = function () {
 var KEY_QUIT = 'M'.charCodeAt(0);
 function requestedQuit() {
     return g_keys[KEY_QUIT];
+}
+// simple voluntarty start mechanism
+var KEY_START = ' '.charCodeAt(0);
+function requestedStart(){
+    return g_keys[KEY_START];
 }
 
 // Annoying shim for cross-browser compat
