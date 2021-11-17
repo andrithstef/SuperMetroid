@@ -10,7 +10,7 @@ function Environment(lvl,descr) {
 }
 
 Environment.prototype.tileSheet = new Image();
-Environment.prototype.tileSheet.src = "resrc/enviro.png";
+Environment.prototype.tileSheet.src = "resrc/enviro2.png";
 Environment.prototype.objectSheet = new Image();
 Environment.prototype.objectSheet.src = "resrc/objects&Items.png"
 Environment.prototype.background = new Image();

@@ -569,7 +569,7 @@ Ridley.prototype.chargefireBall = function(du){
 }
 
 Ridley.prototype.shootFireball = function(player){
-    if(this.shotsFired > 5){
+    if(this.shotsFired > 6){
         //She has shot all of her fireballs and must close her mouth
         this.closeMouth = true;
         this.charged = false;
@@ -632,8 +632,8 @@ Ridley.prototype.moveToNewPosition = function(player){
         this.moveTargetX = g_canvas.width-100;
     }
 
-    if(this.moveTargetY < 250){
-        this.moveTargetY = 250;
+    if(this.moveTargetY < 350){
+        this.moveTargetY = 350;
     }
 
     this.hasReachedTarget = false;

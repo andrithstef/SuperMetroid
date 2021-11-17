@@ -15,7 +15,7 @@ Fire.prototype = new Entity();
 
 
 Fire.prototype.rad = 7;
-Fire.prototype.speed = 6;
+Fire.prototype.speed = 10;
 Fire.prototype.spriteX = 68;
 Fire.prototype.spriteY = [151, 170, 188, 207];
 Fire.prototype.spriteW = 15;

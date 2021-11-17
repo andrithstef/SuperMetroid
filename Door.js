@@ -5,7 +5,7 @@ function Door(x,y,direction){
 }
 
 const enviroSprite = new Image();
-enviroSprite.src = "resrc/enviro.png";
+enviroSprite.src = "resrc/enviro2.png";
 const doorSprite = new Image();
 doorSprite.src = "resrc/specialSprite.png";
 
