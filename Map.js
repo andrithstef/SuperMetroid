@@ -54,7 +54,7 @@ var Map = {
     ],
 
     doors: [{x:896, y:2432, direction:'right'}],
-    player: [{x:504, y:300}, {x:892, y:2624}],
+    player: [{x:504, y:320}, {x:892, y:2624}],
     background: 'resrc/bg1.png'},
 
     lvl2 : {map: [
@@ -76,7 +76,7 @@ var Map = {
         ['B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B']
     ],
 
-    enemies: [{x:1200, y:500}],
+    enemies: [{x:1000, y:800}],
     doors: [{x:64, y:384, direction:'left'}, {x:1920, y:384, direction:'right'}],
     player: [{x:160, y:576}, {x:1824, y:576}],
     background: 'resrc/bg2.png'},
@@ -161,6 +161,7 @@ var Map = {
         ['B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B'],
         ['B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B','B']
     ],
+    enemies: [{x:1000, y:800}],
     doors: [{x:64, y:384, direction:'left'}, {x:1920, y:384, direction:'right'}],
     player: [{x:160, y:576}, {x:1824, y:576}],
     background: 'resrc/bg2.png'},
