@@ -20,7 +20,7 @@ function intro(ctx) {
     
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText("Push space to start", 700, 400); 
+    ctx.fillText("Push space to start", g_canvas.width/2, g_canvas.height/2); 
 
 
 

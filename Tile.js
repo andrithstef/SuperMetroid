@@ -186,6 +186,12 @@ Tile.prototype.setTile = function(){
         this.sy =448;
         // 128,448
     }
+    else if(this.id ==='#BR'){
+        this.collidable = true;
+        this.sx = 196;
+        this.sy = 448;
+        // 196,448
+    }
     else if(this.id ==='MLL'){
         this.collidable = false;
 
@@ -288,10 +294,10 @@ Tile.prototype.setTile = function(){
         this.collidable = false;
 
         this.sx = 256;
-        this.sy = 284;
+        this.sy = 384;
         // 256,384
     }
-    else if(this.id ==='Li4'){
+    else if(this.id ==='Li3'){
         this.collidable = false;
 
         this.sx = 256;
@@ -993,7 +999,7 @@ Tile.prototype.setTile = function(){
         // 896,128
     }
     else if(this.id ==='!|F'){
-        this.colli896able = false;
+        this.collidable = false;
         this.sx = 896;
         this.sy = 192;
         // 896,192
@@ -1031,7 +1037,7 @@ Tile.prototype.setTile = function(){
     else if(this.id ==='BFR'){
         this.collidable = true;
         this.sx = 896;
-        this.sy = 640;
+        this.sy = 576;
         // 896,640
     }
     else if(this.id ==='[R'){
@@ -1255,6 +1261,21 @@ Tile.prototype.setTile = function(){
         this.collidable = false;
         this.sx = 1152;
         this.sy = 704;
+    }
+    else if(this.id ==='|B'){
+        this.collidable = true;
+        this.sx = 960;
+        this.sy = 640;
+    }
+    else if(this.id ==='_LD'){
+        this.collidable = false;
+        this.sx = 896;
+        this.sy = 640;
+    }
+    else if(this.id ==='||D'){
+        this.collidable = false;
+        this.sx = 960;
+        this.sy = 576;
     }
     else{
         return false;

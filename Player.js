@@ -194,7 +194,7 @@ Player.prototype.render = function(ctx){
     ctx.font = "50px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText("energy: "+ this.energy, 1100, 100);
+    ctx.fillText("energy: "+ this.energy, g_canvas.width-300, 100);
 }
 
 Player.prototype.jump = function(){
