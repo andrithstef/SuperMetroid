@@ -12,7 +12,7 @@ function Ridley(){
 const ridleySheet = new Image();
 ridleySheet.src = "resrc/Ridley.png"
 
-Ridley.prototype.health = 1000;
+Ridley.prototype.health = 500;
 Ridley.prototype.scale = 2;
 
 //Body parts that make up Ridley
@@ -22,6 +22,7 @@ Ridley.prototype.leg = new Entity();
 Ridley.prototype.wing = new Entity();
 Ridley.prototype.hand = new Entity();
 Ridley.prototype.tail = new Entity();
+Ridley.prototype.jar = new Entity();
 
 //Wing animation stuff
 Ridley.prototype.framenr = 0;
@@ -55,16 +56,35 @@ Ridley.prototype.mouthOpen = false;
 Ridley.prototype.charged = false;
 Ridley.prototype.hasShot = false;
 Ridley.prototype.closeMouth = false;
-Ridley.prototype.timeToNextshot = 30;
+Ridley.prototype.timeToNextshot = 15;
 Ridley.prototype.shotsFired = 0;
 Ridley.prototype.targetX;
 Ridley.prototype.targetY;
+
+//Jar stuff
+Ridley.prototype.jarAnimationFrame = 0;
+Ridley.prototype.jarFramenr = 0;
+Ridley.prototype.jarFramesToAnimationFrame = 15;
+
+//Tail stuff
+Ridley.prototype.tailLength = 13;
+Ridley.prototype.tailX;
+Ridley.prototype.tailY;
+Ridley.prototype.tailSpan = 0;
+Ridley.prototype.needsTailTarget = true;
+Ridley.prototype.tailSpeed = 2;
+Ridley.prototype.tailTimer = 10;
+Ridley.prototype.tailTargetX = 150;
+Ridley.prototype.tailTargetY = 150;
+Ridley.prototype.tailDist = 200;
+Ridley.prototype.tailRadian = 1;
 
 Ridley.prototype.init = function() {
     //This is just initial setup for each body part
 
     //Set body
     this.body.setup();
+    this.body.owner = this;
     this.body.isFireproof = true;
     this.body.setPos(this.cx, this.cy);
     this.body.velX = 0;
@@ -79,6 +99,7 @@ Ridley.prototype.init = function() {
     }
     //set head
     this.head.setup();
+    this.head.owner = this;
     this.head.isFireproof = true;
     this.head.halfWidth = 41 * this.scale;
     this.head.halfHeight = 54 * this.scale;
@@ -91,6 +112,7 @@ Ridley.prototype.init = function() {
 
     //set hand
     this.hand.setup();
+    this.hand.owner = this;
     this.hand.isFireproof = true;
     this.hand.spriteData = {
         x: 9,
@@ -103,6 +125,7 @@ Ridley.prototype.init = function() {
 
     //set leg
     this.leg.setup();
+    this.leg.owner = this;
     this.leg.isFireproof = true;
     this.leg.spriteData = {
         x: 4,
@@ -115,6 +138,7 @@ Ridley.prototype.init = function() {
 
     //set wing
     this.wing.setup();
+    this.wing.owner = this;
     this.wing.isFireproof = true;
     this.wing.Xdists = [4, 50, 95, 4, 48, 93]; //x coords of sprites
     this.wing.Ydists = [277, 284, 293, 312, 314, 315]; //y coords of sprites
@@ -124,6 +148,23 @@ Ridley.prototype.init = function() {
     this.wing.halfheight = 28 * this.scale;
     this.wing.halfWidth = 39 * this.scale;
 
+    //Set jar
+    this.jar.setup();
+    this.jar.owner = this;
+    this.jar.isFireproof = true;
+    this.jar.halfHeight = 31 * this.scale; 
+    this.jar.halfWidth = 15 * this.scale;
+    this.jar.xDists = [4, 23, 42, 23];
+    this.jar.yDist = 543;
+    this.jar.Swidth = 15;
+    this.jar.Sheight = 31;
+
+    //Set tail
+    this.tail[0] = new TailPart(0, this.body)
+    for(var i = 1; i<this.tailLength; i++){
+        this.tail[i] = new TailPart(i, this.tail[i-1]);
+        this.tailSpan += this.tail[i].partLength;
+    }
 }
 
 Ridley.prototype.update = function(du, player){
@@ -133,19 +174,32 @@ Ridley.prototype.update = function(du, player){
         if (this.fireball.isDead) this.fireball = null;
     }
 
+    if(this.health < 0){
+        this.isDead = true;
+    }
+
     //Update each body part
     this.updateAnimationFrame();
     this.updateBody(du, player);
     this.updateHead(du, player);
     this.updateHand(du);
+    this.updateJar(du);
     this.updateLeg(du);
     this.updateWing(du);
+    this.updateTail(du);
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
 }
 
 Ridley.prototype.updateBody = function(du, player){
     spatialManager.unregister(this.body);
     //The body is the centre of the whole body
     //Each body part's location is based on the body's location
+
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
 
     if(this.hasReachedTarget || this.shouldMove(player)){
         this.moveToNewPosition(player);
@@ -164,6 +218,10 @@ Ridley.prototype.updateBody = function(du, player){
 
 Ridley.prototype.updateHead = function(du, player){
     spatialManager.unregister(this.head);
+
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
 
     //The head's main purpose is to shoot fireballs 
     //Update time to next fireball
@@ -212,6 +270,10 @@ Ridley.prototype.updateHead = function(du, player){
 Ridley.prototype.updateHand = function(du){
     spatialManager.unregister(this.hand);
 
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
+
     //the hands don't do anything, just follow the body
     this.hand.setPos(this.body.cx-this.body.halfWidth-this.hand.halfWidth + 10, 
         this.body.cy + this.hand.halfHeight+ 22);
@@ -221,15 +283,23 @@ Ridley.prototype.updateHand = function(du){
 Ridley.prototype.updateLeg = function(du){
     spatialManager.unregister(this.leg);
     
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
+
     //The legs don't really do anything, they just follow the body
-    this.leg.setPos(this.body.cx+this.body.halfWidth-this.leg.halfWidth - 5, 
-        this.body.cy + this.leg.halfHeight+ 22);
+    this.leg.setPos(this.body.cx+this.body.halfWidth-this.leg.halfWidth - 20, 
+        this.body.cy + this.leg.halfHeight+30);
     spatialManager.register(this.leg);
 }
 
 Ridley.prototype.updateWing = function(du){
     spatialManager.unregister(this.wing);
     
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
+
     //The wings must always follow the body
     this.wing.setPos(this.body.cx+this.body.halfWidth-this.wing.halfWidth + 80, 
         this.body.cy  + this.wing.yOffsets[this.animationFrame] - 50);
@@ -248,24 +318,114 @@ Ridley.prototype.updateWing = function(du){
     spatialManager.register(this.wing);
 }
 
+Ridley.prototype.updateJar = function(du){
+    spatialManager.unregister(this.jar);
+
+    if(this.isDead){
+        return entityManager.KILL_ME_NOW;
+    }
+
+    this.jar.setPos(this.hand.cx - 20, this.hand.cy + 50);
+
+    this.updateJarAnimation();
+
+    this.jar.spriteData = {
+        x: this.jar.xDists[this.jarAnimationFrame],
+        y: this.jar.yDist,
+        w: this.jar.Swidth,
+        h: this.jar.Sheight
+    }
+
+    spatialManager.register(this.jar);
+}
+
+Ridley.prototype.updateTail = function(du){
+    //Update each tailpart so that it's still the same relative to the root
+    for(var i = 0; i < this.tailLength; i++){
+        this.tail[i].update(this.tail[0], this);
+    }
+
+
+    this.tailX = this.tail[0].cx;
+    this.tailY = this.tail[0].cy;
+    
+    if(this.tailTimer < 0){
+        //So that the tail stays in the same spot for a bit
+        this.needsTailTarget = true;
+    }
+    if(this.needsTailTarget){
+        //find new place for tail to go
+        this.chooseTailLocation(du);
+    }
+
+    //check if the tail has reached it's target
+    var tailEnd = this.tail[this.tailLength - 1];
+    
+    if((tailEnd.cx < this.tailTargetX + this.tailX + 20) 
+    && (tailEnd.cx > this.tailTargetX + this.tailX - 20)
+    && (tailEnd.cy < this.tailTargetY + this.tailY + 20) 
+    && (tailEnd.cy > this.tailTargetY + this.tailY - 20))
+    {
+        this.tailTimer -= du;
+    }
+    else{
+        //The tail is in the process of reaching it's target
+
+        //find direction to target and normalize
+        var dx = tailEnd.cx - this.tailTargetX - this.tailX;
+        var dy = tailEnd.cy - this.tailTargetY - this.tailY;
+        
+        const len = Math.sqrt(dx * dx + dy * dy);
+        dx = -dx/len;
+        dy = -dy/len;
+        this.applyFABRIK(dx, dy);
+    }
+ }
+
+ Ridley.prototype.applyFABRIK = function(dx, dy){
+     //set new goal
+     this.tail[this.tailLength-1].cx += dx*this.tailSpeed;
+     this.tail[this.tailLength-1].cy += dy*this.tailSpeed;
+
+     this.goalX = this.tail[this.tailLength-1].cx;
+     this.goalY = this.tail[this.tailLength-1].cy;
+
+     //The actual algorithm 
+     //Go backwards for each tailPart
+     for(var i = this.tailLength-2; i>= 0; i--){
+        this.updatePoint(this.tail[i], this.tail[i+1]);
+     }
+ }
+
+Ridley.prototype.updatePoint = function(e1, e2){ 
+    
+    var dx = e1.cx - e2.cx;
+    var dy = e1.cy - e2.cy;
+
+    const len = Math.sqrt(dx*dx + dy*dy);
+
+    dx = dx/len;
+    dy = dy/len;
+
+    e1.cx = e2.cx + dx * e1.partLength;
+    e1.cy = e2.cy + dy * e1.partLength;
+}
+
 Ridley.prototype.render = function(ctx){
     //If there is a fireball in Ridley's mouth, render it
     if(this.fireball){
         this.fireball.render(ctx);
     }
 
-    if(this.moveTargetX){
-        ctx.beginPath();
-        ctx.fillRect(this.moveTargetX - g_camera.cx, this.moveTargetY - g_camera.cy, 20, 20);
-        ctx.stroke();
-    }
-
     //Draw each body part
     this.drawBodyPart(ctx, this.head);
     this.drawBodyPart(ctx, this.body);
+    this.drawBodyPart(ctx, this.jar);
     this.drawBodyPart(ctx, this.hand);
     this.drawBodyPart(ctx, this.leg);
     this.drawBodyPart(ctx, this.wing);
+    this.renderTail(ctx);
+    
 }
 
 Ridley.prototype.drawBodyPart = function(ctx, part){
@@ -275,6 +435,12 @@ Ridley.prototype.drawBodyPart = function(ctx, part){
         part.cx-part.halfWidth - g_camera.cx,
         part.cy-part.halfHeight - g_camera.cy,
         2*s.w*this.scale,2*s.h*this.scale);
+}
+
+Ridley.prototype.renderTail = function(ctx){
+    for(var i = 0; i<this.tailLength; i++){
+        this.tail[i].render(ctx);
+    }
 }
 
 Ridley.prototype.updateAnimationFrame = function(){
@@ -304,6 +470,17 @@ Ridley.prototype.updateHeadAnimation = function(){
             this.headAnimationFrame += 1;
         }
         this.headFramenr = 0;
+    }
+}
+
+Ridley.prototype.updateJarAnimation = function(){
+    this.jarFramenr += 1;
+    if(this.jarFramenr > this.jarFramesToAnimationFrame){
+        this.jarAnimationFrame += 1;
+        this.jarFramenr = 0;
+    }
+    if(this.jarAnimationFrame > 3){
+        this.jarAnimationFrame = 0;
     }
 }
 
@@ -344,7 +521,7 @@ Ridley.prototype.chargefireBall = function(du){
 }
 
 Ridley.prototype.shootFireball = function(player){
-    if(this.shotsFired > 3){
+    if(this.shotsFired > 5){
         //She has shot all of her fireballs and must close her mouth
         this.closeMouth = true;
         this.charged = false;
@@ -358,7 +535,7 @@ Ridley.prototype.shootFireball = function(player){
     this.findAngleToPlayer(player)
     this.shotsFired += 1;
     entityManager._bullets.push(new Fire(this.head.cx - g_camera.cx - 45, this.head.cy- g_camera.cy - 5, this.fireVelX, this.fireVelY));
-    this.timeToNextshot = 30;
+    this.timeToNextshot = 15;
 }
 
 Ridley.prototype.getShot = function(shot){
@@ -394,15 +571,11 @@ Ridley.prototype.findAngleToPlayer = function(player){
 Ridley.prototype.moveToNewPosition = function(player){
     //Ridley always wants to be in a specific frame around the player
 
-    console.log("new target!");
-
     var x = player.cx;
     var y = player.cy;
 
     var dist = Math.random()*(this.maxDistFromPlayer-this.minDistFromPlayer) + this.minDistFromPlayer;
     var angle = Math.random()*(this.maxAngleFromPlayer-this.minAngleFromPlayer) + this.minAngleFromPlayer;
-
-    console.log(dist, angle);
 
     this.moveTargetX = x + dist*Math.cos(angle);
     this.moveTargetY = y - dist*Math.sin(angle);
@@ -434,4 +607,35 @@ Ridley.prototype.shouldMove = function(player){
         console.log("too far!!1");
         return true;
     }
+}
+
+Ridley.prototype.chooseTailLocation = function(du){
+    console.log("updating");
+    this.tailRadian += 0.5;
+
+    var dl = Math.random()*50;
+
+    this.tailTargetX  = Math.cos(this.tailRadian)*(this.tailDist+dl);
+    this.tailTargetY  = Math.sin(this.tailRadian)*(this.tailDist+dl);
+
+    /*
+    var oldTailTargetX = this.tailTargetX;
+    var oldTailTargetY = this.tailTargetY;
+
+    var dist = Math.random()*50 + 100;
+    var angle = Math.random()*Math.PI*2
+
+    this.tailTargetX = oldTailTargetX + dist*Math.cos(angle)*du;
+    this.tailTargetY = oldTailTargetY + dist*Math.sin(angle)*du;
+    */
+
+    if(this.tailTargetY < -10){
+        this.tailTargetY = Math.random()*10-20;
+    }
+    if(this.tailTargetX < -150){
+        this.tailTargetX += (Math.random()*50+50);
+    }
+
+    this.needsTailTarget = false;
+    this.tailTimer = 0;
 }

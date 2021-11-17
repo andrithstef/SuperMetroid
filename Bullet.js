@@ -38,7 +38,7 @@ Bullet.prototype.spriteX;
 Bullet.prototype.spriteY;
 Bullet.prototype.spriteW = 7;
 Bullet.prototype.spriteH = 7;
-Bullet.prototype.scale = 1;
+Bullet.prototype.scale = 1.5;
 Bullet.prototype.stance = 0;
 
 Bullet.prototype.type = 1;
@@ -71,6 +71,9 @@ Bullet.prototype.update = function(du){
     if(hitData){
         if (hitData.isKillable){
             hitData.getShot(this);
+        }
+        else if(hitData.owner){
+            hitData.owner.getShot();
         }
         return entityManager.KILL_ME_NOW;
     }
