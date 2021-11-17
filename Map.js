@@ -53,8 +53,8 @@ var Map = {
         ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#']
     ],
 
-    doors: [{x:1088, y:2432, direction:'right'}],
-    player: [{x:700, y:310}, {x:892, y:2624}],
+    doors: [{x:896, y:2432, direction:'right'}],
+    player: [{x:504, y:300}, {x:892, y:2624}],
     background: 'resrc/bg1.png'},
 
     lvl2 : {map: [

@@ -21,7 +21,7 @@ function EntityManager(lvl,spawn, energy){
     if(lvl.ridley){
         this._enemies.push(new Ridley());
     }
-    this._player = new Player({cx: lvl.player[spawn].x, cy: lvl.player[spawn].y});
+    this._player = new Player(energy, {cx: lvl.player[spawn].x, cy: lvl.player[spawn].y});
 }
 
 // "PRIVATE" DATA
