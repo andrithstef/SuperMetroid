@@ -78,6 +78,7 @@ Ridley.prototype.tailTargetX = 150;
 Ridley.prototype.tailTargetY = 150;
 Ridley.prototype.tailDist = 200;
 Ridley.prototype.tailRadian = 1;
+Ridley.prototype.reverseTail = 1;
 
 Ridley.prototype.init = function() {
     //This is just initial setup for each body part
@@ -611,7 +612,11 @@ Ridley.prototype.shouldMove = function(player){
 
 Ridley.prototype.chooseTailLocation = function(du){
     console.log("updating");
-    this.tailRadian += 0.5;
+    this.tailRadian += this.reverseTail*0.5;
+
+    if(this.tailRadian > Math.random()*10+10 || this.tailRadian < Math.random()*5-10){
+        this.reverseTail *= -1;
+    }
 
     var dl = Math.random()*50;
 
