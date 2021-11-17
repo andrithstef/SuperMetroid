@@ -73,7 +73,7 @@ Bullet.prototype.update = function(du){
             hitData.getShot(this);
         }
         else if(hitData.owner){
-            hitData.owner.getShot();
+            hitData.owner.getShot(this, hitData);
         }
         return entityManager.KILL_ME_NOW;
     }

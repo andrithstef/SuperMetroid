@@ -26,6 +26,11 @@ var enemyDie = new Howl({
   src: ['sounds/enemyDie.mp3']
 });
 
+var RidleyFight = new Howl({
+  src: ['sounds/RidleyFight.mp3'], 
+  loop: true
+})
+
 
 var entityManager = new EntityManager();
 
