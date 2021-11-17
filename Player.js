@@ -22,6 +22,7 @@ Player.prototype.AIM_UP = 'E'.charCodeAt(0);
 Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0);
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
+Player.prototype.HEAL = "H".charCodeAt(0);
 
 //movement data
 Player.prototype.accel = 1.4;
@@ -71,6 +72,11 @@ Player.prototype.playingBackground = false;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
+
+    if(eatKey(this.HEAL)){
+        this.energy += 100;
+        g_energy += 100;
+    }
 
     this.gatherInputs(du);
 
