@@ -116,8 +116,8 @@ Enemy.prototype.shoot = function(){
     entityManager.addBullet(this.cx - g_camera.cx, this.cy - this.halfHeight - g_camera.cy, 0, -1, 2);
     entityManager.addBullet(this.cx + this.halfWidth - g_camera.cx, this.cy - this.halfHeight - g_camera.cy, 1, -1, 2);
     entityManager.addBullet(this.cx - this.halfWidth - g_camera.cx, this.cy - this.halfHeight - g_camera.cy, -1, -1, 2);
-    entityManager.addBullet(this.cx + this.halfWidth - g_camera.cx, this.cy - g_camera.cy, 1, 0, 2);
-    entityManager.addBullet(this.cx - this.halfWidth - g_camera.cx, this.cy - g_camera.cy, -1, 0, 2);
+    entityManager.addBullet(this.cx + this.halfWidth - g_camera.cx + 10, this.cy - g_camera.cy, 1, 0, 2);
+    entityManager.addBullet(this.cx - this.halfWidth - g_camera.cx - 10, this.cy - g_camera.cy, -1, 0, 2);
     this.shootTimer = 100;
     this.isShooting = false;
     gunshot.play();

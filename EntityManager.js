@@ -12,7 +12,7 @@
 
 function EntityManager(lvl,spawn){
     //this._map = new Map();
-    this._player = new Player({cx: lvl.player[spawn].x, cy: lvl.player[spawn].y});
+    
     this._bullets = [];
     this._enemies = [];
     this.addEnemies(lvl);
@@ -22,6 +22,7 @@ function EntityManager(lvl,spawn){
     if(lvl.ridley){
         this._enemies.push(new Ridley());
     }
+    this._player = new Player({cx: lvl.player[spawn].x, cy: lvl.player[spawn].y});
 }
 
 // "PRIVATE" DATA
