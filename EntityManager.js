@@ -19,7 +19,7 @@ function EntityManager(lvl,spawn){
     this._doors = [];
     this.addDoors(lvl);
     this._environment = new Environment(lvl);
-    if(Map.ridley){
+    if(lvl.ridley){
         this._enemies.push(new Ridley());
     }
 }
