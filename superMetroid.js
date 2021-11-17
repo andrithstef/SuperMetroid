@@ -16,7 +16,7 @@ var gunshot = new Howl({
     src: ['sounds/gunshot.mp3']
   });
 
-var background = new Howl({
+var backgroundMusic = new Howl({
   src: ['sounds/background.mp3'],
   html5: true,
   loop: true
@@ -69,11 +69,11 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-  /*
-    if(background.state() === "loaded" && !background.playing()){
-       background.play();
+  
+    if(backgroundMusic.state() === "loaded" && !backgroundMusic.playing()){
+       backgroundMusic.play();
     }
-    */
+    
     entityManager.update(du);
 }
 

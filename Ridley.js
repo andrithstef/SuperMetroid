@@ -7,6 +7,8 @@ function Ridley(){
     this.cy = 400;
 
     this.init();
+    backgroundMusic.stop();
+    RidleyFight.play();
 }
 
 const ridleySheet = new Image();
@@ -730,6 +732,7 @@ Ridley.prototype.escape = function(du){
         //She has escaped, so remove her from the game
         this.isDead = true;
         RidleyFight.stop();
+        backgroundMusic.play();
     }
 }
 
