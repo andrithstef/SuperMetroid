@@ -5,7 +5,6 @@ function Player(descr){
     this.halfWidth = 20;
 
     this.isKillable = true;
-
 }
 
 const spriteSheet = new Image();

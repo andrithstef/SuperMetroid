@@ -25,7 +25,7 @@ Enemy.prototype.walkSpeed = 1;
 Enemy.prototype.resolveTries = 0;
 
 Enemy.prototype.seesPlayer = true;
-Enemy.prototype.threshold = 300;
+Enemy.prototype.threshold = 500;
 
 Enemy.prototype.spriteData;
 Enemy.prototype.animationFrame = 0;
@@ -100,7 +100,8 @@ Enemy.prototype.findPlayer = function(player){
     //Logic to check if the enemy can see the player
     var sight = 1;
     if (this.seesPlayer) sight *= 2;
-    if (player.cy < this.cy + sight*this.threshold && player.cy > this.cy - sight*this.threshold){
+    if (player.cy < this.cy + sight*this.threshold && player.cy > this.cy - sight*this.threshold
+        && player.cx < this.cx +sight*this.threshold && player.cx > this.cx-sight*this.threshold){
         this.seesPlayer = true;
     }
     else{
