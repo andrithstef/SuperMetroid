@@ -16,7 +16,7 @@ function intro(ctx) {
     if (g_doClear) util.clearCanvas(ctx);
 
     ctx.drawImage(backGround,0,0,g_canvas.width,g_canvas.height);
-    ctx.drawImage(text,17,10,3294,258,g_canvas.width/3,4*g_canvas.height/5,g_canvas.width/3,64)
+    ctx.drawImage(text,17,10,3294,290,2*g_canvas.width/7,4*g_canvas.height/5,3*g_canvas.width/7,64)
 
     if(cnt === 0)ctx.font = "50px Arial";
     else if(cnt === 15)ctx.font = "55px Arial";
