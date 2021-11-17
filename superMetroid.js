@@ -27,7 +27,7 @@ var enemyDie = new Howl({
 });
 
 
-var entityManager = new EntityManager(Map.lvl1);
+var entityManager = new EntityManager(Map.lvl1, spawn);
 
 
 // The "nominal interval" is the one that all of our time-based units are

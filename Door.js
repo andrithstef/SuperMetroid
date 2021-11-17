@@ -4,8 +4,10 @@ function Door(x,y,direction){
   this.direction = direction;
 }
 
-const enviro = new Image();
-enviro.src = "resrc/enviroEdit.png";
+const enviroSprite = new Image();
+enviroSprite.src = "resrc/enviro.png";
+const doorSprite = new Image();
+doorSprite.src = "resrc/specialSprite.png";
 
 Door.prototype.width = 96;
 Door.prototype.height = 256;
@@ -34,8 +36,11 @@ Door.prototype.render = function(ctx){
   if(this.x >= g_camera.cx - this.width && this.x <= g_camera.cx + g_camera.width + this.width &&
       this.y >= g_camera.cy - this.height && this.y <= g_camera.cy + g_camera.height + this.height) {
         if(this.direction == 'right') {
-          //ctx.drawImage(enviro,640,512,64,256,this.x - g_camera.cx, this.y - g_camera.cy, 64, 256);
-          ctx.drawImage(enviro,s.x,s.y,s.w,256,this.x - s.w - g_camera.cx,this.y - g_camera.cy, s.w, 256);
+          ctx.drawImage(enviroSprite,640,512,64,256,this.x - g_camera.cx, this.y - g_camera.cy, 64, 256);
+          ctx.drawImage(doorSprite,s.x,s.y,s.w,256,this.x - s.w - g_camera.cx,this.y - g_camera.cy, s.w, 256);
+        } else {
+          ctx.drawImage(enviroSprite,576,512,64,256,this.x - g_camera.cx, this.y - g_camera.cy, 64, 256);
+          ctx.drawImage(doorSprite,s.x,s.y,s.w,256,this.x + 64 - g_camera.cx,this.y - g_camera.cy, s.w, 256);
         }
   
   }
@@ -68,11 +73,20 @@ Door.prototype.updateAnimationFrame = function(){
 }
 
 Door.prototype.getSprite = function(){
-          return{
-              x : this.dists[0][this.animationFrame],
-              y : 512,
-              w : this.widths[0][this.animationFrame]
-          }
+  if(this.direction == "right"){
+    return{
+      x : this.distsRight[0][this.animationFrame],
+      y : 0,
+      w : this.widthsRight[0][this.animationFrame]
+    }
+  } else {
+    return{
+      x : this.distsLeft[0][this.animationFrame],
+      y : 0,
+      w : this.widthsLeft[0][this.animationFrame]
+    }
+  }
+          
   
 }
 
@@ -90,12 +104,22 @@ Door.prototype.getStance = function(){
   }*/
 }
 
-Door.prototype.dists = [
-  [64, 128, 196, 256, 320, 0], //opening 
+Door.prototype.distsRight = [
+  [128, 164, 200, 236, 280, 0], //opening 
   [8, 47, 85] //Expanding
 ];
 
-Door.prototype.widths = [
+Door.prototype.widthsRight = [
+  [32, 24, 16, 16, 16, 0], //opening 
+  [8, 47, 85] //Expanding
+];
+
+Door.prototype.distsLeft = [
+  [472, 444, 416, 380, 336, 0], //opening 
+  [8, 47, 85] //Expanding
+];
+
+Door.prototype.widthsLeft = [
   [32,24,16,16,16, 0], //opening 
   [8, 47, 85] //Expanding
 ];

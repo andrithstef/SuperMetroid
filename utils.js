@@ -11,6 +11,7 @@ var g_camera = new Camera(0,0,Map.lvl1);
 var spatialManager = Object.create(g_spatialManager);
 var g_newLevel = false;
 var g_level = Map.lvl1;
+var spawn = 0;
 
 var util = {
 

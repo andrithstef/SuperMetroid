@@ -76,7 +76,7 @@ unregister: function(entity) {
     this._entities[spatialID] = null;
 },
 
-print: function() {
+reset: function() {
     for(var ID in this._entities) {
         this._entities[ID] = null;
     }

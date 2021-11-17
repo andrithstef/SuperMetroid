@@ -138,8 +138,13 @@ Entity.prototype.resolveCollisions = function(du){
         }
         if(hitData.isDoor && this instanceof Player){
             g_newLevel = true;
-            if(hitData.dir == 'right') g_level = util.getNextLevel(g_level);
-            else g_level = util.getPrevLevel(g_level);
+            if(hitData.dir == 'right'){
+                g_level = util.getNextLevel(g_level);
+                spawn = 0;
+            } else{
+                g_level = util.getPrevLevel(g_level);
+                spawn = 1;
+            } 
         }
         this.resolve(hitData);
         hitData = this.findCollision()

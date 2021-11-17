@@ -58,8 +58,8 @@ g_main._iterCore = function (dt) {
     if(g_newLevel) {
         g_camera = new Camera(0,0,g_level);
         spatialManager = Object.create(g_spatialManager);
-        spatialManager.print();
-        entityManager = new EntityManager(g_level);
+        spatialManager.reset();
+        entityManager = new EntityManager(g_level, spawn);
     }
     g_newLevel = false;
 };

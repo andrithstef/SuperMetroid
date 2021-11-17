@@ -530,6 +530,8 @@ Tile.prototype.setTile = function(){
         this.sx = 512;
         this.sy = 512;
         this.isDoor = true;
+        console.log(this.cx);
+        console.log(this.cy);
         // 512,512
     }
     else if(this.id ==='DL2'){
@@ -613,25 +615,25 @@ Tile.prototype.setTile = function(){
         // 576,448
     }
     else if(this.id ==='DL5'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 576;
         this.sy = 512;
     }
     else if(this.id ==='DL6'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 576;
         this.sy = 576;
     }
     else if(this.id ==='DL7'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 576;
         this.sy = 640;
     }
     else if(this.id ==='DL8'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 576;
         this.sy = 704;
@@ -782,6 +784,8 @@ Tile.prototype.setTile = function(){
         this.sy = 512;
         this.isDoor = true;
         this.dir = 'right';
+        console.log(this.cx);
+        console.log(this.cy);
         // 640,512
     }
     else if(this.id ==='DR6'){
@@ -870,6 +874,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 768;
         this.sy = 512;
+        this.isDoor = true;
         // 768,512
     }
     else if(this.id ==='BD2'){
@@ -877,6 +882,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 768;
         this.sy = 576;
+        this.isDoor = true;
         // 768,576
     }
     else if(this.id ==='BD3'){
@@ -884,6 +890,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 768;
         this.sy = 640;
+        this.isDoor = true;
         // 768,640
     }
     else if(this.id ==='BD4'){
@@ -891,6 +898,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 768;
         this.sy = 704;
+        this.isDoor = true;
         // 768,704
     }
     else if(this.id ==='OL'){
