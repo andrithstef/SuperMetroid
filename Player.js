@@ -225,6 +225,12 @@ Player.prototype.getShot = function(entity){
     var dir = Math.sign(this.cx - entity.cx);
     this.velX -= dir*6;
     this.velY -= 6;
+    if(g_energy <= 0){
+        g_newLevel = true;
+        g_level = Map.lvl1;
+        g_main._startGame = false;
+        g_energy = 100;
+    }
 }
 
 Player.prototype.getStance = function(){
