@@ -69,11 +69,11 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-  
+  /*
     if(backgroundMusic.state() === "loaded" && !backgroundMusic.playing()){
        backgroundMusic.play();
     }
-    
+    */
     entityManager.update(du);
 }
 
