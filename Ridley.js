@@ -16,6 +16,7 @@ Ridley.prototype.health = 20;
 Ridley.prototype.scale = 2;
 Ridley.prototype.isEscaping = false; 
 Ridley.prototype.isFlying = false;
+Ridley.prototype.isKillable = true;
 
 //Body parts that make up Ridley
 Ridley.prototype.body = new Entity();
@@ -180,7 +181,7 @@ Ridley.prototype.init = function(descr) {
 }
 
 Ridley.prototype.update = function(du, player){
-
+    console.log(this.health);
     if(this.isDead){
         this.unregister();
         return entityManager.KILL_ME_NOW;
@@ -230,7 +231,7 @@ Ridley.prototype.updateBody = function(du, player){
         this.body.cy += this.velY * du * this.speed * 3;
         if(this.body.cy < - 200){
             this.isFlying = true;
-            this.cx = 700;
+            this.cx = 400;
             this.cy = -300;
             this.scale = 0.3;
         }
@@ -708,12 +709,12 @@ Ridley.prototype.escape = function(du){
     }
 
     //first flies down from the top of the screen
-    if(this.cy > 500) this.goingDown = false;
+    if(this.cy > 700) this.goingDown = false;
 
     if(this.goingDown){
         //Shes flying down
         this.cy += 20;
-        this.cx = 900 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2) + this.flyingX;
+        this.cx = 650 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2) + this.flyingX;
         return;
     }
 
@@ -721,8 +722,8 @@ Ridley.prototype.escape = function(du){
     this.flyingTime += 1;
     this.flyingTime *= 1.08;
     this.flyingX += 1;
-    this.cy = 500 + (this.escapingSprites[4][this.flyingAnimation]*this.scale/2) - this.flyingTime;
-    this.cx = 900 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2) + this.flyingX;
+    this.cy = 700 + (this.escapingSprites[4][this.flyingAnimation]*this.scale/2) - this.flyingTime;
+    this.cx = 650 + (this.escapingSprites[5][this.flyingAnimation]*this.scale/2) + this.flyingX;
     this.scale *= 1.05;
 
     if(this.scale > 7){
