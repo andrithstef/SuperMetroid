@@ -53,9 +53,8 @@ var Map = {
         ['#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#']
     ],
 
-    enemies: [{x:600, y:900}, {x:400, y: 600}],
-    doors: [{x:896, y:2432, direction:'right'}],
-    player: [{x:508, y:310}, {x:992, y:2624}],
+    doors: [{x:1088, y:2432, direction:'right'}],
+    player: [{x:700, y:310}, {x:892, y:2624}],
     background: 'resrc/bg1.png'},
 
     lvl2 : {map: [
@@ -187,6 +186,5 @@ var Map = {
     ridley : true,
     doors: [{x:0, y:384, direction:'left'}],
     player: [{x:96, y:480}],
-    background: 'resrc/bg1.png',
-    ridley: true}
+    background: 'resrc/bg1.png'}
 }

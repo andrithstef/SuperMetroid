@@ -209,8 +209,6 @@ Player.prototype.jump = function(){
 
 Player.prototype.shoot = function(){
     this.hasShot = true;
-    console.log(spatialManager._entities[3]);
-    //console.log(g_spatialManager._entites[3]);
     gunshot.play();
     entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
 }

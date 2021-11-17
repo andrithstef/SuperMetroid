@@ -72,18 +72,24 @@ Bullet.prototype.update = function(du){
 
     var hitData = this.findCollision();
     if(hitData){
+        /*
         if(!hitData.isKillable) {
             return entityManager.KILL_ME_NOW;
-        } else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
-            hitData.getShot(this);
-            return entityManager.KILL_ME_NOW;
-        } else if (hitData.isKillable && !(hitData instanceof Player) && this.type == 1) {
-            hitData.getShot(this);
-            return entityManager.KILL_ME_NOW;
         }
-        else if(hitData.owner){
+        */
+        if(hitData.owner){
+            console.log("shot Ridley");
             hitData.owner.getShot(this, hitData);
         }
+        else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
+            hitData.getShot(this);
+            return entityManager.KILL_ME_NOW;
+        }
+        else if (hitData.isKillable && hitData != entityManager._player && this.type == 1) {
+            hitData.getShot(this);
+            return entityManager.KILL_ME_NOW;
+        }
+        
         return entityManager.KILL_ME_NOW;
     }
 
