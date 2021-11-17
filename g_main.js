@@ -55,6 +55,13 @@ g_main._iterCore = function (dt) {
     gatherInputs();
     update(dt);
     render(g_ctx);
+    if(g_newLevel) {
+        g_camera = new Camera(0,0,g_level);
+        spatialManager = Object.create(g_spatialManager);
+        spatialManager.print();
+        entityManager = new EntityManager(g_level);
+    }
+    g_newLevel = false;
 };
 
 g_main._isGameOver = false;

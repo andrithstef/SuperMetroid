@@ -16,7 +16,8 @@ e.g. general collision detection.
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-var spatialManager = {
+
+var g_spatialManager = {
 
 // "PRIVATE" DATA
 
@@ -72,8 +73,13 @@ register: function(entity) {
 unregister: function(entity) {
     var spatialID = entity.getSpatialID();
 
-    // TODO: Hacky solution, can be changed
     this._entities[spatialID] = null;
+},
+
+print: function() {
+    for(var ID in this._entities) {
+        this._entities[ID] = null;
+    }
 },
 
 findEntities: function(posX, posY, width, height) {

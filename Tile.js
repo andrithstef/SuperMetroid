@@ -68,25 +68,25 @@ Tile.prototype.setTile = function(){
     }
     else if(this.id ==='ID1'){
         this.collidable = false;
-        this.sx = 0;
+        this.sx = 640;
         this.sy= 512;
         // 0,512
     }
     else if(this.id ==='ID2'){
         this.collidable = false;
-        this.sx = 0;
+        this.sx = 640;
         this.sy= 576;
         // 0,576
     }
     else if(this.id ==='ID3'){
         this.collidable = false;
-        this.sx = 0;
+        this.sx = 640;
         this.sy= 640;
         // 0,640
     }
     else if(this.id ==='ID4'){
         this.collidable = false;
-        this.sx = 0;
+        this.sx = 640;
         this.sy= 704;
         // 0,704
     }
@@ -373,6 +373,8 @@ Tile.prototype.setTile = function(){
 
         this.sx = 384;
         this.sy = 128;
+        this.isDoor = true;
+        this.dir = 'right';
         //384,128
     }
     else if(this.id ==='DB2'){
@@ -380,6 +382,8 @@ Tile.prototype.setTile = function(){
 
         this.sx = 384;
         this.sy = 192;
+        this.isDoor = true;
+        this.dir = 'right';
         //384,192
     }
     else if(this.id ==='DB3'){
@@ -387,6 +391,8 @@ Tile.prototype.setTile = function(){
 
         this.sx = 384;
         this.sy = 256;
+        this.isDoor = true;
+        this.dir = 'right';
         //384,256
     }
     else if(this.id ==='DB4'){
@@ -394,6 +400,8 @@ Tile.prototype.setTile = function(){
 
         this.sx = 384;
         this.sy = 320;
+        this.isDoor = true;
+        this.dir = 'right';
         //384,320
     }
     else if(this.id ==='IO'){
@@ -521,6 +529,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 512;
         this.sy = 512;
+        this.isDoor = true;
         // 512,512
     }
     else if(this.id ==='DL2'){
@@ -528,6 +537,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 512;
         this.sy = 576;
+        this.isDoor = true;
         // 512,512
     }
     else if(this.id ==='DL3'){
@@ -535,6 +545,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 512;
         this.sy = 640;
+        this.isDoor = true;
         // 512,512
     }
     else if(this.id ==='DL4'){
@@ -542,6 +553,7 @@ Tile.prototype.setTile = function(){
 
         this.sx = 512;
         this.sy = 704;
+        this.isDoor = true;
         // 512,512
     }
     else if(this.id ==='|#L'){
@@ -681,27 +693,27 @@ Tile.prototype.setTile = function(){
         // 640,448
     }
     else if(this.id ==='DR1'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 640;
         this.sy = 512;
         // 640,512
     }
     else if(this.id ==='DR2'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 640;
         this.sy = 576;
     }
 
     else if(this.id ==='DR3'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 640;
         this.sy = 640;
     }
     else if(this.id ==='DR4'){
-        this.collidable = true;
+        this.collidable = false;
 
         this.sx = 640;
         this.sy = 704;
@@ -768,6 +780,8 @@ Tile.prototype.setTile = function(){
 
         this.sx = 704;
         this.sy = 512;
+        this.isDoor = true;
+        this.dir = 'right';
         // 640,512
     }
     else if(this.id ==='DR6'){
@@ -775,6 +789,8 @@ Tile.prototype.setTile = function(){
 
         this.sx = 704;
         this.sy = 576;
+        this.isDoor = true;
+        this.dir = 'right';
     }
 
     else if(this.id ==='DR7'){
@@ -782,12 +798,16 @@ Tile.prototype.setTile = function(){
 
         this.sx = 704;
         this.sy = 640;
+        this.isDoor = true;
+        this.dir = 'right';
     }
     else if(this.id ==='DR8'){
         this.collidable = true;
 
         this.sx = 704;
         this.sy = 704;
+        this.isDoor = true;
+        this.dir = 'right';
     }
     else if(this.id ==='#|L'){
         this.collidable = false;

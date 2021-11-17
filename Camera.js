@@ -1,6 +1,8 @@
-function Camera(cx, cy){
+function Camera(cx, cy, lvl){
   this.cx = cx;
   this.cy = cy;
+  this.width = lvl.map[0].length*64;
+  this.height = lvl.map.length*64;
 }
 var g_canvas = document.getElementById("myCanvas");
 var cameraWidth = g_canvas.width;
@@ -12,8 +14,9 @@ var moveVerticalCameraBuffer = cameraHeight/3;
 Camera.prototype.xThreshold = cameraWidth/9;
 Camera.prototype.yThreshold = cameraHeight/9;
 
-Camera.prototype.width = Map.gameMap[0].length*64;
-Camera.prototype.height = Map.gameMap.length*64;
+Camera.prototype.width;
+Camera.prototype.height;
+
 
 Camera.prototype.cameraWidth = cameraWidth;
 Camera.prototype.moveHorizontalCameraBuffer = moveHorizontalCameraBuffer;
@@ -24,6 +27,13 @@ Camera.prototype.cameraHeight = cameraHeight;
 Camera.prototype.moveVerticalCameraBuffer = moveVerticalCameraBuffer;
 Camera.prototype.topCameraEdge = moveVerticalCameraBuffer;
 Camera.prototype.bottomCameraEdge = cameraHeight - moveVerticalCameraBuffer;
+
+/*Camera.prototype.size = function() {
+  this.width = map[0].length*64;
+  this.height = map.length*64;
+  return 0;
+}
+var g = this.size();*/
 
 /*
 Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
@@ -72,7 +82,7 @@ Camera.prototype.shouldWeMoveCamera = function(cx, cy, halfWidth,halfHeight){
 */
 
 Camera.prototype.updateCamera = function(cx, cy){
-  cx = cx - this.width/4;
+  cx = cx - this.width/6;
   cy = cy - this.height/10;
   
   if (cx > this.cx + this.xThreshold) {

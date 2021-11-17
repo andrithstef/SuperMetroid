@@ -136,6 +136,11 @@ Entity.prototype.resolveCollisions = function(du){
         if(!hitData.collidable){
             break;
         }
+        if(hitData.isDoor && this instanceof Player){
+            g_newLevel = true;
+            if(hitData.dir == 'right') g_level = util.getNextLevel(g_level);
+            else g_level = util.getPrevLevel(g_level);
+        }
         this.resolve(hitData);
         hitData = this.findCollision()
     }

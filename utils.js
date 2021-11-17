@@ -7,7 +7,10 @@
 
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
-var g_camera = new Camera(0,0);
+var g_camera = new Camera(0,0,Map.lvl1);
+var spatialManager = Object.create(g_spatialManager);
+var g_newLevel = false;
+var g_level = Map.lvl1;
 
 var util = {
 
@@ -111,6 +114,36 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
+},
+
+getNextLevel: function(lvl) {
+    switch(lvl){
+        case Map.lvl1:
+            return Map.lvl2;
+        case Map.lvl2:
+            return Map.lvl3;
+        case Map.lvl3:
+            return Map.lvl4;
+        case Map.lvl4:
+            return Map.lvl5;
+        case Map.lvl5:
+            return Map.lvlBoss;
+    }
+},
+
+getPrevLevel: function(lvl) {
+    switch(lvl){
+        case Map.lvl2:
+            return Map.lvl1;
+        case Map.lvl3:
+            return Map.lvl2;
+        case Map.lvl4:
+            return Map.lvl3;
+        case Map.lvl5:
+            return Map.lvl4;
+        case Map.lvlBoss:
+            return Map.lvl5;
+    }
 }
 
 };

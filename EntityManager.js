@@ -10,13 +10,15 @@
 /*jslint nomen: true, white: true, plusplus: true*/
 
 
-function EntityManager(){
+function EntityManager(lvl){
     //this._map = new Map();
-    this._player = new Player();
+    this._player = new Player({cx: lvl.player.x, cy: lvl.player.y});
     this._bullets = [];
     this._enemies = [];
-    this.addEnemies();
-    this._environment = new Environment();
+    this.addEnemies(lvl);
+    this._doors = [];
+    this.addDoors(lvl);
+    this._environment = new Environment(lvl);
 }
 
 // "PRIVATE" DATA
@@ -25,7 +27,7 @@ EntityManager.prototype._player;
 EntityManager.prototype._bullets;
 EntityManager.prototype._enemies;
 EntityManager.prototype._environment;
-
+EntityManager.prototype._doors;
 
 
 
@@ -72,8 +74,9 @@ EntityManager.prototype.update = function(du) {
 
     //Update player
     this._player.update(du);
+    if(this._player.nextLevel) return;
 
-    //update enemies
+    //update enemiesa
     for (var i = 0; i<this._enemies.length; i++){
         var status = this._enemies[i].update(du, this._player);
 
@@ -85,11 +88,17 @@ EntityManager.prototype.update = function(du) {
     
     //update level
     this._environment.registerGrid();
+
+    //update Doors
+    for (var i = 0; i<this._doors.length; i++){
+        var status = this._doors[i].update(du);
+    }
+
 },
 
 EntityManager.prototype.render = function(ctx) {
 
-
+    //render environment
     this._environment.render(ctx);
 
 
@@ -106,6 +115,10 @@ EntityManager.prototype.render = function(ctx) {
     //render player
     this._player.render(ctx);
 
+    for (var i = 0; i<this._doors.length; i++){
+        this._doors[i].render(ctx);
+    }
+
 }
 
 EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){
@@ -114,13 +127,25 @@ EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){
     this._bullets.push(new Bullet(cx, cy, xVel, yVel, nr));
 }
 
+EntityManager.prototype.spawnDoor = function(x,y,direction){
+    this._doors.push(new Door(x,y,direction));
+}
+
+EntityManager.prototype.addDoors = function(lvl){
+    if(!lvl.doors) return;
+    for (var i = 0; i<lvl.doors.length; i++){
+        this.spawnDoor(lvl.doors[i].x,lvl.doors[i].y,lvl.doors[i].direction);
+    }
+}
+
 
 EntityManager.prototype.spawnEnemy = function(x,y){
     this._enemies.push(new Enemy(x,y));
 }
 
-EntityManager.prototype.addEnemies = function(){
-    for (var i = 0; i<Map.enemies.length; i++){
-        this.spawnEnemy(Map.enemies[i].x, Map.enemies[i].y);
+EntityManager.prototype.addEnemies = function(lvl){
+    if(!lvl.enemies) return;
+    for (var i = 0; i<lvl.enemies.length; i++){
+        this.spawnEnemy(lvl.enemies[i].x, lvl.enemies[i].y);
     }
 }

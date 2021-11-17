@@ -27,7 +27,7 @@ var enemyDie = new Howl({
 });
 
 
-var entityManager = new EntityManager();
+var entityManager = new EntityManager(Map.lvl1);
 
 
 // The "nominal interval" is the one that all of our time-based units are
@@ -87,7 +87,7 @@ function updateSimulation(du) {
 
 function renderSimulation(ctx) {
     entityManager.render(ctx);
-    //spatialManager.render(ctx);
+    spatialManager.render(ctx);
 }
 
 

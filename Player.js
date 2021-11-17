@@ -26,8 +26,8 @@ Player.prototype.SHOOT = 13; //ENTER
 //movement data
 Player.prototype.accel = 1.4;
 Player.prototype.jumpSpeed = 22;
-Player.prototype.cx = 700;
-Player.prototype.cy = 310;
+//Player.prototype.cx = 700;
+//Player.prototype.cy = 310;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
@@ -48,7 +48,10 @@ Player.prototype.scale = 1.5;
 //Information which is used to fetch sprite
 Player.prototype.stance = 1;
 Player.prototype.oldStance = 1;
-Player.prototype.spriteInfo;
+Player.prototype.spriteInfo = {x : 243,
+    y : 18,
+    w : 26,
+    h : 43};
 Player.prototype.animationFrame = 0;
 Player.prototype.framenr = 0;
 Player.prototype.framestoAnimationFrame = 5;
@@ -206,6 +209,8 @@ Player.prototype.jump = function(){
 
 Player.prototype.shoot = function(){
     this.hasShot = true;
+    console.log(spatialManager._entities[3]);
+    //console.log(g_spatialManager._entites[3]);
     gunshot.play();
     entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
 }

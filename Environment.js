@@ -1,6 +1,7 @@
 //this is not a thing yet
 
-function Environment(descr) {
+function Environment(lvl,descr) {
+    this.lvl = lvl;
     for (var property in descr) {
         this[property] = descr[property];
     }
@@ -22,11 +23,13 @@ Environment.prototype.tilesBack = [];
 //could also add a level identifier if we get that far
 
 Environment.prototype.createGrid = function(){
+    this.tilesColl = [];
+    this.tilesBack = [];
     //the ugliest code
-    for (var r = 0; r < Map.gameMap.length; r++){
-        for (var c = 0; c < Map.gameMap[r].length; c++){
+    for (var r = 0; r < this.lvl.map.length; r++){
+        for (var c = 0; c < this.lvl.map[r].length; c++){
 
-            var newTile = new Tile({id: Map.gameMap[r][c],
+            var newTile = new Tile({id: this.lvl.map[r][c],
                                    cx: (c+1)*64 - 32,
                                    cy: (r+1)*64 - 32});
 
@@ -43,8 +46,6 @@ Environment.prototype.createGrid = function(){
         }
     }
     this.registerGrid();
-    //console.log(this.tilesColl);
-    //console.log(this.tilesBack);
 };
 Environment.prototype.registerGrid = function(){
     for (tile in this.tilesColl){
