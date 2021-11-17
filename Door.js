@@ -52,6 +52,10 @@ Door.prototype.isPlayerClose = function() {
 }
 
 Door.prototype.updateAnimationFrame = function(){
+  if(g_keys['Ridley']){
+    this.animationFrame = 0;
+    return;
+  }
   this.framenr += 1;
   var player = this.isPlayerClose();
   //console.log(this.animationFrame);
@@ -86,22 +90,6 @@ Door.prototype.getSprite = function(){
       w : this.widthsLeft[0][this.animationFrame]
     }
   }
-          
-  
-}
-
-Door.prototype.getStance = function(){
-  var oldStance = this.stance;
-  if (this.isPlayerClose()){
-      this.stance = 0; //player close
-  }
-  else{
-      this.stance = 1; //player not close
-  }
-  /*if (oldStance != this.stance){
-      this.framenr = 0;
-      this.animationFrame = 0;
-  }*/
 }
 
 Door.prototype.distsRight = [

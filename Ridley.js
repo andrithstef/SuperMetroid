@@ -9,6 +9,7 @@ function Ridley(){
     this.init();
     backgroundMusic.stop();
     RidleyFight.play();
+    g_keys['Ridley'] = true;
 }
 
 const ridleySheet = new Image();
@@ -731,6 +732,7 @@ Ridley.prototype.escape = function(du){
     if(this.scale > 7){
         //She has escaped, so remove her from the game
         this.isDead = true;
+        g_keys['Ridley'] = false;
         RidleyFight.stop();
         backgroundMusic.play();
     }
