@@ -1,44 +1,154 @@
-function Bullet(cx, cy, xVel ,yVel){
-    this.cx = cx;
-    this.cy = cy;
+function Bullet(cx, cy, xVel ,yVel, nr, descr){
+
+    if (nr === 1) this.speed = 35;
+    else if (nr === 2) this.speed = 10;
+
+    this.cx = cx + g_camera.cx;
+    this.cy = cy + g_camera.cy;
     this.velX = xVel*this.speed;
     this.velY = yVel*this.speed;
+
+    this.type = nr;
+
+    this.setup(descr);
+
+    this.stance = this.getStance();
+    var s = this.getBulletSprite();
+    this.spriteX = s.x;
+    this.spriteY = s.y;
+
+    this.halfWidth = this.scale * this.spriteW;
+    this.halfHeight = this.scale * this.spriteH;
+
+    this.isDamaging = true;
+
+    
 }
 
-const bulletSheet = 'resrc/Weapons.png';
+const bulletSheet = new Image();
+bulletSheet.src = "resrc/Weapons.png"
 //put in bullet sprites based on current bullet
 
-Bullet.prototype.rad = 5;
-Bullet.prototype.speed = 30;
+Bullet.prototype = new Entity();
 
-Bullet.prototype.shape = "Circ";
+
+Bullet.prototype.rad = 7;
+Bullet.prototype.speed = 35;
+Bullet.prototype.spriteX;
+Bullet.prototype.spriteY;
+Bullet.prototype.spriteW = 7;
+Bullet.prototype.spriteH = 7;
+Bullet.prototype.scale = 1;
+Bullet.prototype.stance = 0;
+
+Bullet.prototype.type = 1;
+
+Bullet.prototype.collidable = false;
 
 Bullet.prototype.lifeSpan = 2000 / 16.666;
 
 Bullet.prototype.render = function(ctx){
-    ctx.save();
-    ctx.beginPath();
-    ctx.fillStyle = "red";
-    ctx.arc(this.cx, this.cy, this.rad, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+
+    if(this.cx >= g_camera.cx - this.halfWidth && this.cx <= g_camera.cx + g_camera.width + this.halfWidth &&
+        this.cy >= g_camera.cy - this.halfHeight && this.cy <= g_camera.cy + g_camera.height + this.halfHeight) {
+        ctx.drawImage(bulletSheet,
+            this.spriteX,this.spriteY,this.spriteW,this.spriteH, 
+            this.cx-this.halfWidth - g_camera.cx, this.cy -this.halfHeight - g_camera.cy, 
+            2*this.spriteW*this.scale, 2*this.spriteH*this.scale);
+    }
+
 }
 
 Bullet.prototype.update = function(du){
+    spatialManager.unregister(this);
     this.lifeSpan -= du;
     if (this.lifeSpan < 0) {
         return entityManager.KILL_ME_NOW;
     }
 
-    var nextX = this.cx + this.velX*du;
-    var nextY = this.cy + this.velY*du;
+    this.nextX = this.cx + this.velX*du;
+    this.nextY = this.cy + this.velY*du;
 
-    var hitData = g_map.collidesWith(nextX, nextY);
-    if (hitData.hits){
-        return entityManager.KILL_ME_NOW;
+
+    var hitData = this.findCollision();
+    if(hitData){
+        if(!hitData.isKillable) {
+            return entityManager.KILL_ME_NOW;
+        } else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
+            hitData.getShot(this);
+            return entityManager.KILL_ME_NOW;
+        } else if (hitData.isKillable && hitData != entityManager._player && this.type == 1) {
+            hitData.getShot(this);
+            return entityManager.KILL_ME_NOW;
+        }
     }
 
-    this.cx = nextX;
-    this.cy = nextY;
+    this.cx = this.nextX;
+    this.cy = this.nextY;
 
+    spatialManager.register(this);
+
+}
+
+Bullet.prototype.getStance = function(){
+    if (this.velY > 0){ 
+        if (this.velX < 0) return 5; 
+        if (this.velX === 0) return 6;
+        if (this.velX > 0) return 7; 
+    }
+    else if (this.velY === 0){ 
+        if (this.velX < 0) return 4; 
+        if (this.velX > 0) return 0; 
+    }
+    if (this.velY < 0){ 
+        if (this.velX < 0) return 3; 
+        if (this.velX === 0) return 2; 
+        if (this.velX > 0) return 1;  
+    }
+}
+
+Bullet.prototype.getBulletSprite = function(){
+    switch(this.stance){
+        case 0:
+            return{
+                x : 276,
+                y : 34
+            }
+        case 1:
+            return{
+                x : 276,
+                y : 4
+            }
+        case 2:
+            return{
+                x : 246,
+                y : 4
+            }
+        case 3:
+            return{
+                x : 216,
+                y : 4
+            }
+        case 4:
+            return{
+                x : 216,
+                y : 34
+            }
+        case 5:
+            return{
+                x : 216,
+                y : 64
+            }
+        case 6:
+            return{
+                x : 246,
+                y : 64
+            }
+        case 7:
+            return{
+                x : 276,
+                y : 64
+            }
+        
+    }
 }

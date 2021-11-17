@@ -3,68 +3,96 @@ function Player(descr){
 
     this.halfHeight = 50;
     this.halfWidth = 20;
+
+    this.isKillable = true;
 }
 
 const spriteSheet = new Image();
-spriteSheet.src = "resrc/samus_sprite_sheet.gif"
+spriteSheet.src = "resrc/samus_more_upscaled.gif"
 
 Player.prototype = new Entity();
 
-Player.prototype.nextX;
-Player.prototype.nextY;
-
-
-Player.prototype.GO_LEFT = 'A'.charCodeAt(0); 
-Player.prototype.GO_RIGHT = 'D'.charCodeAt(0); 
-Player.prototype.GO_UP = 'W'.charCodeAt(0); 
-Player.prototype.GO_DOWN = 'S'.charCodeAt(0); 
-Player.prototype.AIM_UP = 'E'.charCodeAt(0); 
-Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0); 
+//Keys
+Player.prototype.GO_LEFT = 'A'.charCodeAt(0);
+Player.prototype.GO_RIGHT = 'D'.charCodeAt(0);
+Player.prototype.GO_UP = 'W'.charCodeAt(0);
+Player.prototype.GO_DOWN = 'S'.charCodeAt(0);
+Player.prototype.AIM_UP = 'E'.charCodeAt(0);
+Player.prototype.AIM_DOWN = 'Q'.charCodeAt(0);
 Player.prototype.JUMP = " ".charCodeAt(0);
 Player.prototype.SHOOT = 13; //ENTER
 
-Player.prototype.gravity = 0.5;
-Player.prototype.accel = 1.5;
-Player.prototype.friction = 0.4;
-Player.prototype.maxSpeed = 8;
-Player.prototype.jumpSpeed = 17;
-Player.prototype.cx = 100;
-Player.prototype.cy = 600;
+//movement data
+Player.prototype.accel = 1.4;
+Player.prototype.jumpSpeed = 22;
+//Player.prototype.cx = 700;
+//Player.prototype.cy = 310;
 Player.prototype.velX = 0;
 Player.prototype.velY = 0;
 
+//This data is used to determine in which state the player is in
 Player.prototype.movingJump = false;
-
 Player.prototype.hasShot = false;
-
 Player.prototype.isJumping = false;
 Player.prototype.isGrounded = false;
-Player.prototype.jumpFrame = 0;
 
 //looking left or right?
 Player.prototype.Xdirection = 1;
 //looking down or up?
 Player.prototype.Ydirection = 1;
 
-Player.prototype.shape = "Rect";
+//What is the size of the player
+Player.prototype.scale = 1.5;
 
+//Information which is used to fetch sprite
 Player.prototype.stance = 1;
+Player.prototype.oldStance = 1;
+Player.prototype.spriteInfo = {x : 243,
+    y : 18,
+    w : 26,
+    h : 43};
 Player.prototype.animationFrame = 0;
 Player.prototype.framenr = 0;
 Player.prototype.framestoAnimationFrame = 5;
+Player.prototype.flipFramestoAnimationFrame = 4;
 
+//Where should bullets the player shoots spawn
 Player.prototype.bulletX = this.cx;
 Player.prototype.bulletY = this.cy;
 
-Player.prototype.bulletXvel;
-Player.prototype.bulletYvel;
+Player.prototype.energy = 100;
 
-Player.prototype.spriteData;
+//How many times has the player tried to resolve a collision
+//This is used to prevent infinite loops of collision resolutions
+Player.prototype.resolveTries = 0;
 
+Player.prototype.playingBackground = false;
 
 Player.prototype.update = function(du){
     spatialManager.unregister(this);
 
+    this.gatherInputs(du);
+
+    this.applyPhysics(du);
+
+    this.resolveCollisions(du);
+
+    this.cx = this.nextX;
+    this.cy = this.nextY;
+
+    this.getStance();
+
+    g_camera.updateCamera(this.cx, this.cy);
+    
+    this.updateAnimationFrame();
+
+    this.updateAttributes();
+
+    spatialManager.register(this);
+
+}
+
+Player.prototype.gatherInputs = function(du){
     if (!g_keys[this.GO_LEFT] && !g_keys[this.GO_RIGHT] ||
         g_keys[this.GO_LEFT] && g_keys[this.GO_RIGHT]){
             //Slow down over time
@@ -97,11 +125,17 @@ Player.prototype.update = function(du){
         this.isJumping = false;
     }
 
+    //Shoot
+    if (eatKey(this.SHOOT)){
+        this.shoot();
+    }
+}
+
+Player.prototype.applyPhysics = function(du){
     //apply gravity
     this.velY += this.gravity*du;
 
-    //correct velocity
-    //X
+    //correct Xvelocity
     if (this.velX > this.maxSpeed){
         this.velX = this.maxSpeed;
     }
@@ -109,11 +143,12 @@ Player.prototype.update = function(du){
         this.velX = -this.maxSpeed;
     }
 
-    //Y
+    //correct Yvelocity
     if (this.velY > this.maxSpeed){
         this.velY = this.maxSpeed;
     }
 
+    //Set direction in which the user is looking
     if (this.velX > 0){
         this.Xdirection = 1;
     }
@@ -121,97 +156,77 @@ Player.prototype.update = function(du){
         this.Xdirection = -1;
     }
 
+    //fix x velocity to zero if it's too small.
     if (this.velX < 0.1 && this.velX > -0.01){
         this.velX = 0;
-        this.movingJump = 0;
-    }
-
-    var oldX = this.cx, oldY = this.cy;
-    var nextY = this.cy + this.velY * du;
-    var nextX = this.cx + this.velX * du;
-
-    //make sure we dont fall off the level for testing
-    if (nextX > g_canvas.width || nextX < 0){
-        nextX = oldX;
-    }
-    if (nextY < 0){
-        nextY=oldY;
-    }
-
-    //Shoot
-    if (eatKey(this.SHOOT)){
-        this.shoot();
-    }
-
-    this.getStance();
-
-    //Check collisions with floor
-    var dir = Math.sign(this.velY);
-    var hitData = this.hitsMap(nextX, nextY+dir*this.halfHeight)
-    if(!hitData.hits){
-        this.cy = nextY;
-    }
-    else{
-        this.isGrounded = true;
         this.movingJump = false;
-        if (dir > 0){
-            this.cy = hitData.tileY*g_map.tileHeight - this.halfHeight;
-        }
     }
 
-
-    //Check collisions with walls
-    var hitData = this.hitsMap(nextX + this.Xdirection*this.halfWidth, nextY);
-    if (!hitData.hits){
-        this.cx = nextX;
-    }
-    else{
-        if (this.Xdirection < 0){
-            this.cx = (hitData.tileX+1)*g_map.tileWidth + this.halfWidth;
-        }
-        else{
-            this.cx = hitData.tileX*g_map.tileWidth - this.halfWidth;
-        }
-    }
-
-
-    
-    this.updateAnimationFrame();
-    this.spriteData = this.getSprite();
-    spatialManager.register(this);
-
+    //give us nextX and nextY
+    this.nextY = this.cy + this.velY * du;
+    this.nextX = this.cx + this.velX * du;
 }
 
-Player.prototype.hitsMap = function(x,y){
-    return g_map.collidesWith(x,y);
+
+Player.prototype.updateAttributes = function(){
+    this.spriteInfo = this.getSprite();
+
+    this.halfHeight *= this.scale;
+    this.halfWidth *= this.scale;
+    this.bulletX -= this.cx;
+    this.bulletX *= this.scale;
+    this.bulletX += this.cx;
+    this.bulletY -= this.cy;
+    this.bulletY *= this.scale;
+    this.bulletY += this.cy;
 }
 
 Player.prototype.render = function(ctx){
-    ctx.drawImage(spriteSheet,this.spriteData.x,
-        this.spriteData.y, this.spriteData.w,
-        this.spriteData.h,this.cx-this.halfWidth,
-        this.cy-this.halfHeight,2*this.spriteData.w,2*this.spriteData.h);
+    var s = this.spriteInfo;
+    
+    //Draw the image
+    ctx.drawImage(spriteSheet,
+        s.x*4,4*s.y,4*s.w,4*s.h,
+        this.cx-this.halfWidth - g_camera.cx,this.cy-this.halfHeight - g_camera.cy,
+        2*s.w*this.scale,2*s.h*this.scale);
+
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText("energy: "+ this.energy, g_canvas.width-300, 100);
 }
 
 Player.prototype.jump = function(){
-    if (this.velX > 0.01 || this.velX < -0.01){
+    if (this.velX > 0.1 || this.velX < -0.1){
         this.movingJump = true;
     }
     this.isGrounded = false;
+    this.hasJumped = true;
     this.velY = -this.jumpSpeed;
     this.hasShot = false;
-    this.framenr = 0;
-    this.animationFrame = 0;
 }
 
 Player.prototype.shoot = function(){
     this.hasShot = true;
-    entityManager.addBullet(this.bulletX, this.bulletY, this.bulletXvel, this.bulletYvel);
+    console.log(spatialManager._entities[3]);
+    //console.log(g_spatialManager._entites[3]);
+    gunshot.play();
+    entityManager.addBullet(this.bulletX - g_camera.cx, this.bulletY - g_camera.cy, this.bulletXvel, this.bulletYvel, 1);
+}
+
+Player.prototype.getShot = function(entity){
+    this.energy -= 12;
+    var dir = Math.sign(this.cx - entity.cx);
+    this.velX -= dir*6;
+    this.velY -= 6;
 }
 
 Player.prototype.getStance = function(){
-    //Player is standing still looking right
-    //Finished
+    //Determine in which state the player was
+    this.oldStance = this.stance;
+
+    //A lot of ugly nested if statements
+    //Look away
     if (this.velX === 0){
         if (this.Xdirection > 0){
             if (!this.isGrounded){
@@ -229,6 +244,9 @@ Player.prototype.getStance = function(){
                 }
                 else if (this.hasShot){
                     this.stance = 22;
+                }
+                else if (!this.hasJumped){
+                    this.stance = 38;
                 }
                 else{
                     this.stance = 18;
@@ -262,8 +280,6 @@ Player.prototype.getStance = function(){
             }
         }  
         else if (this.Xdirection < 0){
-            //Standing still, looking left
-            //Finished
             if (!this.isGrounded){
                 if (g_keys[this.GO_UP]){
                     this.stance = 27;
@@ -279,6 +295,9 @@ Player.prototype.getStance = function(){
                 }
                 else if (this.hasShot){
                     this.stance = 23;
+                }
+                else if (!this.hasJumped){
+                    this.stance = 39;
                 }
                 else{
                     this.stance = 19;
@@ -331,6 +350,9 @@ Player.prototype.getStance = function(){
             else if (this.hasShot){
                 this.stance = 22;
             }
+            else if (!this.hasJumped){
+                this.stance = 38;
+            }
             else{
                 this.stance = 36;
             }
@@ -366,6 +388,9 @@ Player.prototype.getStance = function(){
             else if (this.hasShot){
                 this.stance = 23;
             }
+            else if (!this.hasJumped){
+                this.stance = 39;
+            }
             else{
                 this.stance = 37;
             }
@@ -386,9 +411,15 @@ Player.prototype.getStance = function(){
     if (!(this.stance === 3 || this.stance === 2 || this.stance >= 20)){
         this.hasShot = false;
     }
+    if (this.oldStance != this.stance){
+        this.animationFrame = 0;
+
+    }
 }
 
 Player.prototype.getSprite = function(){
+    //get data about which sprite to show
+    //This function also updates our player size
     switch(this.stance){
         case 1:
             //Looking right
@@ -398,7 +429,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx + 10;
+            this.bulletX  = this.cx + 15;
             this.bulletY = this.cy - 9;
             return{
                 x : this.dists[1][this.animationFrame],
@@ -415,7 +446,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 10;
+            this.bulletX  = this.cx - 15;
             this.bulletY = this.cy - 9;
             return{
                 x : this.dists[0][this.animationFrame],
@@ -465,8 +496,8 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = -1;
 
-            this.bulletX  = this.cx - 8;
-            this.bulletY = this.cy - 7;
+            this.bulletX  = this.cx + 25;
+            this.bulletY = this.cy - 43;
             return{
                 x : 110,
                 y : 13,
@@ -482,8 +513,8 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 1;
 
-            this.bulletX  = this.cx + 18;
-            this.bulletY = this.cy - 6;
+            this.bulletX  = this.cx + 36;
+            this.bulletY = this.cy + 15;
             return{
                 x : 504,
                 y : 19,
@@ -530,7 +561,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 0;
             this.bulletYvel = -1;
 
-            this.bulletX  = this.cx;
+            this.bulletX  = this.cx - 1;
             this.bulletY = this.cy-45;
             return{
                 x : 9,
@@ -562,7 +593,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx;
+            this.bulletX  = this.cx + 10;
             this.bulletY = this.cy + 3;
             return{
                 x : this.dists[4][this.animationFrame],
@@ -578,7 +609,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx;
+            this.bulletX  = this.cx - 10;
             this.bulletY = this.cy+3;
             return{
                 x : this.dists[5][this.animationFrame],
@@ -738,7 +769,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = -1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 30;
+            this.bulletX  = this.cx - 35;
             this.bulletY = this.cy - 16;
             return{
                 x : this.dists[9][this.animationFrame],
@@ -754,7 +785,7 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx + 10;
+            this.bulletX  = this.cx + 40;
             this.bulletY = this.cy;
             return{
                 x : 380,
@@ -767,10 +798,10 @@ Player.prototype.getSprite = function(){
             this.halfHeight = 35;
             this.halfWidth = 21;
 
-            this.bulletXvel = -1;
+            this.bulletXvel = -35;
             this.bulletYvel = 0;
 
-            this.bulletX  = this.cx - 10;
+            this.bulletX  = this.cx - 40;
             this.bulletY = this.cy;
             return{
                 x : 381,
@@ -819,7 +850,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx;
-            this.bulletY = this.cy - 25;
+            this.bulletY = this.cy - 60;
             return{
                 x : 311,
                 y : 137,
@@ -835,7 +866,7 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = -1;
 
             this.bulletX  = this.cx + 3;
-            this.bulletY = this.cy -25;
+            this.bulletY = this.cy - 60;
             return{
                 x : 309,
                 y : 192,
@@ -850,8 +881,8 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 1;
             this.bulletYvel = 1;
 
-            this.bulletX = this.cx + 8;
-            this.bulletY = this.cy;
+            this.bulletX = this.cx + 20;
+            this.bulletY = this.cy + 17;
             return{
                 x : 412,
                 y : 148,
@@ -863,11 +894,12 @@ Player.prototype.getSprite = function(){
             this.halfHeight = 35;
             this.halfWidth = 25;
 
+
             this.bulletXvel = -1;
             this.bulletYvel = 1;
 
-            this.bulletX = this.cx - 8;
-            this.bulletY = this.cy;
+            this.bulletX = this.cx - 20;
+            this.bulletY = this.cy + 17;
             return{
                 x : 412,
                 y : 203,
@@ -883,7 +915,8 @@ Player.prototype.getSprite = function(){
             this.bulletYvel = 1;
 
             this.bulletX = this.cx + 10;
-            this.bulletY = this.cy + 18;
+            this.bulletY = this.cy + 35;
+
             return{
                 x : 446,
                 y : 150,
@@ -898,8 +931,8 @@ Player.prototype.getSprite = function(){
             this.bulletXvel = 0;
             this.bulletYvel = 1;
 
-            this.bulletX = this.cx - 10;
-            this.bulletY = this.cy + 18;
+            this.bulletX = this.cx - 13;
+            this.bulletY = this.cy + 35;
             return{
                 x : 449,
                 y : 205,
@@ -972,8 +1005,8 @@ Player.prototype.getSprite = function(){
             }
         case 36: 
             //Running right, jump;
-            this.halfHeight = 44;
-            this.halfWidth = this.widths[14][this.animationFrame]+1;
+            this.halfHeight = 30;
+            this.halfWidth = 30;
 
             this.bulletXvel = 1;
             this.bulletYvel = 0;
@@ -982,14 +1015,14 @@ Player.prototype.getSprite = function(){
             this.bulletY = this.cy;
             return{
                 x : this.dists[14][this.animationFrame],
-                y : 137,
-                w : this.widths[14][this.animationFrame]+1,
-                h : 44
+                y : 542,
+                w : 30,
+                h : 30
             }
         case 37: 
-            //Running left, shooting vertically down
-            this.halfHeight = 44;
-            this.halfWidth = this.widths[15][this.animationFrame]+1;
+            //Running left, jump
+            this.halfHeight = 30;
+            this.halfWidth = 30;
 
             this.bulletXvel = -1;
             this.bulletYvel = 0;
@@ -998,23 +1031,68 @@ Player.prototype.getSprite = function(){
             this.bulletY = this.cy;
             return{
                 x : this.dists[15][this.animationFrame],
+                y : 542,
+                w : 30,
+                h : 30
+            }
+        case 38: 
+            //Falling right
+            this.halfHeight = 45;
+            this.halfWidth = this.widths[16][this.animationFrame]+1;
+
+            this.bulletXvel = 1;
+            this.bulletYvel = 0;
+
+            this.bulletX  = this.cx + 40;
+            this.bulletY = this.cy - 16;
+
+            return{
+                x : this.dists[16][this.animationFrame],
+                y : 138,
+                w : this.widths[16][this.animationFrame]+1,
+                h : 45
+            }
+        case 39: 
+            //Falling left
+            this.halfHeight = 45;
+            this.halfWidth = this.widths[17][this.animationFrame]+1;
+
+            this.bulletXvel = -1;
+            this.bulletYvel = 0;
+
+            this.bulletX  = this.cx - 40;
+            this.bulletY = this.cy - 16;
+            return{
+                x : this.dists[17][this.animationFrame],
                 y : 192,
-                w : this.widths[15][this.animationFrame]+1,
-                h : 44
+                w : this.widths[17][this.animationFrame]+1,
+                h : 45
             }
     }
 }
 
 Player.prototype.updateAnimationFrame = function(){
+    //This function decides how to update the animationFrame
+    if (this.stance === 36 || this.stance === 37){
+        //Player is doing a flip
+        this.getFlipAnimationFrame();
+    }
     if (!this.isGrounded){
+        //In the air
+        if (!this.hasJumped) return this.getFallingAnimationFrame(); //didn't jump
         if (this.velY < 0){
-            if (this.movingJump) return this.getMovingUpAnimationFrame();
+            if (this.movingJump) return this.getMovingUpAnimationFrame(); //going up
             this.getUpAnimationFrame();
             return;
         }
-        this.getDownAnimationFrame();
+        this.getDownAnimationFrame(); //going down
         return;
     }
+    this.getAnimationFrame();
+}
+
+Player.prototype.getAnimationFrame = function(){
+    //Normal circumstances
     this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         this.animationFrame += 1;
@@ -1023,7 +1101,18 @@ Player.prototype.updateAnimationFrame = function(){
     }
 }
 
+Player.prototype.getFlipAnimationFrame = function(){
+    //Flipping
+    this.framenr += 1;
+    if (this.framenr >= this.flipFramestoAnimationFrame){
+        this.animationFrame += 1;
+        this.framenr = 0;
+    }
+    if (this.animationFrame > 7) this.animationFrame -= 7;
+}
+
 Player.prototype.getUpAnimationFrame = function(){
+    //Going up
     this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         if (this.animationFrame < 2) this.animationFrame += 1;
@@ -1032,6 +1121,7 @@ Player.prototype.getUpAnimationFrame = function(){
 }
 
 Player.prototype.getDownAnimationFrame = function(){
+    //Going down
     this.framenr += 1;
     if (this.framenr >= this.framestoAnimationFrame){
         if (this.animationFrame < 6) this.animationFrame += 1;
@@ -1047,6 +1137,13 @@ Player.prototype.getMovingUpAnimationFrame = function(){
     }
 }
 
+Player.prototype.getFallingAnimationFrame = function(){
+    this.framenr += 1;
+    if (this.framenr >= this.framestoAnimationFrame){
+        if (this.animationFrame < 8 ) this.animationFrame += 1;
+        this.framnr = 0;
+    }
+}
 
 //Sprite sheet sizes
 Player.prototype.widths = [
@@ -1065,7 +1162,9 @@ Player.prototype.widths = [
     [26, 29, 32, 34, 33, 26, 28, 32, 35, 34], //Running right, shooting down
     [26, 29, 32, 34, 33, 26, 28, 32, 35, 34],  //Running left, shooting down
     [18, 17, 22, 18, 18, 17, 21, 20, 20], //running right jumping
-    [18, 17, 22, 18, 18, 17, 21, 20, 20]  //running left jumping
+    [18, 17, 22, 18, 18, 17, 21, 20, 20],  //running left jumping
+    [19, 19, 19, 18, 18, 18, 18, 18, 18], //Falling right
+    [19, 19, 19, 18, 18, 18, 18, 18, 18]  //Falling left
 ];
 
 Player.prototype.dists = [
@@ -1083,6 +1182,8 @@ Player.prototype.dists = [
     [375, 410, 451, 498, 546, 588, 625, 665, 712, 765],  //Running left, shooting up
     [457, 493, 529, 571, 616, 659, 696, 733, 773, 820], //Running right, shooting down
     [582, 545, 462, 504, 618, 659, 692, 730, 772, 815],  //Running left, shooting down
-    [9, 37, 66, 98, 125, 155, 184, 219, 250], //running right jumping
-    [9, 40, 70, 102, 131, 160, 188, 217, 245]  //running left jumping
+    [718, 763, 217, 269, 325, 370, 610, 662], //running right jumping
+    [468, 413, 167, 119, 75, 20, 560, 512],  //running left jumping
+    [500, 500, 500, 527, 527, 527, 555, 555, 555], //Falling right
+    [498, 498, 498, 529, 529, 529, 559, 559, 559]  //Falling left
 ];

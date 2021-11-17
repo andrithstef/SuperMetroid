@@ -6,7 +6,7 @@
 Provides a set of common functions which can be "inherited" by all other
 game Entities.
 
-JavaScript's prototype-based inheritance system is unusual, and requires 
+JavaScript's prototype-based inheritance system is unusual, and requires
 some care in use. In particular, this "base" should only provide shared
 functions... shared data properties are potentially quite confusing.
 
@@ -41,13 +41,23 @@ Entity.prototype.halfHeight;
     for (var property in descr) {
         this[property] = descr[property];
     }
-    
+
     // Get my (unique) spatial ID
     this._spatialID = spatialManager.getNewSpatialID();
-    
+
     // I am not dead yet!
     this._isDeadNow = false;
 };
+
+Entity.prototype.nextX;
+Entity.prototype.nextY;
+
+Entity.prototype.gravity = 0.5;
+Entity.prototype.maxSpeed = 10;
+Entity.prototype.friction = 0.4;
+
+Entity.prototype.collidable = true;
+Entity.prototype.isKillable = false;
 
 Entity.prototype.setPos = function (cx, cy) {
     this.cx = cx;
@@ -58,10 +68,6 @@ Entity.prototype.getPos = function () {
     return {posX : this.cx, posY : this.cy};
 };
 
-Entity.prototype.getRadius = function () {
-    return 0;
-};
-
 Entity.prototype.getSpatialID = function () {
     return this._spatialID;
 };
@@ -70,20 +76,77 @@ Entity.prototype.kill = function () {
     this._isDeadNow = true;
 };
 
-Entity.prototype.findHitEntity = function () {
-    var pos = this.getPos();
-    return spatialManager.findEntitie(
-        pos.posX, pos.posY, this.halfWidth, this.halfHeight
-    );
-};
-
-// This is just little "convenience wrapper"
-Entity.prototype.isColliding = function () {
-    return this.findHitEntity();
-};
-
 Entity.prototype.wrapPosition = function () {
     this.cx = util.wrapRange(this.cx, 0, g_canvas.width);
     this.cy = util.wrapRange(this.cy, 0, g_canvas.height);
 };
 
+
+Entity.prototype.findCollision = function (){
+    return spatialManager.findCollision(this);
+};
+
+Entity.prototype.resolve = function(hitEntity){
+    if (this.resolveTries > 10){
+        this.isGrounded = true;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+        return;
+    }
+    var d1;
+    var d2;
+    var d3;
+    var d4;
+
+    d1 = Math.abs((this.cx + this.halfWidth) - (hitEntity.cx - hitEntity.halfWidth));
+    d2 = Math.abs((this.cx - this.halfWidth) - (hitEntity.cx + hitEntity.halfWidth));
+    d3 = Math.abs((this.cy + this.halfHeight) - (hitEntity.cy - hitEntity.halfHeight));
+    d4 = Math.abs((this.cy - this.halfHeight) - (hitEntity.cy + hitEntity.halfHeight));
+
+    var minimum = Math.min(Math.min(d1,d2),Math.min(d3,d4));
+    if (d1 === minimum) {
+        this.nextX = hitEntity.cx - hitEntity.halfWidth - this.halfWidth;
+    }
+    else if (d2 === minimum) {
+        this.nextX = hitEntity.cx + hitEntity.halfWidth + this.halfWidth;
+    }
+    else if (d3 === minimum) {
+        this.isGrounded = true;
+        this.hasJumped = false;
+        this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
+    }
+    else{
+        this.velY = 0;
+        this.nextY = hitEntity.cy + hitEntity.halfHeight + this.halfHeight;
+    }
+    this.resolveTries += 1;
+}
+
+Entity.prototype.isColliding = function(entity){
+    return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
+        && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
+        && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
+        && this.nextY + this.halfHeight > entity.cy - entity.halfHeight);
+}
+
+Entity.prototype.resolveCollisions = function(du){
+    this.isGrounded = false;
+    this.resolveTries = 0;
+    var hitData = this.findCollision(); //Find an entity that's colliding with the object
+    while(hitData){
+        if(!hitData.collidable){
+            break;
+        }
+        if(hitData.isDoor && this instanceof Player){
+            g_newLevel = true;
+            if(hitData.dir == 'right'){
+                g_level = util.getNextLevel(g_level);
+                spawn = 0;
+            } else{
+                g_level = util.getPrevLevel(g_level);
+                spawn = 1;
+            } 
+        }
+        this.resolve(hitData);
+        hitData = this.findCollision()
+    }
+}

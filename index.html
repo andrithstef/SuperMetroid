@@ -3,30 +3,48 @@
   <head>
     <meta charset="UTF-8">
     <title>Super Metroid</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
   </head>
   <body>
 
-	<canvas id="myCanvas" width="1000" height="800"
+
+	<canvas id="myCanvas" width="1024" height="800"
 		style="border: 1px solid black;">
 	Sorry, but your browser does not support the HTML5 canvas tag.
 	</canvas>
 
     <div id="output"></div>
 
-    <script src="utils.js"></script>
-    <script src="g_keys.js"></script>
-    <script src="Bullet.js"></script>
     <script src="Map.js"></script>
+    <script src="Camera.js"></script>
     <script src="spatialManager.js"></script>
-    <script src="Entity.js"></script>
+    <script src="utils.js"></script>
+    <script src="handleMouse.js"></script>
     <script src="EntityManager.js"></script>
+    <script src="Entity.js"></script>
+    <script src="Bullet.js"></script>
+    <script src="Door.js"></script>
+    <script src="g_keys.js"></script>
+    <script src="Tile.js"></script>
+    <script src="SpecialItem.js"></script>
+    <script src="Environment.js"></script>
     <script src="Player.js"></script>
     <script src="g_main.js"></script>
     <script src="update.js"></script>
     <script src="render.js"></script>
+    <script src="intro.js"></script>
     <script src="Sprite.js"></script>
+    <script src="Enemy.js"></script>
     <script src="superMetroid.js"></script>
-    <script src="handleMouse.js"></script>
+
+    <script>
+    var sound = new Howl({
+      src: ['sounds/background.mp3'],
+      autoplay: true,
+      loop: true,
+    });
+    sound.play();
+</script>
 
   </body>
 </html>
