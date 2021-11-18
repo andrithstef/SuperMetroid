@@ -15,7 +15,7 @@ function Ridley(){
 const ridleySheet = new Image();
 ridleySheet.src = "resrc/Ridley.png"
 
-Ridley.prototype.health = 100;
+Ridley.prototype.health = 200;
 Ridley.prototype.scale = 2;
 Ridley.prototype.isEscaping = false; 
 Ridley.prototype.isFlying = false;
