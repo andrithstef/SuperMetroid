@@ -7,7 +7,7 @@
 
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
-var g_level = Map.lvl5;
+var g_level = Map.lvl1;
 var g_camera = new Camera(0,0,g_level);
 var spatialManager = Object.create(g_spatialManager);
 var g_newLevel = false;
