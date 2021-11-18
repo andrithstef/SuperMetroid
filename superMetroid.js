@@ -29,7 +29,7 @@ var enemyDie = new Howl({
 var RidleyFight = new Howl({
   src: ['sounds/RidleyFight.mp3'], 
   loop: true
-})
+});
 
 
 var entityManager = new EntityManager(g_level, spawn, g_energy);
