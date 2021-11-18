@@ -201,6 +201,7 @@ Ridley.prototype.update = function(du, player){
 
     if(g_Ridley_health <= 0){
         this.isEscaping = true;
+        g_Ridley_health = 0;
         this.headAnimationFrame = 0;
         this.isCharging = false;
         this.timeToFireball = 200;
