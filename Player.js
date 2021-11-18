@@ -221,6 +221,8 @@ Player.prototype.getShot = function(entity){
     this.velX -= dir*6;
     this.velY -= 6;
     if(g_energy <= 0){
+        if(g_keys['Ridley']) g_keys['Ridley'] = false;
+        RidleyFight.stop();
         g_newLevel = true;
         g_level = Map.lvl1;
         g_main._startGame = false;
