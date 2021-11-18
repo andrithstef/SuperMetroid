@@ -144,7 +144,6 @@ EntityManager.prototype.renderUI = function(ctx){
 
 EntityManager.prototype.renderForeGround = function(ctx){
     var s = this.foreGround[1];
-    console.log(s);
     ctx.drawImage(doorSprite,
         s.x,s.y,s.w,s.h,
         this.foreGround[2] - g_camera.cx,this.foreGround[3] - g_camera.cy,

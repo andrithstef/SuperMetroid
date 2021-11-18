@@ -2,6 +2,7 @@
 
 function Environment(lvl,descr) {
     this.lvl = lvl;
+    this.background.src = lvl.background;
 
     for (var property in descr) {
         this[property] = descr[property];
@@ -57,7 +58,6 @@ Environment.prototype.registerGrid = function(){
 };
 
 Environment.prototype.render = function(ctx){
-    this.background.src = this.lvl.background;
     ctx.drawImage(this.background,0,0,g_camera.cameraWidth,g_camera.cameraHeight);
 
     for (var l = 0; l<this.tilesBack.length; l++){
