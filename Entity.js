@@ -34,8 +34,8 @@ function Entity() {
 
 Entity.prototype.setup = function (descr) {
 
-Entity.prototype.halfWidth;
-Entity.prototype.halfHeight;
+    Entity.prototype.halfWidth;
+    Entity.prototype.halfHeight;
 
     // Apply all setup properies from the (optional) descriptor
     for (var property in descr) {
@@ -77,22 +77,18 @@ Entity.prototype.kill = function () {
     this._isDeadNow = true;
 };
 
-Entity.prototype.wrapPosition = function () {
-    this.cx = util.wrapRange(this.cx, 0, g_canvas.width);
-    this.cy = util.wrapRange(this.cy, 0, g_canvas.height);
-};
-
-
 Entity.prototype.findCollision = function (){
     return spatialManager.findCollision(this);
 };
 
 Entity.prototype.resolve = function(hitEntity){
+    //If an entity is colliding, it tries to resolve the collision
     if (this.resolveTries > 10){
         this.isGrounded = true;
         this.nextY = hitEntity.cy - hitEntity.halfHeight - this.halfHeight;
         return;
     }
+    //It gets pushed in the direction that is closest to not colliding with anything
     var d1;
     var d2;
     var d3;
@@ -123,6 +119,7 @@ Entity.prototype.resolve = function(hitEntity){
 }
 
 Entity.prototype.isColliding = function(entity){
+    //Just a rectangle vs rectangle collision check
     return (this.nextX - this.halfWidth < entity.cx + entity.halfWidth
         && this.nextX + this.halfWidth > entity.cx - entity.halfWidth
         && this.nextY - this.halfHeight < entity.cy + entity.halfHeight
@@ -130,6 +127,7 @@ Entity.prototype.isColliding = function(entity){
 }
 
 Entity.prototype.resolveCollisions = function(du){
+    //Function which tries to resolve collisions for entities
     this.isGrounded = false;
     this.resolveTries = 0;
     var hitData = this.findCollision(); //Find an entity that's colliding with the object
@@ -137,7 +135,7 @@ Entity.prototype.resolveCollisions = function(du){
         if(!hitData.collidable){
             break;
         }
-        if(hitData.isDoor && this instanceof Player && !g_keys['Ridley']){
+        if(hitData.isDoor && this instanceof Player && !g_ridley){
             g_newLevel = true;
             if(hitData.dir == 'right'){
                 g_level = util.getNextLevel(g_level);

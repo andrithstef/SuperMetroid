@@ -9,14 +9,12 @@ function Ridley(){
     this.init();
     backgroundMusic.stop();
     RidleyFight.play();
-    g_keys['Ridley'] = true;
+    g_ridley = true;
 }
 
 const ridleySheet = new Image();
 ridleySheet.src = "resrc/Ridley.png"
 
-
-Ridley.prototype.health = 400;
 Ridley.prototype.scale = 2;
 Ridley.prototype.isEscaping = false; 
 Ridley.prototype.isFlying = false;
@@ -185,7 +183,6 @@ Ridley.prototype.init = function(descr) {
 }
 
 Ridley.prototype.update = function(du, player){
-    console.log(this.health);
     if(this.isDead){
         this.unregister();
         return entityManager.KILL_ME_NOW;
@@ -202,8 +199,13 @@ Ridley.prototype.update = function(du, player){
         if (this.fireball.isDead) this.fireball = null;
     }
 
-    if(this.health < 0){
+    if(g_Ridley_health <= 0){
         this.isEscaping = true;
+        this.headAnimationFrame = 0;
+        this.isCharging = false;
+        this.timeToFireball = 200;
+        this.closeMouth = true;
+        if(this.fireball) this.fireball.isDead = true;
     }
 
     //Update each body part
@@ -590,7 +592,7 @@ Ridley.prototype.shootFireball = function(player){
 
 Ridley.prototype.getShot = function(shot, part){
     //What happens if Ridley gets shot
-    this.health -= 10;
+    g_Ridley_health -= 5;
 }
 
 Ridley.prototype.findAngleToPlayer = function(player){
@@ -733,7 +735,7 @@ Ridley.prototype.escape = function(du){
     if(this.scale > 7){
         //She has escaped, so remove her from the game
         this.isDead = true;
-        g_keys['Ridley'] = false;
+        g_ridley = false;
         RidleyFight.stop();
         backgroundMusic.play();
     }

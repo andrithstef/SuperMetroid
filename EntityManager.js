@@ -24,7 +24,7 @@ function EntityManager(lvl,spawn, energy){
     this._player = new Player(energy, {cx: lvl.player[spawn].x, cy: lvl.player[spawn].y});
     
     if(lvl.foreGround){
-        this.foreGround = lvl.foreGround;
+        this._foreGround = lvl.foreGround;
     }
 
 }
@@ -36,6 +36,7 @@ EntityManager.prototype._bullets;
 EntityManager.prototype._enemies;
 EntityManager.prototype._environment;
 EntityManager.prototype._doors;
+EntityManager.prototype._foreGround;
 
 
 
@@ -84,7 +85,7 @@ EntityManager.prototype.update = function(du) {
     this._player.update(du);
     if(this._player.nextLevel) return;
 
-    //update enemiesa
+    //update enemies
     for (var i = 0; i<this._enemies.length; i++){
         var status = this._enemies[i].update(du, this._player);
 
@@ -127,30 +128,44 @@ EntityManager.prototype.render = function(ctx) {
         this._doors[i].render(ctx);
     }
 
-    if(this.foreGround){
+    if(this._foreGround){
         this.renderForeGround(ctx);
     }
 
+    //The UI finally gets rendered.
     this.renderUI(ctx);
 
 }
 
 EntityManager.prototype.renderUI = function(ctx){
-    ctx.font = "50px Arial";
+    ctx.font = "30px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
-    ctx.fillText("energy: "+ g_energy, g_canvas.width-300, 100);
+    ctx.fillText("energy: "+ g_energy, g_canvas.width-100, 50);
+
+    if(g_ridley){
+        ctx.save();
+        ctx.lineWidth = 5;
+        ctx.fillStyle = "red";
+        ctx.fillRect(g_canvas.width/2-400, g_canvas.height-50, 2*g_Ridley_health, 20);
+        ctx.beginPath();
+        ctx.rect(g_canvas.width/2-400, g_canvas.height-50, 2*g_Ridley_maxHealth, 20);
+        ctx.stroke();
+        ctx.restore();
+    }
 }
 
 EntityManager.prototype.renderForeGround = function(ctx){
-    var s = this.foreGround[1];
+    //just draw an image in the same spot
+    var s = this._foreGround[1];
     ctx.drawImage(doorSprite,
         s.x,s.y,s.w,s.h,
-        this.foreGround[2] - g_camera.cx,this.foreGround[3] - g_camera.cy,
+        this._foreGround[2] - g_camera.cx,this._foreGround[3] - g_camera.cy,
         s.w*1.1,s.h*1.1);
 }
 
 EntityManager.prototype.addBullet = function(cx, cy, xdir, ydir, nr){
+    //normalize velocity vector and push to _bullets
     var xVel = xdir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
     var yVel = ydir/Math.sqrt(Math.pow(xdir, 2) + Math.pow(ydir, 2));
     this._bullets.push(new Bullet(cx, cy, xVel, yVel, nr));

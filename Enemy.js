@@ -47,18 +47,21 @@ Enemy.prototype.update = function(du, player){
 
     spatialManager.unregister(this);
 
+    //Enemy can only shoot so often
     this.shootTimer -= du;
 
     if (this.shootTimer < 0 && this.seesPlayer){
         this.isShooting = true;
     }
     
+    //Apply gravity on enemy
     this.velY += this.gravity*du;
 
     if (this.velY > this.maxSpeed) this.velY = this.maxSpeed;
 
-    this.findPlayer(player);
 
+    //Look for player
+    this.findPlayer(player);
     if (this.seesPlayer){
         this.followPlayer(player);
     }
@@ -71,8 +74,9 @@ Enemy.prototype.update = function(du, player){
     this.cx = this.nextX;
     this.cy = this.nextY;
 
+
     this.getStance();
-    var dead = this.updateAnimationFrame();
+    var dead = this.updateAnimationFrame(); //this is because when you kill the enemey, he makes a final effort to kill you too
 
     if(dead){
         return entityManager.KILL_ME_NOW;
@@ -113,6 +117,7 @@ Enemy.prototype.findPlayer = function(player){
 }
 
 Enemy.prototype.shoot = function(){
+    //Shoot five bullets
     entityManager.addBullet(this.cx - g_camera.cx, this.cy - this.halfHeight - g_camera.cy, 0, -1, 2);
     entityManager.addBullet(this.cx + this.halfWidth - g_camera.cx, this.cy - this.halfHeight - g_camera.cy, 1, -1, 2);
     entityManager.addBullet(this.cx - this.halfWidth - g_camera.cx, this.cy - this.halfHeight - g_camera.cy, -1, -1, 2);
@@ -171,7 +176,7 @@ Enemy.prototype.die = function(){
 }
 
 Enemy.prototype.getShot = function(entity){
-    if (entity.type != 2){
+    if (entity.type != 2) { //Can't be killed by other enemies
         this.isDead = true;
     }
 }

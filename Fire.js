@@ -13,6 +13,7 @@ function Fire(cx, cy, xVel ,yVel, descr){
 
 Fire.prototype = new Entity();
 
+//Fire is similar to bullets in a lot of ways, but I thought it was better for it to be it's own class
 
 Fire.prototype.rad = 7;
 Fire.prototype.speed = 10;
@@ -28,7 +29,7 @@ Fire.prototype.lifeSpan = 4000 / 16;
 
 Fire.prototype.scale = 2;
 
-Fire.prototype.halfHeight = 15*2;
+Fire.prototype.halfHeight = 15 * 2;
 Fire.prototype.halfWidth = 15 * 2;
 
 Fire.prototype.framenr = 0;

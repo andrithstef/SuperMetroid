@@ -32,7 +32,6 @@ Door.prototype.update = function (du) {
 
 Door.prototype.render = function(ctx){
   var s = this.spriteData;
-  //console.log(this.direction);
   if(this.x >= g_camera.cx - this.width && this.x <= g_camera.cx + g_camera.width + this.width &&
       this.y >= g_camera.cy - this.height && this.y <= g_camera.cy + g_camera.height + this.height) {
         if(this.direction == 'right') {
@@ -52,7 +51,7 @@ Door.prototype.isPlayerClose = function() {
 }
 
 Door.prototype.updateAnimationFrame = function(){
-  if(g_keys['Ridley']){
+  if(g_ridley){
     //Your stuck in the room until Ridley is gone
     this.animationFrame = 0;
     return;

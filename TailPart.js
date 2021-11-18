@@ -18,13 +18,17 @@ TailPart.prototype.spriteData = {
     h: 15
 }
 
+//Can move freely or not
 TailPart.prototype.isFixed = false;
 
 
 TailPart.prototype.initialize = function(nr, parent){
+    //Each tailpart is connected to another tailpart, the root is connected to the body
     this.parent = parent;
     this.isFireproof = true;
-    if(nr === 0) this.isFixed = true;
+    if(nr === 0) this.isFixed = true; //The root
+
+    //Just determine the size
     if(nr < 2){ 
         this.partType = 0; 
     }
@@ -65,6 +69,7 @@ TailPart.prototype.update = function(root, owner){
     }
 
     if(this.isFixed){
+        //The root
         var nextx = this.parent.cx + this.parent.halfWidth + 6;
         var nexty = this.parent.cy
         nextx += 5;
@@ -77,6 +82,7 @@ TailPart.prototype.update = function(root, owner){
         this.cy = nexty;
     }
     else{
+        //Move every tailpart by the same amount as the root
         this.cx += root.dx;
         this.cy += root.dy;
     }

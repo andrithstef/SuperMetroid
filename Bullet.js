@@ -48,7 +48,7 @@ Bullet.prototype.collidable = false;
 Bullet.prototype.lifeSpan = 2000 / 16.666;
 
 Bullet.prototype.render = function(ctx){
-
+    //Render the bullet if it is on the screen
     if(this.cx >= g_camera.cx - this.halfWidth && this.cx <= g_camera.cx + g_camera.width + this.halfWidth &&
         this.cy >= g_camera.cy - this.halfHeight && this.cy <= g_camera.cy + g_camera.height + this.halfHeight) {
         ctx.drawImage(bulletSheet,
@@ -61,6 +61,8 @@ Bullet.prototype.render = function(ctx){
 
 Bullet.prototype.update = function(du){
     spatialManager.unregister(this);
+
+    //lifespan, so that bullets don't fill up the screen
     this.lifeSpan -= du;
     if (this.lifeSpan < 0) {
         return entityManager.KILL_ME_NOW;
@@ -69,16 +71,10 @@ Bullet.prototype.update = function(du){
     this.nextX = this.cx + this.velX*du;
     this.nextY = this.cy + this.velY*du;
 
-
+    //resolve collisions with other entities
     var hitData = this.findCollision();
     if(hitData){
-        /*
-        if(!hitData.isKillable) {
-            return entityManager.KILL_ME_NOW;
-        }
-        */
         if(hitData.owner){
-            console.log("shot Ridley");
             hitData.owner.getShot(this, hitData);
         }
         else if (hitData.isKillable && hitData == entityManager._player && this.type == 2){
@@ -101,6 +97,7 @@ Bullet.prototype.update = function(du){
 }
 
 Bullet.prototype.getStance = function(){
+    //Get which direction the bullet is going for sprites
     if (this.velY > 0){ 
         if (this.velX < 0) return 5; 
         if (this.velX === 0) return 6;
@@ -118,6 +115,7 @@ Bullet.prototype.getStance = function(){
 }
 
 Bullet.prototype.getBulletSprite = function(){
+    //Sprite stuff
     switch(this.stance){
         case 0:
             return{

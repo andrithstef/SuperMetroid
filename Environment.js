@@ -61,7 +61,6 @@ Environment.prototype.render = function(ctx){
     ctx.drawImage(this.background,0,0,g_camera.cameraWidth,g_camera.cameraHeight);
 
     for (var l = 0; l<this.tilesBack.length; l++){
-        //console.log(l);
         if(this.tilesBack[l].cx >= g_camera.cx - this.tilesBack[l].halfWidth && this.tilesBack[l].cx <= g_camera.cx + g_camera.width + this.tilesBack[l].halfWidth
             && this.tilesBack[l].cy >= g_camera.cy - this.tilesBack[l].halfHeight && this.tilesBack[l].cy <= g_camera.cy + g_camera.height + this.tilesBack[l].halfHeight) {
                 ctx.drawImage(this.tileSheet, this.tilesBack[l].sx, this.tilesBack[l].sy,
@@ -71,8 +70,6 @@ Environment.prototype.render = function(ctx){
                     this.tilesBack[l].width, this.tilesBack[l].height);
             }
         
-        
-        // g_camera.cy,2*s.w,2*s.h
     }
     for (var i = 0; i<this.tilesColl.length; i++){
         if(this.tilesColl[i].cx >= g_camera.cx - this.tilesColl[i].halfWidth && this.tilesColl[i].cx <= g_camera.cx + g_camera.width + this.tilesColl[i].halfWidth

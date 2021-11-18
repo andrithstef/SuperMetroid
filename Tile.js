@@ -14,7 +14,7 @@ Tile.prototype.halfWidth = 32;
 Tile.prototype.halfHeight = 32;
 
 //replacement for sprite data, until then
-Tile.prototype.colour = 'white';
+Tile.prototype.colour = 'black';
 Tile.prototype.shape = "Rect";
 
 Tile.prototype.setTile = function(){
